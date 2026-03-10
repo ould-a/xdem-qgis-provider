@@ -2,10 +2,16 @@ import sys
 import xdem
 
 def run_xdem_algorithms(algorithm, dem1_path, dem2_path, output_path):
+    # DEMs configuration
     dem1 = xdem.DEM(dem1_path)
-    dem2 = xdem.DEM(dem2_path)
+    dem1.info()
+    try:
+        dem2 = xdem.DEM(dem2_path)
+        dem2.info()
+    except:
+        pass
 
-    #Terrain Attributes
+    # Terrain Attributes
     if algorithm == 'Aspect':
         res = dem1.aspect()
     if algorithm == 'Hillshade':
@@ -13,18 +19,21 @@ def run_xdem_algorithms(algorithm, dem1_path, dem2_path, output_path):
     if algorithm == 'Slope':
         res = dem1.slope()
     
-    #Coregistration
+    # Coregistration
+    coreg = None
     if algorithm == 'ICP':
         coreg = xdem.coreg.ICP()
     if algorithm == 'LZD':
         coreg = xdem.coreg.LZD()
     if algorithm == 'NuthKaab':
         coreg = xdem.coreg.NuthKaab()
-    if coreg:
-        res = coreg.fit_and_apply(dem1, dem2)
+    if coreg != None:
+        coreg.fit(dem1, dem2)
+        res = coreg.apply(dem1)
     
     res.to_file(output_path)
 
+# Main
 qgis_algorithm = sys.argv[1]
 qgis_dem1_path = sys.argv[2]
 qgis_dem2_path = sys.argv[3]

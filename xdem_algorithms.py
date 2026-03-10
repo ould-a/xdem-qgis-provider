@@ -11,6 +11,20 @@ from .xdem_config import (PY_XDEM,
                           SUBPROCESS_SCRIPT)
 
 
+# Generic functions
+
+# Running xdem
+def _run_subprocess(algorithm, dem1_path, dem2_path, output_path, feedback):
+    process = subprocess.Popen([PY_XDEM, SUBPROCESS_SCRIPT, algorithm, dem1_path, dem2_path, output_path],
+                               stdout=subprocess.PIPE,
+                               stderr=subprocess.PIPE,
+                               text=True)
+    # Capture outputs and errors
+    stdout, stderr = process.communicate()
+    feedback.pushInfo(stdout)
+    feedback.pushWarning(stderr)
+
+# Adds the output file from xdem to the project
 def _add_to_project(output_path, algorithm):
     layer = QgsRasterLayer(output_path, algorithm)
     QgsProject.instance().addMapLayer(layer)
@@ -28,7 +42,7 @@ class TerrainAttributes(QgsProcessingAlgorithm):
         dem_path = (self.parameterAsRasterLayer(parameters, 'INPUT1', context)).source()
         output_path = self.parameterAsFileOutput(parameters, 'OUTPUT', context)
         algorithm = self.name()
-        subprocess.run([PY_XDEM, SUBPROCESS_SCRIPT, algorithm, dem_path, "", output_path], check=True)
+        _run_subprocess(algorithm=algorithm, dem1_path=dem_path, dem2_path='', output_path=output_path, feedback=feedback)
         return _add_to_project(output_path=output_path, algorithm=algorithm)
 
     def displayName(self):
@@ -75,7 +89,7 @@ class Coregistration(QgsProcessingAlgorithm):
         tba_dem_path = (self.parameterAsRasterLayer(parameters, 'INPUT2', context)).source()
         output_path = self.parameterAsFileOutput(parameters, 'OUTPUT', context)
         algorithm = self.name()
-        subprocess.run([PY_XDEM, SUBPROCESS_SCRIPT, algorithm, ref_dem_path, tba_dem_path, output_path], check=True)
+        _run_subprocess(algorithm=algorithm, dem1_path=ref_dem_path, dem2_path=tba_dem_path, output_path=output_path, feedback=feedback)
         return _add_to_project(output_path=output_path, algorithm=algorithm)
 
     def displayName(self):
