@@ -1,0 +1,8 @@
+[general]
+name=xDEM
+qgisMinimumVersion=3.0
+description=/
+version=0.1
+author=CNES
+email=/
+icon=/
