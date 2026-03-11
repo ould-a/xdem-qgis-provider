@@ -19,6 +19,7 @@ def _run_subprocess(algorithm, dem1_path, dem2_path, output_path, feedback):
                                stdout=subprocess.PIPE,
                                stderr=subprocess.PIPE,
                                text=True)
+
     # Capture outputs and errors
     stdout, stderr = process.communicate()
     feedback.pushInfo(stdout)

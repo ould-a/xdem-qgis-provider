@@ -4,33 +4,34 @@ import xdem
 def run_xdem_algorithms(algorithm, dem1_path, dem2_path, output_path):
     # DEMs configuration
     dem1 = xdem.DEM(dem1_path)
+    print('DEM_1 informations:')
     dem1.info()
     try:
         dem2 = xdem.DEM(dem2_path)
+        print('DEM_2 informations:')
         dem2.info()
     except:
         pass
 
     # Terrain Attributes
-    if algorithm == 'Aspect':
-        res = dem1.aspect()
-    if algorithm == 'Hillshade':
-        res = dem1.hillshade()
-    if algorithm == 'Slope':
-        res = dem1.slope()
+    if algorithm == 'Aspect': res = dem1.aspect()
+    if algorithm == 'Hillshade': res = dem1.hillshade()
+    if algorithm == 'Slope': res = dem1.slope()
     
     # Coregistration
     coreg = None
-    if algorithm == 'ICP':
-        coreg = xdem.coreg.ICP()
-    if algorithm == 'LZD':
-        coreg = xdem.coreg.LZD()
-    if algorithm == 'NuthKaab':
-        coreg = xdem.coreg.NuthKaab()
+
+    if algorithm == 'ICP': coreg = xdem.coreg.ICP()
+    if algorithm == 'LZD': coreg = xdem.coreg.LZD()
+    if algorithm == 'NuthKaab': coreg = xdem.coreg.NuthKaab()
+
     if coreg != None:
         coreg.fit(dem1, dem2)
-        res = coreg.apply(dem1)
-    
+        res = coreg.apply(dem2)
+        print('Coreg method informations')
+        coreg.info()
+   
+    # Save the result
     res.to_file(output_path)
 
 # Main

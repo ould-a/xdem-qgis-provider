@@ -1,12 +1,12 @@
 import subprocess
 import os
-import sys
 
 from qgis.core import Qgis
 
 from .xdem_config import (PLUGINDIR,
                           VENVNAME,
                           VENVDIR,
+                          PY_SYS,
                           PY_XDEM)
 
 def classFactory(iface):
@@ -17,7 +17,7 @@ def classFactory(iface):
 # Virtual environment configuation
 def setupxdemvenv(iface):
     if VENVNAME not in os.listdir(PLUGINDIR):
-        subprocess.run([sys.executable, "-m", "venv", VENVDIR])
+        subprocess.run([PY_SYS, "-m", "venv", VENVDIR])
         subprocess.Popen([PY_XDEM, "-m", "ensurepip", "--upgrade"])
         subprocess.Popen([PY_XDEM, "-m", "pip", "install", "xdem"])
-        iface.messageBar().pushMessage("Installing xdem dependencies, please wait a few seconds before using it.", level=Qgis.Info, duration=30)
+        iface.messageBar().pushMessage("Installing xDEM dependencies, please wait a few seconds before using it.", level=Qgis.Info, duration=30)
