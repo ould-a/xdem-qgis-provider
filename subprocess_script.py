@@ -28,19 +28,21 @@ def run_xdem_algorithms(algorithm, dem1_path, dem2_path, output_path):
     if coreg != None:
         coreg.fit(dem1, dem2)
         res = coreg.apply(dem2)
-        print('Coreg method informations')
+        print('Coreg method informations:')
         coreg.info()
    
     # Save the result
     res.to_file(output_path)
 
 # Main
-qgis_algorithm = sys.argv[1]
-qgis_dem1_path = sys.argv[2]
-qgis_dem2_path = sys.argv[3]
-qgis_output_path = sys.argv[4]
+if __name__ == "__main__":
 
-run_xdem_algorithms(algorithm=qgis_algorithm,
-                    dem1_path=qgis_dem1_path,
-                    dem2_path=qgis_dem2_path,
-                    output_path=qgis_output_path)
+    qgis_algorithm = sys.argv[1]
+    qgis_dem1_path = sys.argv[2]
+    qgis_dem2_path = sys.argv[3]
+    qgis_output_path = sys.argv[4]
+
+    run_xdem_algorithms(algorithm=qgis_algorithm,
+                        dem1_path=qgis_dem1_path,
+                        dem2_path=qgis_dem2_path,
+                        output_path=qgis_output_path)
