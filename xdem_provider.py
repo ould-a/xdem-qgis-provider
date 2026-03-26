@@ -23,7 +23,7 @@ class XDemProvider(QgsProcessingProvider):
         self.addAlgorithm(NuthKaab())
 
         # Tests
-        self.addAlgorithm(BlockwiseNk())
+        self.addAlgorithm(Coregistration())
 
     def id(self):
         return 'XDEM'
