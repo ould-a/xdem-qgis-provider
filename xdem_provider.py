@@ -1,6 +1,7 @@
 from qgis.core import QgsProcessingProvider
 from .algorithms.xdem_coregistration import *
 from .algorithms.xdem_terrain_attributes import *
+from .algorithms.xdem_tools import *
 
 
 class XDemProvider(QgsProcessingProvider):
@@ -23,7 +24,9 @@ class XDemProvider(QgsProcessingProvider):
         self.addAlgorithm(NuthKaab())
 
         # Tests
+        self.addAlgorithm(TerrainAttributes2())
         self.addAlgorithm(Coregistration())
+        self.addAlgorithm(DemDifferencing())
 
     def id(self):
         return 'XDEM'
