@@ -3,23 +3,24 @@ from qgis.PyQt.QtCore import QCoreApplication
 
 import io
 from contextlib import redirect_stdout
+
 from qgis.core import (QgsProcessingAlgorithm,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterRasterDestination)
 
 
 # Generic functions
-def dem_info(dem, feedback):
+def dem_info(dem, feedback, stats: bool = False) -> None:
 
     metadata = io.StringIO()
 
     with redirect_stdout(metadata):
-        dem.info(stats=True)
+        dem.info(stats=stats)
 
     feedback.pushInfo(metadata.getvalue())
 
 
-def coreg_info(coreg, feedback):
+def coreg_info(coreg, feedback) -> None:
 
     metadata = io.StringIO()
 
@@ -47,7 +48,7 @@ class DemDifferencing(QgsProcessingAlgorithm):
         dem_info(dem=dem2, feedback=feedback)
 
         dem_dif = dem1 -dem2
-        dem_info(dem=dem_dif, feedback=feedback)
+        dem_info(dem=dem_dif, feedback=feedback, stats=True)
 
         dem_dif.to_file(output_path)
             
