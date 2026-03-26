@@ -1,7 +1,7 @@
 import xdem
-import geoutils as gu
-
 from qgis.PyQt.QtCore import QCoreApplication
+
+from .xdem_tools import coreg_info
 from qgis.core import (QgsProcessingAlgorithm,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterRasterLayer,
@@ -137,6 +137,8 @@ class Coregistration(QgsProcessingAlgorithm):
         else :
             coreg.fit(ref_dem, tba_dem)
             aligned_dem = coreg.apply(tba_dem)
+
+        coreg_info(coreg=coreg, feedback=feedback)
 
         aligned_dem.to_file(output_path)
 
