@@ -26,7 +26,6 @@ class XDemProvider(QgsProcessingProvider):
         # Tests
         self.addAlgorithm(TerrainAttributes2())
         self.addAlgorithm(Coregistration())
-        self.addAlgorithm(DemDifferencing())
 
     def id(self):
         return 'XDEM'
