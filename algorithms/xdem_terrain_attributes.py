@@ -81,14 +81,14 @@ class TerrainAttributes2(QgsProcessingAlgorithm):
         self.addParameter(QgsProcessingParameterRasterLayer(name='INPUT', description='DEM'))
         self.addParameter(QgsProcessingParameterEnum(name='ATTRIBUTE',
                                                      description='Terrain attributes',
-                                                     options=['Aspect',
+                                                     options=['Slope',
+                                                              'Aspect',
                                                               'Hillshade',
-                                                              'Slope',
                                                               'Profile curvature',
                                                               'Terrain ruggedness index',
                                                               'Rugosity'
                                                               ],
-                                                     defaultValue='Aspect',
+                                                     defaultValue='Slope',
                                                      usesStaticStrings=True))
 
         self.addParameter(QgsProcessingParameterRasterDestination(name='OUTPUT', description='Terrain attribute'))
@@ -101,12 +101,12 @@ class TerrainAttributes2(QgsProcessingAlgorithm):
         dem = xdem.DEM(dem_path)
         dem_info(dem=dem, feedback=feedback)
 
-        if attribute_parameter == 'Aspect':
+        if attribute_parameter == 'Slope':
+            terrain_attribute = dem.slope()
+        elif attribute_parameter == 'Aspect':
             terrain_attribute = dem.aspect()
         elif attribute_parameter == 'Hillshade':
             terrain_attribute = dem.hillshade()
-        elif attribute_parameter == 'Slope':
-            terrain_attribute = dem.slope()
         elif attribute_parameter == 'Profile cuvature':
             terrain_attribute = dem.profile_curvature()
         elif attribute_parameter == 'Terrain ruggedness index':

@@ -93,10 +93,13 @@ class Coregistration(QgsProcessingAlgorithm):
         self.addParameter(QgsProcessingParameterVectorLayer(name='INPUT3', description='Outlier file', defaultValue=None, optional=True))
         self.addParameter(QgsProcessingParameterEnum(name='COREGMETHOD',
                                                      description='Method',
-                                                     options=['ICP',
-                                                              'LZD',
-                                                              'NuthKaab'],
-                                                     defaultValue='NuthKaab',
+                                                     options=['Nuth and Kaab (2011)',
+                                                              'Minimization of dh',
+                                                              'Least Z-difference',
+                                                              'Iterative closest point',
+                                                              'Coherent point drift',
+                                                              'Vertical shift'],
+                                                     defaultValue='Nuth and Kaab (2011)',
                                                      usesStaticStrings=True))
         
         parameter= QgsProcessingParameterBoolean(name='BLOCKWISE', description='Blockwise', defaultValue=False)
@@ -136,12 +139,18 @@ class Coregistration(QgsProcessingAlgorithm):
         except:
             pass
 
-        if method == 'ICP':
-            coreg = xdem.coreg.ICP()
-        elif method == 'LZD':
-            coreg = xdem.coreg.LZD()
-        elif method == 'NuthKaab':
+        if method == 'Nuth and Kaab (2011)':
             coreg = xdem.coreg.NuthKaab()
+        elif method == 'Minimization of dh':
+            coreg = xdem.coreg.DhMinimize()
+        elif method == 'Least Z-difference':
+            coreg = xdem.coreg.LZD()
+        if method == 'Iterative closest point':
+            coreg = xdem.coreg.ICP()
+        elif method == 'Coherent point drift':
+            coreg = xdem.coreg.CPD()
+        elif method == 'Vertical shift':
+            coreg = xdem.coreg.VerticalShift()
 
         if blockwise :
             coreg = xdem.coreg.BlockwiseCoreg(coreg, block_size_fit=block_size_fit, block_size_apply=block_size_apply, parent_path="")
