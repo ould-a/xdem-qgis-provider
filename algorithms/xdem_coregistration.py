@@ -1,4 +1,5 @@
 import xdem
+import geoutils as gu
 from qgis.PyQt.QtCore import QCoreApplication
 
 from .xdem_tools import coreg_info
@@ -89,10 +90,12 @@ class Coregistration(QgsProcessingAlgorithm):
     def initAlgorithm(self, config = None):
         self.addParameter(QgsProcessingParameterRasterLayer(name='INPUT1', description='Ref DEM'))
         self.addParameter(QgsProcessingParameterRasterLayer(name='INPUT2', description='Tba DEM'))
-        self.addParameter(QgsProcessingParameterVectorLayer(name='INPUT3', description='Inlier mask', defaultValue=None, optional=True))
+        self.addParameter(QgsProcessingParameterVectorLayer(name='INPUT3', description='Outlier file', defaultValue=None, optional=True))
         self.addParameter(QgsProcessingParameterEnum(name='COREGMETHOD',
                                                      description='Method',
-                                                     options=['ICP','LZD','NuthKaab'],
+                                                     options=['ICP',
+                                                              'LZD',
+                                                              'NuthKaab'],
                                                      defaultValue='NuthKaab',
                                                      usesStaticStrings=True))
         
@@ -114,13 +117,24 @@ class Coregistration(QgsProcessingAlgorithm):
         ref_dem_path = (self.parameterAsRasterLayer(parameters=parameters, name='INPUT1', context=context)).source()
         tba_dem_path = (self.parameterAsRasterLayer(parameters=parameters, name='INPUT2', context=context)).source()
         method = self.parameterAsString(parameters=parameters, name='COREGMETHOD', context=context)
+
         block_size_fit = self.parameterAsInt(parameters=parameters, name='BLOCKSIZEFIT', context=context)
         block_size_apply = self.parameterAsInt(parameters=parameters, name='BLOCKSIZEAPPLY', context=context)
         blockwise = self.parameterAsBoolean(parameters=parameters, name='BLOCKWISE', context=context)
+
         output_path = self.parameterAsOutputLayer(parameters=parameters, name='OUTPUT', context=context)
 
         ref_dem = xdem.DEM(ref_dem_path)
         tba_dem = xdem.DEM(tba_dem_path)
+        
+        inlier_mask = None
+
+        try:
+            outlier_path = (self.parameterAsRasterLayer(parameters=parameters, name='INPUT3', context=context)).source()
+            outlier = gu.Vector(outlier_path)
+            inlier_mask = ~outlier.create_mask(ref_dem)
+        except:
+            pass
 
         if method == 'ICP':
             coreg = xdem.coreg.ICP()
@@ -131,14 +145,13 @@ class Coregistration(QgsProcessingAlgorithm):
 
         if blockwise :
             coreg = xdem.coreg.BlockwiseCoreg(coreg, block_size_fit=block_size_fit, block_size_apply=block_size_apply, parent_path="")
-            coreg.fit(ref_dem, tba_dem)
+            coreg.fit(ref_dem, tba_dem, inlier_mask)
             aligned_dem = coreg.apply()
 
         else :
-            coreg.fit(ref_dem, tba_dem)
+            coreg.fit(ref_dem, tba_dem, inlier_mask)
             aligned_dem = coreg.apply(tba_dem)
-
-        coreg_info(coreg=coreg, feedback=feedback)
+            coreg_info(coreg=coreg, feedback=feedback)
 
         aligned_dem.to_file(output_path)
 
