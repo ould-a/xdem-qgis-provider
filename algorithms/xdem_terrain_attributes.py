@@ -1,7 +1,7 @@
 import xdem
 from qgis.PyQt.QtCore import QCoreApplication
 
-from .xdem_tools import dem_info
+from .xdem_tools import xdem_object_info
 from qgis.core import (QgsProcessingAlgorithm,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterEnum,
@@ -99,18 +99,23 @@ class TerrainAttributes2(QgsProcessingAlgorithm):
         output_path = self.parameterAsOutputLayer(parameters=parameters, name='OUTPUT', context=context)
 
         dem = xdem.DEM(dem_path)
-        dem_info(dem=dem, feedback=feedback)
+        xdem_object_info(dem=dem, feedback=feedback)
 
         if attribute_parameter == 'Slope':
             terrain_attribute = dem.slope()
+
         elif attribute_parameter == 'Aspect':
             terrain_attribute = dem.aspect()
+
         elif attribute_parameter == 'Hillshade':
             terrain_attribute = dem.hillshade()
+
         elif attribute_parameter == 'Profile cuvature':
             terrain_attribute = dem.profile_curvature()
+
         elif attribute_parameter == 'Terrain ruggedness index':
             terrain_attribute = dem.terrain_ruggedness_index()
+            
         elif attribute_parameter == 'Rugosity':
             terrain_attribute = dem.rugosity()
         

@@ -1,8 +1,9 @@
 import xdem
 import geoutils as gu
+import numpy as np
 from qgis.PyQt.QtCore import QCoreApplication
 
-from .xdem_tools import coreg_info
+from .xdem_tools import xdem_object_info
 from qgis.core import (QgsProcessingAlgorithm,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterRasterLayer,
@@ -85,7 +86,7 @@ class NuthKaab(Coreg):
     def createInstance(self):
         return NuthKaab()
 
-# Tests
+# Coregistration
 class Coregistration(QgsProcessingAlgorithm):
     def initAlgorithm(self, config = None):
         self.addParameter(QgsProcessingParameterRasterLayer(name='INPUT1', description='Ref DEM'))
@@ -141,14 +142,19 @@ class Coregistration(QgsProcessingAlgorithm):
 
         if method == 'Nuth and Kaab (2011)':
             coreg = xdem.coreg.NuthKaab()
+
         elif method == 'Minimization of dh':
             coreg = xdem.coreg.DhMinimize()
+
         elif method == 'Least Z-difference':
             coreg = xdem.coreg.LZD()
-        if method == 'Iterative closest point':
+
+        elif method == 'Iterative closest point':
             coreg = xdem.coreg.ICP()
+
         elif method == 'Coherent point drift':
             coreg = xdem.coreg.CPD()
+
         elif method == 'Vertical shift':
             coreg = xdem.coreg.VerticalShift()
 
@@ -160,7 +166,7 @@ class Coregistration(QgsProcessingAlgorithm):
         else :
             coreg.fit(ref_dem, tba_dem, inlier_mask)
             aligned_dem = coreg.apply(tba_dem)
-            coreg_info(coreg=coreg, feedback=feedback)
+            xdem_object_info(coreg=coreg, feedback=feedback)
 
         aligned_dem.to_file(output_path)
 
@@ -183,3 +189,65 @@ class Coregistration(QgsProcessingAlgorithm):
 
     def createInstance(self):
         return Coregistration()
+
+
+# Bias correction 
+class BiasCorrection(QgsProcessingAlgorithm):
+    def initAlgorithm(self, config = None):
+        self.addParameter(QgsProcessingParameterRasterLayer(name='INPUT1', description='Ref DEM'))
+        self.addParameter(QgsProcessingParameterRasterLayer(name='INPUT2', description='Tba DEM'))
+        self.addParameter(QgsProcessingParameterEnum(name='METHOD',
+                                                     description='Method',
+                                                     options=['Deramping',
+                                                              'Directional biases',
+                                                              'Terrain biases'],
+                                                     defaultValue='Deramping',
+                                                     usesStaticStrings=True))
+
+        self.addParameter(QgsProcessingParameterRasterDestination(name='OUTPUT', description='Aligned DEM'))
+
+    def processAlgorithm(self, parameters, context, feedback):
+        ref_dem_path = (self.parameterAsRasterLayer(parameters=parameters, name='INPUT1', context=context)).source()
+        tba_dem_path = (self.parameterAsRasterLayer(parameters=parameters, name='INPUT2', context=context)).source()
+        method = self.parameterAsString(parameters=parameters, name='METHOD', context=context)
+        output_path = self.parameterAsOutputLayer(parameters=parameters, name='OUTPUT', context=context)
+
+        ref_dem = xdem.DEM(ref_dem_path)
+        tba_dem = xdem.DEM(tba_dem_path)
+
+        if method == 'Deramping':
+            corr = xdem.coreg.Deramp(poly_order=2)
+
+        elif method == 'Directional biases':
+            corr = xdem.coreg.DirectionalBias(angle=60, fit_or_bin="bin", bin_sizes=1000)
+            
+        elif method == 'Terrain biases':
+            corr = xdem.coreg.TerrainBias(terrain_attribute="max_curvature",
+                                 bin_sizes={"max_curvature": np.linspace(-5, 5, 1000)},
+                                 bin_apply_method="per_bin")
+        
+        xdem_object_info(coreg=corr, feedback=feedback)
+
+        aligned_dem = corr.fit_and_apply(ref_dem, tba_dem)
+
+        aligned_dem.to_file(output_path)
+
+        return {'OUTPUT' : output_path}
+    
+    def displayName(self):
+        return self.tr(self.name())
+
+    def group(self):
+        return self.tr(self.groupId())
+
+    def groupId(self):
+        return ''
+
+    def tr(self, string):
+        return QCoreApplication.translate('Processing', string)
+    
+    def name(self):
+        return 'Bias correction'
+
+    def createInstance(self):
+        return BiasCorrection()
