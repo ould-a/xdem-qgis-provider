@@ -14,20 +14,20 @@ class XDemProvider(QgsProcessingProvider):
 
     def loadAlgorithms(self):
         # Terrain Attributes
-        self.addAlgorithm(Slope())
-        self.addAlgorithm(Aspect())
-        self.addAlgorithm(Hillshade())
-        
+        self.addAlgorithm(TerrainAttributes())
+
         # Coregistration
+        self.addAlgorithm(Coregistration())
+
+        # Old versions
         self.addAlgorithm(Icp())
         self.addAlgorithm(Lzd())
         self.addAlgorithm(NuthKaab())
 
-        # Tests
-        self.addAlgorithm(TerrainAttributes2())
-        self.addAlgorithm(Coregistration())
-        self.addAlgorithm(BiasCorrection())
-
+        self.addAlgorithm(Slope())
+        self.addAlgorithm(Aspect())
+        self.addAlgorithm(Hillshade())
+        
     def id(self):
         return 'XDEM'
 

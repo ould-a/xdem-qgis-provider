@@ -1,16 +1,18 @@
-import xdem
-from qgis.PyQt.QtCore import QCoreApplication
-
 import io
 from contextlib import redirect_stdout
 
 
 # Generic functions
 
-def xdem_object_info(xdem_object, feedback, stats: bool = False) -> None:
+def dem_info(dem, feedback, stats : bool = False) -> None:
     metadata = io.StringIO()
-
     with redirect_stdout(metadata):
-        xdem_object.info(stats=stats)
+        dem.info(stats=stats)
+    feedback.pushInfo(metadata.getvalue())
 
+
+def coreg_info(coreg, feedback) -> None:
+    metadata = io.StringIO()
+    with redirect_stdout(metadata):
+        coreg.info()
     feedback.pushInfo(metadata.getvalue())

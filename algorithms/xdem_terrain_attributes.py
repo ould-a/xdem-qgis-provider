@@ -1,16 +1,100 @@
 import xdem
-from qgis.PyQt.QtCore import QCoreApplication
+import os
 
-from .xdem_tools import xdem_object_info
+from .xdem_tools import dem_info
+
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.utils import iface
 from qgis.core import (QgsProcessingAlgorithm,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterEnum,
-                       QgsProcessingParameterRasterDestination)
+                       QgsProcessingParameterRasterDestination,
+                       QgsProcessingParameterFolderDestination)
 
 
 # Terrain Attributes
 
+ATTRIBUTES = ['Slope',
+              'Aspect',
+              'Hillshade',
+              'Profile curvature',
+              'Terrain ruggedness index',
+              'Rugosity']
+
 class TerrainAttributes(QgsProcessingAlgorithm):
+    def initAlgorithm(self, config = None):
+        self.addParameter(QgsProcessingParameterRasterLayer(name='INPUT', description='DEM'))
+        self.addParameter(QgsProcessingParameterEnum(name='ATTRIBUTE',
+                                                     description='Terrain attributes',
+                                                     options=ATTRIBUTES,
+                                                     defaultValue=ATTRIBUTES[0],
+                                                     allowMultiple=True))
+
+        self.addParameter(QgsProcessingParameterFolderDestination(name='OUTPUTS', description='Terrain attributes folder'))
+    
+    def processAlgorithm(self, parameters, context, feedback):
+        dem_path = (self.parameterAsRasterLayer(parameters=parameters, name='INPUT', context=context)).source()
+        attribute_parameters = self.parameterAsEnums(parameters=parameters, name='ATTRIBUTE', context=context)
+        self.output_path = self.parameterAsString(parameters=parameters, name='OUTPUTS', context=context)
+        os.makedirs(self.output_path, exist_ok=True) # for temporary folder
+
+        dem = xdem.DEM(dem_path)
+        dem_info(dem=dem, feedback=feedback)
+
+        for i in attribute_parameters:
+            attr = ATTRIBUTES[i]
+
+            if attr == 'Slope':
+                terrain_attribute = dem.slope()
+
+            elif attr == 'Aspect':
+                terrain_attribute = dem.aspect()
+
+            elif attr == 'Hillshade':
+                terrain_attribute = dem.hillshade()
+
+            elif attr == 'Profile cuvature':
+                terrain_attribute = dem.profile_curvature()
+
+            elif attr == 'Terrain ruggedness index':
+                terrain_attribute = dem.terrain_ruggedness_index()
+                
+            elif attr == 'Rugosity':
+                terrain_attribute = dem.rugosity()
+            
+            terrain_attribute.to_file(os.path.join(self.output_path, f"{attr}.tif"))
+        
+        return {}
+    
+    def postProcessAlgorithm(self, context, feedback):
+        for file in os.listdir(self.output_path):
+            file_path = os.path.join(self.output_path, file)
+            if file_path.endswith(".tif"):
+                iface.addRasterLayer(file_path)
+        return {}
+
+    def displayName(self):
+        return self.tr(self.name())
+
+    def group(self):
+        return self.tr(self.groupId())
+
+    def groupId(self):
+        return ''
+
+    def tr(self, string):
+        return QCoreApplication.translate('Processing', string)
+
+    def name(self):
+        return 'Terrain attributes'
+    
+    def createInstance(self):
+        return TerrainAttributes()
+
+
+# Old version
+
+class OldTerrainAttributes(QgsProcessingAlgorithm):
     """
     Generic terrain attributes class, with a DEM as input and an output file for the attribute.
     """
@@ -46,7 +130,7 @@ class TerrainAttributes(QgsProcessingAlgorithm):
     def tr(self, string):
         return QCoreApplication.translate('Processing', string)
 
-class Slope(TerrainAttributes):
+class Slope(OldTerrainAttributes):
     def processAlgorithm(self, parameters, context, feedback):
         return self.run_terrain_attributes(parameters=parameters, context=context, feedback=feedback, terrain_attribute=lambda x: x.slope())
 
@@ -56,7 +140,7 @@ class Slope(TerrainAttributes):
     def createInstance(self):
         return Slope()
     
-class Aspect(TerrainAttributes):
+class Aspect(OldTerrainAttributes):
     def processAlgorithm(self, parameters, context, feedback):
         return self.run_terrain_attributes(parameters=parameters, context=context, feedback=feedback, terrain_attribute=lambda x: x.aspect())
 
@@ -66,7 +150,7 @@ class Aspect(TerrainAttributes):
     def createInstance(self):
         return Aspect()
 
-class Hillshade(TerrainAttributes):
+class Hillshade(OldTerrainAttributes):
     def processAlgorithm(self, parameters, context, feedback):
         return self.run_terrain_attributes(parameters=parameters, context=context, feedback=feedback, terrain_attribute=lambda x: x.hillshade())
 
@@ -75,69 +159,3 @@ class Hillshade(TerrainAttributes):
     
     def createInstance(self):
         return Hillshade()
-
-class TerrainAttributes2(QgsProcessingAlgorithm):
-    def initAlgorithm(self, config = None):
-        self.addParameter(QgsProcessingParameterRasterLayer(name='INPUT', description='DEM'))
-        self.addParameter(QgsProcessingParameterEnum(name='ATTRIBUTE',
-                                                     description='Terrain attributes',
-                                                     options=['Slope',
-                                                              'Aspect',
-                                                              'Hillshade',
-                                                              'Profile curvature',
-                                                              'Terrain ruggedness index',
-                                                              'Rugosity'
-                                                              ],
-                                                     defaultValue='Slope',
-                                                     usesStaticStrings=True))
-
-        self.addParameter(QgsProcessingParameterRasterDestination(name='OUTPUT', description='Terrain attribute'))
-    
-    def processAlgorithm(self, parameters, context, feedback):
-        dem_path = (self.parameterAsRasterLayer(parameters=parameters, name='INPUT', context=context)).source()
-        attribute_parameter = self.parameterAsString(parameters=parameters, name='ATTRIBUTE', context=context)
-        output_path = self.parameterAsOutputLayer(parameters=parameters, name='OUTPUT', context=context)
-
-        dem = xdem.DEM(dem_path)
-        xdem_object_info(dem=dem, feedback=feedback)
-
-        if attribute_parameter == 'Slope':
-            terrain_attribute = dem.slope()
-
-        elif attribute_parameter == 'Aspect':
-            terrain_attribute = dem.aspect()
-
-        elif attribute_parameter == 'Hillshade':
-            terrain_attribute = dem.hillshade()
-
-        elif attribute_parameter == 'Profile cuvature':
-            terrain_attribute = dem.profile_curvature()
-
-        elif attribute_parameter == 'Terrain ruggedness index':
-            terrain_attribute = dem.terrain_ruggedness_index()
-            
-        elif attribute_parameter == 'Rugosity':
-            terrain_attribute = dem.rugosity()
-        
-        terrain_attribute.to_file(output_path)
-            
-        return {'OUTPUT' : output_path}
-
-    def displayName(self):
-        return self.tr(self.name())
-
-    def group(self):
-        return self.tr(self.groupId())
-
-    def groupId(self):
-        return ''
-
-    def tr(self, string):
-        return QCoreApplication.translate('Processing', string)
-
-    def name(self):
-        return 'Terrain attributes'
-    
-    def createInstance(self):
-        return TerrainAttributes2()
-    
