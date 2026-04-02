@@ -8,7 +8,7 @@ from geoutils.raster import ClusterGenerator
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.utils import iface
 from qgis.core import (QgsProcessingAlgorithm,
-                       QgsProcessingParameterVectorLayer,
+                       QgsProcessingParameterMapLayer,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterBoolean,
@@ -30,7 +30,7 @@ class Coregistration(QgsProcessingAlgorithm):
     def initAlgorithm(self, config = None):
         self.addParameter(QgsProcessingParameterRasterLayer(name='INPUT1', description='Ref DEM'))
         self.addParameter(QgsProcessingParameterRasterLayer(name='INPUT2', description='Tba DEM'))
-        self.addParameter(QgsProcessingParameterVectorLayer(name='INPUT3', description='Outlier file', defaultValue=None, optional=True))
+        self.addParameter(QgsProcessingParameterMapLayer(name='INPUT3', description='Outlier mask', defaultValue=None, optional=True))
         self.addParameter(QgsProcessingParameterEnum(name='COREGMETHOD',
                                                      description='Method',
                                                      options=COREG_METHODS,
@@ -68,9 +68,15 @@ class Coregistration(QgsProcessingAlgorithm):
         inlier_mask = None
 
         try:
-            outlier_path = (self.parameterAsRasterLayer(parameters=parameters, name='INPUT3', context=context)).source()
+            outlier_path = (self.parameterAsVectorLayer(parameters=parameters, name='INPUT3', context=context)).source()
             outlier = gu.Vector(outlier_path)
             inlier_mask = ~outlier.create_mask(ref_dem)
+        except:
+            pass
+
+        try:
+            outlier_path = (self.parameterAsRasterLayer(parameters=parameters, name='INPUT3', context=context)).source()
+            inlier_mask = gu.Raster(outlier_path, is_mask=True)
         except:
             pass
 
