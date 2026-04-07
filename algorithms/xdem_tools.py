@@ -16,3 +16,5 @@ def coreg_info(coreg, feedback) -> None:
     with redirect_stdout(metadata):
         coreg.info()
     feedback.pushInfo(metadata.getvalue())
+
+# test
