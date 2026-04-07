@@ -3,7 +3,6 @@ import sys
 import numpy
 import pyproj
 
-
 # Path Configuration
 PLUGIN_DIR = os.path.dirname(__file__)
 LIBS_FILE_NAME = "xdem_libs"
@@ -13,9 +12,9 @@ LIBS_DIR = os.path.join(PLUGIN_DIR, LIBS_FILE_NAME)
 REQUIRED_PACKAGES = [
     f"numpy=={numpy.__version__}",
     f"pyproj=={pyproj.__version__}",
-    "xdem[opt]"
+    "xdem",
+    "scikit-learn"
 ]
-
 
 def _install_packages():
     """
@@ -46,7 +45,6 @@ def check_xdem():
         return xdem
     except ImportError:
         raise
-
 
 # xDEM import variable
 xdem_package = check_xdem()

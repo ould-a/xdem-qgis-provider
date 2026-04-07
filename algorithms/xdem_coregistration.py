@@ -2,8 +2,6 @@ import xdem
 import geoutils as gu
 
 from .xdem_tools import coreg_info
-from geoutils.raster.distributed_computing import MultiprocConfig
-from geoutils.raster import ClusterGenerator
 
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.utils import iface
@@ -99,8 +97,7 @@ class Coregistration(QgsProcessingAlgorithm):
             coreg = xdem.coreg.VerticalShift()
 
         if blockwise :
-            mp_config = MultiprocConfig(chunk_size=block_size_fit, outfile="aligned_dem.tif", cluster=ClusterGenerator("multi", nb_workers=2))
-            coreg = xdem.coreg.BlockwiseCoreg(coreg, mp_config=mp_config, block_size_apply=block_size_apply)
+            coreg = xdem.coreg.BlockwiseCoreg(coreg, block_size_fit=block_size_fit, block_size_apply=block_size_apply, parent_path="")
             coreg.fit(ref_dem, tba_dem, inlier_mask)
             aligned_dem = coreg.apply()
 

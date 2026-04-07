@@ -7,6 +7,7 @@ from qgis.PyQt.QtCore import QCoreApplication
 from qgis.utils import iface
 from qgis.core import (QgsProcessingAlgorithm,
                        QgsProcessingParameterRasterLayer,
+                       QgsProcessingParameterDefinition,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterRasterDestination,
                        QgsProcessingParameterFolderDestination)
@@ -31,11 +32,21 @@ class TerrainAttributes(QgsProcessingAlgorithm):
                                                      allowMultiple=True))
 
         self.addParameter(QgsProcessingParameterFolderDestination(name='OUTPUTS', description='Terrain attributes folder'))
+
+        parameter= QgsProcessingParameterEnum(name='SLOPEUNIT',
+                                              description='Slope unit',
+                                              options=['degrees', 'radians'],
+                                              defaultValue='degrees',
+                                              usesStaticStrings=True)
+        parameter.setFlags(parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(parameter)
     
     def processAlgorithm(self, parameters, context, feedback):
         dem_path = (self.parameterAsRasterLayer(parameters=parameters, name='INPUT', context=context)).source()
         attribute_parameters = self.parameterAsEnums(parameters=parameters, name='ATTRIBUTE', context=context)
         self.output_path = self.parameterAsString(parameters=parameters, name='OUTPUTS', context=context)
+        unit = self.parameterAsString(parameters=parameters, name='SLOPEUNIT', context=context)
+
         os.makedirs(self.output_path, exist_ok=True) # for temporary folder
 
         dem = xdem.DEM(dem_path)
@@ -45,7 +56,9 @@ class TerrainAttributes(QgsProcessingAlgorithm):
             attr = ATTRIBUTES[i]
 
             if attr == 'Slope':
-                terrain_attribute = dem.slope()
+                deg = True
+                if unit == 'radians': deg = False
+                terrain_attribute = dem.slope(degrees=deg)
 
             elif attr == 'Aspect':
                 terrain_attribute = dem.aspect()
