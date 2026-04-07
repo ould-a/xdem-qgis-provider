@@ -13,7 +13,7 @@ REQUIRED_PACKAGES = [
     f"numpy=={numpy.__version__}",
     f"pyproj=={pyproj.__version__}",
     "xdem",
-    "scikit-learn"
+    "scikit-learn",
 ]
 
 def _install_packages():
