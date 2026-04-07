@@ -31,22 +31,34 @@ class TerrainAttributes(QgsProcessingAlgorithm):
                                                      defaultValue=ATTRIBUTES[0],
                                                      allowMultiple=True))
 
-        self.addParameter(QgsProcessingParameterFolderDestination(name='OUTPUTS', description='Terrain attributes folder'))
-
+        # Advanced Parameters
+        # Slope
         parameter= QgsProcessingParameterEnum(name='SLOPEUNIT',
-                                              description='Slope unit',
+                                              description='[Slope] Unit',
                                               options=['degrees', 'radians'],
                                               defaultValue='degrees',
                                               usesStaticStrings=True)
         parameter.setFlags(parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(parameter)
+
+        parameter= QgsProcessingParameterEnum(name='SLOPEMETHOD',
+                                              description='[Slope] Method',
+                                              options=['Horn', 'ZevenbergThorne', 'Florinsky'],
+                                              defaultValue='Florinsky',
+                                              usesStaticStrings=True)
+        parameter.setFlags(parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(parameter)
+
+        self.addParameter(QgsProcessingParameterFolderDestination(name='OUTPUTS', description='Terrain attributes folder'))
     
     def processAlgorithm(self, parameters, context, feedback):
         dem_path = (self.parameterAsRasterLayer(parameters=parameters, name='INPUT', context=context)).source()
         attribute_parameters = self.parameterAsEnums(parameters=parameters, name='ATTRIBUTE', context=context)
-        self.output_path = self.parameterAsString(parameters=parameters, name='OUTPUTS', context=context)
-        unit = self.parameterAsString(parameters=parameters, name='SLOPEUNIT', context=context)
 
+        slope_unit = self.parameterAsString(parameters=parameters, name='SLOPEUNIT', context=context)
+        slope_method = self.parameterAsString(parameters=parameters, name='SLOPEMETHOD', context=context)
+
+        self.output_path = self.parameterAsString(parameters=parameters, name='OUTPUTS', context=context)
         os.makedirs(self.output_path, exist_ok=True) # for temporary folder
 
         dem = xdem.DEM(dem_path)
@@ -57,8 +69,8 @@ class TerrainAttributes(QgsProcessingAlgorithm):
 
             if attr == 'Slope':
                 deg = True
-                if unit == 'radians': deg = False
-                terrain_attribute = dem.slope(degrees=deg)
+                if slope_unit == 'radians': deg = False
+                terrain_attribute = dem.slope(surface_fit=slope_method, degrees=deg)
 
             elif attr == 'Aspect':
                 terrain_attribute = dem.aspect()
