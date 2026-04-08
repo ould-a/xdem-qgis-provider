@@ -32,7 +32,7 @@ class Coregistration(QgsProcessingAlgorithm):
         self.addParameter(QgsProcessingParameterEnum(name='COREG_METHOD',
                                                      description='Method',
                                                      options=COREG_METHODS,
-                                                     defaultValue=COREG_METHODS[0],
+                                                     defaultValue=COREG_METHODS[2],
                                                      usesStaticStrings=True))
         
         parameter= QgsProcessingParameterBoolean(name='BLOCKWISE', description='Blockwise', defaultValue=False)
@@ -97,10 +97,10 @@ class Coregistration(QgsProcessingAlgorithm):
             coreg = xdem.coreg.VerticalShift()
 
         if blockwise :
-            coreg = xdem.coreg.BlockwiseCoreg(coreg, block_size_fit=block_size_fit, block_size_apply=block_size_apply, parent_path="")
-            coreg.fit(ref_dem, tba_dem, inlier_mask)
-            aligned_dem = coreg.apply()
-
+            if coreg.is_affine == True:
+                coreg = xdem.coreg.BlockwiseCoreg(coreg, block_size_fit=block_size_fit, block_size_apply=block_size_apply, parent_path="")
+                coreg.fit(ref_dem, tba_dem, inlier_mask)
+                aligned_dem = coreg.apply()
         else :
             coreg.fit(ref_dem, tba_dem, inlier_mask)
             aligned_dem = coreg.apply(tba_dem)

@@ -93,9 +93,9 @@ class TerrainAttributes(QgsProcessingAlgorithm):
         degrees=True if self.parameterAsString(parameters=parameters, name='UNIT', context=context)=='degrees' else False
         surface_fit = self.parameterAsString(parameters=parameters, name='SURFACE_FIT', context=context)
         curv_method = self.parameterAsString(parameters=parameters, name='CURV_METHOD', context=context)
-        hillshade_alt = self.parameterAsDouble(parameters=parameters, name='HILLSHADE_ALT', context=context)
-        hillshade_az = self.parameterAsDouble(parameters=parameters, name='HILLSHADE_AZ', context=context)
-        hillshade_zf = self.parameterAsDouble(parameters=parameters, name='HILLSHADE_ZF', context=context)
+        hillshade_altitude = self.parameterAsDouble(parameters=parameters, name='HILLSHADE_ALT', context=context)
+        hillshade_azimuth = self.parameterAsDouble(parameters=parameters, name='HILLSHADE_AZ', context=context)
+        hillshade_z_factor = self.parameterAsDouble(parameters=parameters, name='HILLSHADE_ZF', context=context)
 
         self.output_path = self.parameterAsString(parameters=parameters, name='OUTPUTS', context=context)
         os.makedirs(self.output_path, exist_ok=True) # for temporary folder
@@ -107,9 +107,9 @@ class TerrainAttributes(QgsProcessingAlgorithm):
                                                degrees=degrees,
                                                surface_fit=surface_fit,
                                                curv_method=curv_method,
-                                               hillshade_altitude=hillshade_alt,
-                                               hillshade_azimuth=hillshade_az,
-                                               hillshade_z_factor=hillshade_zf)
+                                               hillshade_altitude=hillshade_altitude,
+                                               hillshade_azimuth=hillshade_azimuth,
+                                               hillshade_z_factor=hillshade_z_factor)
 
         if len(attributes_list) == 1:
             attributes=[attributes]
