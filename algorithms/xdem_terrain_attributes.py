@@ -9,54 +9,93 @@ from qgis.core import (QgsProcessingAlgorithm,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterEnum,
-                       QgsProcessingParameterRasterDestination,
+                       QgsProcessingParameterNumber,
                        QgsProcessingParameterFolderDestination)
 
 
 # Terrain Attributes
 
-ATTRIBUTES = ['Slope',
-              'Aspect',
-              'Hillshade',
-              'Profile curvature',
-              'Terrain ruggedness index',
-              'Rugosity']
+ATTRIBUTES = ['slope',
+              'aspect',
+              'hillshade',
+              'curvature',
+              'profile_curvature',
+              'tangential_curvature',
+              'planform_curvature',
+              'flowline_curvature',
+              'max_curvature',
+              'min_curvature',
+              'topographic_position_index',
+              'terrain_ruggedness_index',
+              'roughness',
+              'rugosity',
+              'fractal_roughness',
+              'texture_shading']
 
 class TerrainAttributes(QgsProcessingAlgorithm):
     def initAlgorithm(self, config = None):
-        self.addParameter(QgsProcessingParameterRasterLayer(name='INPUT', description='DEM'))
-        self.addParameter(QgsProcessingParameterEnum(name='ATTRIBUTE',
+        self.addParameter(QgsProcessingParameterRasterLayer(name='INPUT_DEM', description='DEM'))
+        self.addParameter(QgsProcessingParameterEnum(name='ATTRIBUTES_LIST',
                                                      description='Terrain attributes',
                                                      options=ATTRIBUTES,
                                                      defaultValue=ATTRIBUTES[0],
-                                                     allowMultiple=True))
-
-        # Advanced Parameters
-        # Slope
-        parameter= QgsProcessingParameterEnum(name='SLOPEUNIT',
-                                              description='[Slope] Unit',
-                                              options=['degrees', 'radians'],
-                                              defaultValue='degrees',
+                                                     allowMultiple=True,
+                                                     usesStaticStrings=True))
+        
+        parameter = QgsProcessingParameterEnum(name='UNIT',
+                                              description='Unit',
+                                              options=["degrees", "radians"],
+                                              defaultValue="degrees",
                                               usesStaticStrings=True)
         parameter.setFlags(parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(parameter)
 
-        parameter= QgsProcessingParameterEnum(name='SLOPEMETHOD',
-                                              description='[Slope] Method',
-                                              options=['Horn', 'ZevenbergThorne', 'Florinsky'],
-                                              defaultValue='Florinsky',
+        parameter = QgsProcessingParameterEnum(name='SURFACE_FIT',
+                                              description='Surface fit',
+                                              options=["Horn", "ZevenbergThorne", "Florinsky"],
+                                              defaultValue="Florinsky",
                                               usesStaticStrings=True)
+        parameter.setFlags(parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(parameter)
+
+        parameter = QgsProcessingParameterEnum(name='CURV_METHOD',
+                                              description='Curv method',
+                                              options=["geometric", "directional"],
+                                              defaultValue="geometric",
+                                              usesStaticStrings=True)
+        parameter.setFlags(parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(parameter)
+
+        parameter = QgsProcessingParameterNumber(name='HILLSHADE_ALT',
+                                              description='Hillshade altitude',
+                                              defaultValue=45)
+        parameter.setFlags(parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(parameter)
+
+        parameter = QgsProcessingParameterNumber(name='HILLSHADE_AZ',
+                                              description='Hillshade azimuth',
+                                              defaultValue=315)
+        parameter.setFlags(parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(parameter)
+
+        parameter = QgsProcessingParameterNumber(name='HILLSHADE_ZF',
+                                              description='Hillshade Z factor',
+                                              defaultValue=1)
         parameter.setFlags(parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(parameter)
 
         self.addParameter(QgsProcessingParameterFolderDestination(name='OUTPUTS', description='Terrain attributes folder'))
     
     def processAlgorithm(self, parameters, context, feedback):
-        dem_path = (self.parameterAsRasterLayer(parameters=parameters, name='INPUT', context=context)).source()
-        attribute_parameters = self.parameterAsEnums(parameters=parameters, name='ATTRIBUTE', context=context)
+        dem_path = (self.parameterAsRasterLayer(parameters=parameters, name='INPUT_DEM', context=context)).source()
+        attributes_list = self.parameterAsStrings(parameters=parameters, name='ATTRIBUTES_LIST', context=context)
 
-        slope_unit = self.parameterAsString(parameters=parameters, name='SLOPEUNIT', context=context)
-        slope_method = self.parameterAsString(parameters=parameters, name='SLOPEMETHOD', context=context)
+        degrees=True if self.parameterAsString(parameters=parameters, name='UNIT', context=context)=='degrees' else False
+        surface_fit = self.parameterAsString(parameters=parameters, name='SURFACE_FIT', context=context)
+        curv_method = self.parameterAsString(parameters=parameters, name='CURV_METHOD', context=context)
+        hillshade_alt = self.parameterAsDouble(parameters=parameters, name='HILLSHADE_ALT', context=context)
+        hillshade_az = self.parameterAsDouble(parameters=parameters, name='HILLSHADE_AZ', context=context)
+        hillshade_zf = self.parameterAsDouble(parameters=parameters, name='HILLSHADE_ZF', context=context)
 
         self.output_path = self.parameterAsString(parameters=parameters, name='OUTPUTS', context=context)
         os.makedirs(self.output_path, exist_ok=True) # for temporary folder
@@ -64,30 +103,20 @@ class TerrainAttributes(QgsProcessingAlgorithm):
         dem = xdem.DEM(dem_path)
         dem_info(dem=dem, feedback=feedback)
 
-        for i in attribute_parameters:
-            attr = ATTRIBUTES[i]
+        attributes = dem.get_terrain_attribute(attribute=attributes_list,
+                                               degrees=degrees,
+                                               surface_fit=surface_fit,
+                                               curv_method=curv_method,
+                                               hillshade_altitude=hillshade_alt,
+                                               hillshade_azimuth=hillshade_az,
+                                               hillshade_z_factor=hillshade_zf)
 
-            if attr == 'Slope':
-                deg = True
-                if slope_unit == 'radians': deg = False
-                terrain_attribute = dem.slope(surface_fit=slope_method, degrees=deg)
+        if len(attributes_list) == 1:
+            attributes=[attributes]
 
-            elif attr == 'Aspect':
-                terrain_attribute = dem.aspect()
-
-            elif attr == 'Hillshade':
-                terrain_attribute = dem.hillshade()
-
-            elif attr == 'Profile cuvature':
-                terrain_attribute = dem.profile_curvature()
-
-            elif attr == 'Terrain ruggedness index':
-                terrain_attribute = dem.terrain_ruggedness_index()
-                
-            elif attr == 'Rugosity':
-                terrain_attribute = dem.rugosity()
-            
-            terrain_attribute.to_file(os.path.join(self.output_path, f"{attr}.tif"))
+        for name, res in zip(attributes_list, attributes):
+            output = os.path.join(self.output_path, f"{name}.tif")
+            res.to_file(output)
         
         return {}
     
@@ -115,72 +144,3 @@ class TerrainAttributes(QgsProcessingAlgorithm):
     
     def createInstance(self):
         return TerrainAttributes()
-
-
-# Old version
-
-class OldTerrainAttributes(QgsProcessingAlgorithm):
-    """
-    Generic terrain attributes class, with a DEM as input and an output file for the attribute.
-    """
-
-    def initAlgorithm(self, config = None):
-        self.addParameter(QgsProcessingParameterRasterLayer('INPUT', self.tr('DEM')))
-        self.addParameter(QgsProcessingParameterRasterDestination('OUTPUT', self.tr(self.name())))
-    
-    def run_terrain_attributes(self, parameters, context, feedback, terrain_attribute):
-        """
-        Function to load a DEM, apply the specified terrain attribute and save it.
-        """
-
-        dem_path = (self.parameterAsRasterLayer(parameters, 'INPUT', context)).source()
-        output_path = self.parameterAsOutputLayer(parameters, 'OUTPUT', context)
-
-        dem = xdem.DEM(dem_path)
-
-        result = terrain_attribute(dem)
-        
-        result.to_file(output_path)
-        return {'OUTPUT' : output_path}
-
-    def displayName(self):
-        return self.tr(self.name())
-
-    def group(self):
-        return self.tr(self.groupId())
-
-    def groupId(self):
-        return 'Terrain attributes'
-
-    def tr(self, string):
-        return QCoreApplication.translate('Processing', string)
-
-class Slope(OldTerrainAttributes):
-    def processAlgorithm(self, parameters, context, feedback):
-        return self.run_terrain_attributes(parameters=parameters, context=context, feedback=feedback, terrain_attribute=lambda x: x.slope())
-
-    def name(self):
-        return 'Slope'
-    
-    def createInstance(self):
-        return Slope()
-    
-class Aspect(OldTerrainAttributes):
-    def processAlgorithm(self, parameters, context, feedback):
-        return self.run_terrain_attributes(parameters=parameters, context=context, feedback=feedback, terrain_attribute=lambda x: x.aspect())
-
-    def name(self):
-        return 'Aspect'
-    
-    def createInstance(self):
-        return Aspect()
-
-class Hillshade(OldTerrainAttributes):
-    def processAlgorithm(self, parameters, context, feedback):
-        return self.run_terrain_attributes(parameters=parameters, context=context, feedback=feedback, terrain_attribute=lambda x: x.hillshade())
-
-    def name(self):
-        return 'Hillshade'
-    
-    def createInstance(self):
-        return Hillshade()

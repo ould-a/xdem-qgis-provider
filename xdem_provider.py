@@ -18,15 +18,6 @@ class XDemProvider(QgsProcessingProvider):
 
         # Coregistration
         self.addAlgorithm(Coregistration())
-
-        # Old versions
-        self.addAlgorithm(Icp())
-        self.addAlgorithm(Lzd())
-        self.addAlgorithm(NuthKaab())
-
-        self.addAlgorithm(Slope())
-        self.addAlgorithm(Aspect())
-        self.addAlgorithm(Hillshade())
         
     def id(self):
         return 'XDEM'
