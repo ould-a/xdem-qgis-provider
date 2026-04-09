@@ -1,6 +1,7 @@
 from qgis.core import QgsProcessingProvider
 from .algorithms.xdem_coregistration import *
 from .algorithms.xdem_terrain_attributes import *
+from .algorithms.xdem_uncertainty import *
 from .algorithms.xdem_tools import *
 
 
@@ -13,11 +14,9 @@ class XDemProvider(QgsProcessingProvider):
         pass
 
     def loadAlgorithms(self):
-        # Terrain Attributes
-        self.addAlgorithm(TerrainAttributes())
-
-        # Coregistration
         self.addAlgorithm(Coregistration())
+        self.addAlgorithm(TerrainAttributes())
+        self.addAlgorithm(Uncertainty())
         
     def id(self):
         return 'XDEM'

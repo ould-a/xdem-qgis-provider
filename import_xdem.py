@@ -12,8 +12,7 @@ LIBS_DIR = os.path.join(PLUGIN_DIR, LIBS_FILE_NAME)
 REQUIRED_PACKAGES = [
     f"numpy=={numpy.__version__}",
     f"pyproj=={pyproj.__version__}",
-    "xdem",
-    "scikit-learn",
+    "xdem[opt]"
 ]
 
 def _install_packages():

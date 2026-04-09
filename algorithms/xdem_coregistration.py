@@ -1,18 +1,21 @@
 import xdem
+import os
 import geoutils as gu
 
-from .xdem_tools import coreg_info
+from .xdem_tools import *
 
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.utils import iface
 from qgis.core import (QgsProcessingAlgorithm,
                        QgsProcessingParameterMapLayer,
                        QgsProcessingParameterRasterLayer,
+                       QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterNumber,
-                       QgsProcessingParameterRasterDestination)
+                       QgsProcessingParameterRasterDestination,
+                       QgsProcessingParameterFolderDestination)
 
 
 # Coregistration
@@ -26,9 +29,9 @@ COREG_METHODS = ['Nuth and Kaab (2011)',
 
 class Coregistration(QgsProcessingAlgorithm):
     def initAlgorithm(self, config = None):
-        self.addParameter(QgsProcessingParameterRasterLayer(name='INPUT_REF_DEM', description='Ref DEM'))
         self.addParameter(QgsProcessingParameterRasterLayer(name='INPUT_TBA_DEM', description='Tba DEM'))
-        self.addParameter(QgsProcessingParameterMapLayer(name='INPUT_MASK', description='Outlier mask', defaultValue=None, optional=True))
+        self.addParameter(QgsProcessingParameterRasterLayer(name='INPUT_REF_DEM', description='Ref DEM'))
+        self.addParameter(QgsProcessingParameterRasterLayer(name='INPUT_INLIER_MASK', description='Inlier mask', defaultValue=None, optional=True))
         self.addParameter(QgsProcessingParameterEnum(name='COREG_METHOD',
                                                      description='Method',
                                                      options=COREG_METHODS,
@@ -50,8 +53,8 @@ class Coregistration(QgsProcessingAlgorithm):
         self.addParameter(QgsProcessingParameterRasterDestination(name='OUTPUT', description='Aligned DEM'))
 
     def processAlgorithm(self, parameters, context, feedback):
-        ref_dem_path = (self.parameterAsRasterLayer(parameters=parameters, name='INPUT_REF_DEM', context=context)).source()
         tba_dem_path = (self.parameterAsRasterLayer(parameters=parameters, name='INPUT_TBA_DEM', context=context)).source()
+        ref_dem_path = (self.parameterAsRasterLayer(parameters=parameters, name='INPUT_REF_DEM', context=context)).source()
         method = self.parameterAsString(parameters=parameters, name='COREG_METHOD', context=context)
 
         block_size_fit = self.parameterAsInt(parameters=parameters, name='BLOCKSIZE_FIT', context=context)
@@ -60,22 +63,16 @@ class Coregistration(QgsProcessingAlgorithm):
 
         self.output_path = self.parameterAsOutputLayer(parameters=parameters, name='OUTPUT', context=context)
 
-        ref_dem = xdem.DEM(ref_dem_path)
         tba_dem = xdem.DEM(tba_dem_path)
-        
+        ref_dem = xdem.DEM(ref_dem_path)
+
         inlier_mask = None
 
         try:
-            outlier_path = (self.parameterAsVectorLayer(parameters=parameters, name='INPUT_MASK', context=context)).source()
-            outlier = gu.Vector(outlier_path)
-            inlier_mask = ~outlier.create_mask(ref_dem)
+            inlier_mask_path = (self.parameterAsRasterLayer(parameters=parameters, name='INPUT_INLIER_MASK', context=context)).source()
+            inlier_mask = gu.Raster(inlier_mask_path, is_mask=True)
         except:
-            pass
-
-        try:
-            outlier_path = (self.parameterAsRasterLayer(parameters=parameters, name='INPUT_MASK', context=context)).source()
-            inlier_mask = gu.Raster(outlier_path, is_mask=True)
-        except:
+            feedback.pushWarning("Inlier Mask not provided")
             pass
 
         if method == 'Nuth and Kaab (2011)':
