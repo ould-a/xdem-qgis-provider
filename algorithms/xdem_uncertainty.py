@@ -37,7 +37,9 @@ class Uncertainty(QgsProcessingAlgorithm):
         ref_dem = xdem.DEM(ref_dem_path)
         stabe_terrain = gu.Raster(stabe_terrain_path, is_mask=True)
 
-        sig_dem = coreg_dem.estimate_uncertainty(ref_dem, stable_terrain=stabe_terrain, precision_of_other="same")
+        sig_dem, rho_sig = coreg_dem.estimate_uncertainty(ref_dem, stable_terrain=stabe_terrain, precision_of_other="same")
+
+        sig_dem.to_file(self.output_path)
 
         return {}
     
