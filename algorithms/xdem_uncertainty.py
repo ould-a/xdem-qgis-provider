@@ -39,8 +39,6 @@ class Uncertainty(QgsProcessingAlgorithm):
 
         sig_dem = coreg_dem.estimate_uncertainty(ref_dem, stable_terrain=stabe_terrain, precision_of_other="same")
 
-        sig_dem.to_file(self.output_path)
-        
         return {}
     
     def postProcessAlgorithm(self, context, feedback):
