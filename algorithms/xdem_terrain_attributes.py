@@ -17,6 +17,7 @@ from qgis.core import (QgsProcessingAlgorithm,
                        QgsProcessingParameterRasterDestination,
                        QgsProcessingParameterFolderDestination)
 
+
 # Terrain Attributes
 
 ATTRIBUTES = ['slope',
@@ -37,6 +38,9 @@ ATTRIBUTES = ['slope',
               'texture_shading']
 
 class TerrainAttributes(QgsProcessingAlgorithm):
+    def flags(self):
+        return super().flags() | QgsProcessingAlgorithm.FlagNoThreading
+    
     def initAlgorithm(self, config = None):
         self.addParameter(QgsProcessingParameterRasterLayer(name='INPUT_DEM', description='DEM'))
         self.addParameter(QgsProcessingParameterEnum(name='ATTRIBUTES_LIST',

@@ -28,6 +28,9 @@ COREG_METHODS = ['Nuth and Kaab (2011)',
                  'Vertical shift']
 
 class Coregistration(QgsProcessingAlgorithm):
+    def flags(self):
+        return super().flags() | QgsProcessingAlgorithm.FlagNoThreading
+    
     def initAlgorithm(self, config = None):
         self.addParameter(QgsProcessingParameterRasterLayer(name='INPUT_TBA_DEM', description='Tba DEM'))
         self.addParameter(QgsProcessingParameterRasterLayer(name='INPUT_REF_DEM', description='Ref DEM'))

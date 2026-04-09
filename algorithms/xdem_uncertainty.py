@@ -1,6 +1,8 @@
 import xdem
 import os
 import geoutils as gu
+import numpy as np
+import matplotlib.pyplot as plt
 
 from .xdem_tools import *
 
@@ -21,6 +23,9 @@ from qgis.core import (QgsProcessingAlgorithm,
 # Uncertainty analysis
 
 class Uncertainty(QgsProcessingAlgorithm):
+    def flags(self):
+        return super().flags() | QgsProcessingAlgorithm.FlagNoThreading
+    
     def initAlgorithm(self, config = None):
         self.addParameter(QgsProcessingParameterRasterLayer(name='INPUT_COREG_DEM', description='Coreg DEM'))
         self.addParameter(QgsProcessingParameterRasterLayer(name='INPUT_REF_DEM', description='Ref DEM'))
