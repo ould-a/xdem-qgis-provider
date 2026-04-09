@@ -1,24 +1,15 @@
 import xdem
 import os
-import geoutils as gu
 
-from .xdem_tools import *
+from .xdem_tools import XdemProcessingAlgorithm, dem_info
 
-from qgis.PyQt.QtCore import QCoreApplication
 from qgis.utils import iface
-from qgis.core import (QgsProcessingAlgorithm,
-                       QgsProcessingParameterMapLayer,
-                       QgsProcessingParameterRasterLayer,
-                       QgsProcessingParameterVectorLayer,
-                       QgsProcessingParameterDefinition,
-                       QgsProcessingParameterBoolean,
+from qgis.core import (QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterNumber,
-                       QgsProcessingParameterRasterDestination,
+                       QgsProcessingParameterDefinition,
                        QgsProcessingParameterFolderDestination)
 
-
-# Terrain Attributes
 
 ATTRIBUTES = ['slope',
               'aspect',
@@ -37,10 +28,8 @@ ATTRIBUTES = ['slope',
               'fractal_roughness',
               'texture_shading']
 
-class TerrainAttributes(QgsProcessingAlgorithm):
-    def flags(self):
-        return super().flags() | QgsProcessingAlgorithm.FlagNoThreading
-    
+class TerrainAttributes(XdemProcessingAlgorithm):
+
     def initAlgorithm(self, config = None):
         self.addParameter(QgsProcessingParameterRasterLayer(name='INPUT_DEM', description='DEM'))
         self.addParameter(QgsProcessingParameterEnum(name='ATTRIBUTES_LIST',
@@ -134,18 +123,6 @@ class TerrainAttributes(QgsProcessingAlgorithm):
             if file_path.endswith(".tif"):
                 iface.addRasterLayer(file_path)
         return {}
-
-    def displayName(self):
-        return self.tr(self.name())
-
-    def group(self):
-        return self.tr(self.groupId())
-
-    def groupId(self):
-        return ''
-
-    def tr(self, string):
-        return QCoreApplication.translate('Processing', string)
 
     def name(self):
         return 'Terrain attributes'
