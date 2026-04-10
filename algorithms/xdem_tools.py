@@ -1,7 +1,7 @@
 import io
 
-from qgis.utils import iface
 from contextlib import redirect_stdout
+from qgis.utils import iface
 from qgis.core import QgsProcessingAlgorithm
 from qgis.PyQt.QtCore import QCoreApplication
 
