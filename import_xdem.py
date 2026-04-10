@@ -15,13 +15,10 @@ LIBS_DIR = os.path.join(PLUGIN_DIR, LIBS_FILE_NAME)
 
 REQUIRED_PACKAGES = [
     "xdem",
-    "scikit-learn",
-    "scikit-gstat",
 ]
 
 # Packages QGIS provided by default
 SHARED_PACKAGES = [
-    "numpy",
     "pyproj",
     "rasterio",
     "pandas",
