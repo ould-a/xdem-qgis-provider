@@ -162,7 +162,9 @@ class BiasCorrection(XdemProcessingAlgorithm):
         aligned_dem = coreg.apply(tba_dem)
         coreg_info(coreg=coreg, feedback=feedback)
 
-        aligned_dem.to_file(self.output_path)
+        sig_dem, rho_sig = aligned_dem.estimate_uncertainty(ref_dem, stable_terrain = inlier_mask)
+
+        sig_dem.to_file(self.output_path)
 
         return {}
     

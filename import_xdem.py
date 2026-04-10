@@ -13,6 +13,12 @@ PLUGIN_DIR = os.path.dirname(__file__)
 LIBS_FILE_NAME = "xdem_libs"
 LIBS_DIR = os.path.join(PLUGIN_DIR, LIBS_FILE_NAME)
 
+REQUIRED_PACKAGES = [
+    "xdem",
+    "scikit-learn",
+    "scikit-gstat",
+]
+
 # Packages QGIS provided by default
 SHARED_PACKAGES = [
     "numpy",
@@ -48,9 +54,10 @@ def _clean_conflict_packages():
 
 
 def _install_package():
-    pip_main(["install", "--target", LIBS_DIR, "xdem[opt]"])
+    for package in REQUIRED_PACKAGES:
+        pip_main(["install", "--target", LIBS_DIR, package])
     removed = _clean_conflict_packages()
-    iface.messageBar().pushMessage(f"Conflicting dependencies:{removed}", level=Qgis.Warning)
+    iface.messageBar().pushMessage(f"Conflicting dependencies:{removed}", level=Qgis.Info)
 
 
 def check_xdem():
