@@ -31,70 +31,82 @@ ATTRIBUTES = ['slope',
 class TerrainAttributes(XdemProcessingAlgorithm):
 
     def initAlgorithm(self, config = None):
-        self.addParameter(QgsProcessingParameterRasterLayer(name='INPUT_DEM', description='DEM'))
-        self.addParameter(QgsProcessingParameterEnum(name='ATTRIBUTES_LIST',
-                                                     description='Terrain attributes',
-                                                     options=ATTRIBUTES,
-                                                     defaultValue=ATTRIBUTES[0],
-                                                     allowMultiple=True,
-                                                     usesStaticStrings=True))
+        self.addParameter(QgsProcessingParameterRasterLayer(
+            name='INPUT_DEM',
+            description='DEM'))
         
-        parameter = QgsProcessingParameterEnum(name='UNIT',
-                                              description='Unit',
-                                              options=["degrees", "radians"],
-                                              defaultValue="degrees",
-                                              usesStaticStrings=True)
+        self.addParameter(QgsProcessingParameterEnum(
+            name='ATTRIBUTES_LIST',
+            description='Terrain attributes',
+            options=ATTRIBUTES,
+            defaultValue=ATTRIBUTES[0],
+            allowMultiple=True,
+            usesStaticStrings=True))
+        
+        parameter = QgsProcessingParameterEnum(
+            name='UNIT',
+            description='Unit',
+            options=["degrees", "radians"],
+            defaultValue="degrees",
+            usesStaticStrings=True)
         parameter.setFlags(parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(parameter)
 
-        parameter = QgsProcessingParameterEnum(name='SURFACE_FIT',
-                                              description='Surface fit',
-                                              options=["Horn", "ZevenbergThorne", "Florinsky"],
-                                              defaultValue="Florinsky",
-                                              usesStaticStrings=True)
+        parameter = QgsProcessingParameterEnum(
+            name='SURFACE_FIT',
+            description='Surface fit',
+            options=["Horn", "ZevenbergThorne", "Florinsky"],
+            defaultValue="Florinsky",
+            usesStaticStrings=True)
         parameter.setFlags(parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(parameter)
 
-        parameter = QgsProcessingParameterEnum(name='CURV_METHOD',
-                                              description='Curv method',
-                                              options=["geometric", "directional"],
-                                              defaultValue="geometric",
-                                              usesStaticStrings=True)
+        parameter = QgsProcessingParameterEnum(
+            name='CURV_METHOD',
+            description='Curv method',
+            options=["geometric", "directional"],
+            defaultValue="geometric",
+            usesStaticStrings=True)
         parameter.setFlags(parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(parameter)
 
-        parameter = QgsProcessingParameterNumber(name='HILLSHADE_ALT',
-                                              description='Hillshade altitude',
-                                              defaultValue=45)
+        parameter = QgsProcessingParameterNumber(
+            name='HILLSHADE_ALT',
+            description='Hillshade altitude',
+            defaultValue=45)
         parameter.setFlags(parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(parameter)
 
-        parameter = QgsProcessingParameterNumber(name='HILLSHADE_AZ',
-                                              description='Hillshade azimuth',
-                                              defaultValue=315)
+        parameter = QgsProcessingParameterNumber(
+            name='HILLSHADE_AZ',
+            description='Hillshade azimuth',
+            defaultValue=315)
         parameter.setFlags(parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(parameter)
 
-        parameter = QgsProcessingParameterNumber(name='HILLSHADE_ZF',
-                                              description='Hillshade Z factor',
-                                              defaultValue=1)
+        parameter = QgsProcessingParameterNumber(
+            name='HILLSHADE_ZF',
+            description='Hillshade Z factor',
+            defaultValue=1)
         parameter.setFlags(parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(parameter)
 
-        self.addParameter(QgsProcessingParameterFolderDestination(name='OUTPUTS', description='Terrain attributes folder'))
+        self.addParameter(QgsProcessingParameterFolderDestination(
+            name='OUTPUTS',
+            description='Terrain attributes folder'))
     
     def processAlgorithm(self, parameters, context, feedback):
-        dem_path = (self.parameterAsRasterLayer(parameters=parameters, name='INPUT_DEM', context=context)).source()
-        attributes_list = self.parameterAsStrings(parameters=parameters, name='ATTRIBUTES_LIST', context=context)
+        dem_path = (self.parameterAsRasterLayer(parameters, 'INPUT_DEM', context)).source()
+        attributes_list = self.parameterAsStrings(parameters, 'ATTRIBUTES_LIST', context)
 
-        degrees=True if self.parameterAsString(parameters=parameters, name='UNIT', context=context)=='degrees' else False
-        surface_fit = self.parameterAsString(parameters=parameters, name='SURFACE_FIT', context=context)
-        curv_method = self.parameterAsString(parameters=parameters, name='CURV_METHOD', context=context)
-        hillshade_altitude = self.parameterAsDouble(parameters=parameters, name='HILLSHADE_ALT', context=context)
-        hillshade_azimuth = self.parameterAsDouble(parameters=parameters, name='HILLSHADE_AZ', context=context)
-        hillshade_z_factor = self.parameterAsDouble(parameters=parameters, name='HILLSHADE_ZF', context=context)
+        degrees=True if self.parameterAsString(parameters, 'UNIT', context)=='degrees' else False
+        surface_fit = self.parameterAsString(parameters, 'SURFACE_FIT', context)
+        curv_method = self.parameterAsString(parameters, 'CURV_METHOD', context)
+        hillshade_altitude = self.parameterAsDouble(parameters, 'HILLSHADE_ALT', context)
+        hillshade_azimuth = self.parameterAsDouble(parameters, 'HILLSHADE_AZ', context)
+        hillshade_z_factor = self.parameterAsDouble(parameters, 'HILLSHADE_ZF', context)
 
-        self.output_path = self.parameterAsString(parameters=parameters, name='OUTPUTS', context=context)
+        self.output_path = self.parameterAsString(parameters, 'OUTPUTS', context)
         os.makedirs(self.output_path, exist_ok=True) # for temporary folder
 
         dem = xdem.DEM(dem_path)

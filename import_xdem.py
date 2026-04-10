@@ -13,17 +13,10 @@ PLUGIN_DIR = os.path.dirname(__file__)
 LIBS_FILE_NAME = "xdem_libs"
 LIBS_DIR = os.path.join(PLUGIN_DIR, LIBS_FILE_NAME)
 
-REQUIRED_PACKAGES = [
-    "xdem",
-]
+REQUIRED_PACKAGES = ["xdem[opt]"]
 
 # Packages QGIS provided by default
-SHARED_PACKAGES = [
-    "pyproj",
-    "rasterio",
-    "pandas",
-    "geopandas",
-    "shapely"]
+SHARED_PACKAGES = ["numpy", "pyproj", "rasterio", "pandas", "geopandas", "shapely"]
 
 
 def _exist_in_qgis(package):
