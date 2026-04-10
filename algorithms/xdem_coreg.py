@@ -28,44 +28,35 @@ class Coregistration(XdemProcessingAlgorithm):
 
     def initAlgorithm(self, config = None):
         self.addParameter(QgsProcessingParameterRasterLayer(
-            name='INPUT_TBA_DEM',
-            description='Tba DEM'))
+            name='TBA_DEM',
+            description='DEM to be aligned'))
         
         self.addParameter(QgsProcessingParameterRasterLayer(
-            name='INPUT_REF_DEM',
-            description='Ref DEM'))
+            name='REF_DEM',
+            description='Reference DEM'))
         
         self.addParameter(QgsProcessingParameterRasterLayer(
-            name='INPUT_INLIER_MASK',
+            name='INLIER_MASK',
             description='Inlier mask',
             defaultValue=None,
             optional=True))
         
         self.addParameter(QgsProcessingParameterEnum(
-            name='COREG_METHOD',
+            name='METHOD',
             description='Method',
             options=COREGISTRATION_METHODS,
             defaultValue=COREGISTRATION_METHODS[0],
             usesStaticStrings=True))
-        
-        parameter= QgsProcessingParameterBoolean(
-            name='BLOCKWISE',
-            description='Blockwise',
-            defaultValue=False)
-        parameter.setFlags(parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
-        self.addParameter(parameter)
 
         parameter = QgsProcessingParameterNumber(
             name='BLOCKSIZE_FIT',
-            description='Block size fit',
-            defaultValue=500)
+            description='Block size fit')
         parameter.setFlags(parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(parameter)
 
         parameter = QgsProcessingParameterNumber(
             name='BLOCKSIZE_APPLY',
-            description='Block size apply',
-            defaultValue=1000)
+            description='Block size apply')
         parameter.setFlags(parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(parameter)
 
@@ -74,13 +65,12 @@ class Coregistration(XdemProcessingAlgorithm):
             description='Aligned DEM'))
 
     def processAlgorithm(self, parameters, context, feedback):
-        tba_dem_path = (self.parameterAsRasterLayer(parameters, 'INPUT_TBA_DEM', context)).source()
-        ref_dem_path = (self.parameterAsRasterLayer(parameters, 'INPUT_REF_DEM', context)).source()
-        method = self.parameterAsString(parameters, 'COREG_METHOD', context)
+        tba_dem_path = (self.parameterAsRasterLayer(parameters, 'TBA_DEM', context)).source()
+        ref_dem_path = (self.parameterAsRasterLayer(parameters, 'REF_DEM', context)).source()
 
+        method = self.parameterAsString(parameters, 'METHOD', context)
         block_size_fit = self.parameterAsInt(parameters, 'BLOCKSIZE_FIT', context)
         block_size_apply = self.parameterAsInt(parameters, 'BLOCKSIZE_APPLY', context)
-        blockwise = self.parameterAsBoolean(parameters, 'BLOCKWISE', context)
 
         self.output_path = self.parameterAsOutputLayer(parameters, 'OUTPUT', context)
 
@@ -90,7 +80,7 @@ class Coregistration(XdemProcessingAlgorithm):
         inlier_mask = None
 
         try:
-            inlier_mask_path = (self.parameterAsRasterLayer(parameters, 'INPUT_INLIER_MASK', context)).source()
+            inlier_mask_path = (self.parameterAsRasterLayer(parameters, 'INLIER_MASK', context)).source()
             inlier_mask = gu.Raster(inlier_mask_path, is_mask=True)
         except:
             feedback.pushWarning("Inlier Mask not provided")
@@ -114,15 +104,18 @@ class Coregistration(XdemProcessingAlgorithm):
         elif method == 'Vertical shift':
             coreg = xdem.coreg.VerticalShift()
 
-        if blockwise :
-            if coreg.is_affine == True:
-                coreg = xdem.coreg.BlockwiseCoreg(coreg, block_size_fit, block_size_apply, parent_path="")
-                coreg.fit(ref_dem, tba_dem, inlier_mask)
-                aligned_dem = coreg.apply()
+        if block_size_fit != 0 and block_size_apply != 0:
+            coreg = xdem.coreg.BlockwiseCoreg(coreg,
+                                            block_size_fit=block_size_fit,
+                                            block_size_apply=block_size_apply,
+                                            parent_path="")
+            coreg.fit(ref_dem, tba_dem, inlier_mask)
+            aligned_dem = coreg.apply()
+
         else :
             coreg.fit(ref_dem, tba_dem, inlier_mask)
             aligned_dem = coreg.apply(tba_dem)
-            coreg_info(coreg=coreg, feedback=feedback)
+            coreg_info(coreg, feedback)
 
         aligned_dem.to_file(self.output_path)
 
@@ -134,6 +127,9 @@ class Coregistration(XdemProcessingAlgorithm):
     
     def name(self):
         return 'Coregistration'
+    
+    def shortHelpString(self):
+        return "This algorithm enables the coregistration by applying affine methods."
 
     def createInstance(self):
         return Coregistration()
@@ -143,21 +139,21 @@ class BiasCorrection(XdemProcessingAlgorithm):
 
     def initAlgorithm(self, config = None):
         self.addParameter(QgsProcessingParameterRasterLayer(
-            name='INPUT_TBA_DEM',
-            description='Tba DEM'))
+            name='TBA_DEM',
+            description='DEM to be aligned'))
         
         self.addParameter(QgsProcessingParameterRasterLayer(
-            name='INPUT_REF_DEM',
-            description='Ref DEM'))
+            name='REF_DEM',
+            description='Reference DEM'))
         
         self.addParameter(QgsProcessingParameterRasterLayer(
-            name='INPUT_INLIER_MASK',
+            name='INLIER_MASK',
             description='Inlier mask',
             defaultValue=None,
             optional=True))
         
         self.addParameter(QgsProcessingParameterEnum(
-            name='BIAS_CORR_METHOD',
+            name='METHOD',
             description='Method',
             options=BIAS_CORRECTION_METHODS,
             defaultValue=BIAS_CORRECTION_METHODS[0],
@@ -168,9 +164,9 @@ class BiasCorrection(XdemProcessingAlgorithm):
             description='Aligned DEM'))
 
     def processAlgorithm(self, parameters, context, feedback):
-        tba_dem_path = (self.parameterAsRasterLayer(parameters, 'INPUT_TBA_DEM', context)).source()
-        ref_dem_path = (self.parameterAsRasterLayer(parameters, 'INPUT_REF_DEM', context)).source()
-        method = self.parameterAsString(parameters, 'BIAS_CORR_METHOD', context)
+        tba_dem_path = (self.parameterAsRasterLayer(parameters, 'TBA_DEM', context)).source()
+        ref_dem_path = (self.parameterAsRasterLayer(parameters, 'REF_DEM', context)).source()
+        method = self.parameterAsString(parameters, 'METHOD', context)
 
         self.output_path = self.parameterAsOutputLayer(parameters, 'OUTPUT', context)
 
@@ -180,7 +176,7 @@ class BiasCorrection(XdemProcessingAlgorithm):
         inlier_mask = None
 
         try:
-            inlier_mask_path = (self.parameterAsRasterLayer(parameters, 'INPUT_INLIER_MASK', context)).source()
+            inlier_mask_path = (self.parameterAsRasterLayer(parameters, 'INLIER_MASK', context)).source()
             inlier_mask = gu.Raster(inlier_mask_path, is_mask=True)
         except:
             feedback.pushWarning("Inlier Mask not provided")
@@ -208,6 +204,9 @@ class BiasCorrection(XdemProcessingAlgorithm):
     
     def name(self):
         return 'Bias correction'
+    
+    def shortHelpString(self):
+        return "This algorithm aim at correcting both systematic elevation errors and spatially-structured random errors."
 
     def createInstance(self):
         return BiasCorrection()

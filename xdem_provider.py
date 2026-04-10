@@ -1,8 +1,9 @@
 from qgis.core import QgsProcessingProvider
 
-from .algorithms.xdem_coreg import *
-from .algorithms.xdem_terrain_attributes import *
-from .algorithms.xdem_tools import *
+from .algorithms.xdem_coreg import Coregistration, BiasCorrection
+from .algorithms.xdem_terrain_attributes import TerrainAttributes
+from .algorithms.xdem_tools import XdemProcessingAlgorithm
+from .algorithms.xdem_uncertainty import UncertaintyAnalysis
 
 
 class XDemProvider(QgsProcessingProvider):
@@ -17,6 +18,7 @@ class XDemProvider(QgsProcessingProvider):
         self.addAlgorithm(BiasCorrection())
         self.addAlgorithm(Coregistration())
         self.addAlgorithm(TerrainAttributes())
+        self.addAlgorithm(UncertaintyAnalysis())
         
     def id(self):
         return 'XDEM'

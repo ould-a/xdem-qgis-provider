@@ -28,15 +28,16 @@ ATTRIBUTES = ['slope',
               'fractal_roughness',
               'texture_shading']
 
+
 class TerrainAttributes(XdemProcessingAlgorithm):
 
     def initAlgorithm(self, config = None):
         self.addParameter(QgsProcessingParameterRasterLayer(
-            name='INPUT_DEM',
+            name='DEM',
             description='DEM'))
         
         self.addParameter(QgsProcessingParameterEnum(
-            name='ATTRIBUTES_LIST',
+            name='ATTRIBUTES',
             description='Terrain attributes',
             options=ATTRIBUTES,
             defaultValue=ATTRIBUTES[0],
@@ -45,7 +46,7 @@ class TerrainAttributes(XdemProcessingAlgorithm):
         
         parameter = QgsProcessingParameterEnum(
             name='UNIT',
-            description='Unit',
+            description='Unit - [Slope, Aspect]',
             options=["degrees", "radians"],
             defaultValue="degrees",
             usesStaticStrings=True)
@@ -54,7 +55,7 @@ class TerrainAttributes(XdemProcessingAlgorithm):
 
         parameter = QgsProcessingParameterEnum(
             name='SURFACE_FIT',
-            description='Surface fit',
+            description='Surface fit - [Slope, Aspect, Hillshade, Curvatures]',
             options=["Horn", "ZevenbergThorne", "Florinsky"],
             defaultValue="Florinsky",
             usesStaticStrings=True)
@@ -63,7 +64,7 @@ class TerrainAttributes(XdemProcessingAlgorithm):
 
         parameter = QgsProcessingParameterEnum(
             name='CURV_METHOD',
-            description='Curv method',
+            description='Curv method - [Curvatures]',
             options=["geometric", "directional"],
             defaultValue="geometric",
             usesStaticStrings=True)
@@ -72,32 +73,32 @@ class TerrainAttributes(XdemProcessingAlgorithm):
 
         parameter = QgsProcessingParameterNumber(
             name='HILLSHADE_ALT',
-            description='Hillshade altitude',
+            description='Altitude - [Hillshade] ',
             defaultValue=45)
         parameter.setFlags(parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(parameter)
 
         parameter = QgsProcessingParameterNumber(
             name='HILLSHADE_AZ',
-            description='Hillshade azimuth',
+            description='Azimuth - [Hillshade]',
             defaultValue=315)
         parameter.setFlags(parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(parameter)
 
         parameter = QgsProcessingParameterNumber(
             name='HILLSHADE_ZF',
-            description='Hillshade Z factor',
+            description='Z factor - [Hillshade]',
             defaultValue=1)
         parameter.setFlags(parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(parameter)
-
+        
         self.addParameter(QgsProcessingParameterFolderDestination(
             name='OUTPUTS',
             description='Terrain attributes folder'))
     
     def processAlgorithm(self, parameters, context, feedback):
-        dem_path = (self.parameterAsRasterLayer(parameters, 'INPUT_DEM', context)).source()
-        attributes_list = self.parameterAsStrings(parameters, 'ATTRIBUTES_LIST', context)
+        dem_path = (self.parameterAsRasterLayer(parameters, 'DEM', context)).source()
+        attributes_list = self.parameterAsStrings(parameters, 'ATTRIBUTES', context)
 
         degrees=True if self.parameterAsString(parameters, 'UNIT', context)=='degrees' else False
         surface_fit = self.parameterAsString(parameters, 'SURFACE_FIT', context)
@@ -110,7 +111,7 @@ class TerrainAttributes(XdemProcessingAlgorithm):
         os.makedirs(self.output_path, exist_ok=True) # for temporary folder
 
         dem = xdem.DEM(dem_path)
-        dem_info(dem=dem, feedback=feedback)
+        dem_info(dem, feedback)
 
         attributes = dem.get_terrain_attribute(attribute=attributes_list,
                                                degrees=degrees,
@@ -138,6 +139,9 @@ class TerrainAttributes(XdemProcessingAlgorithm):
 
     def name(self):
         return 'Terrain attributes'
+
+    def shortHelpString(self):
+        return "This algorithm enables the successive calculation a wide range of terrain attributes."
     
     def createInstance(self):
         return TerrainAttributes()

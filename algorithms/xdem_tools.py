@@ -1,4 +1,5 @@
 import io
+import platform
 
 from contextlib import redirect_stdout
 from qgis.utils import iface
