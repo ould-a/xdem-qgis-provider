@@ -12,11 +12,11 @@ class UncertaintyAnalysis(XdemProcessingAlgorithm):
 
     def initAlgorithm(self, config = None):
         self.addParameter(QgsProcessingParameterRasterLayer(
-            name='ALIGNED_DEM',
+            name='DEM_1',
             description='Aligned DEM'))
         
         self.addParameter(QgsProcessingParameterRasterLayer(
-            name='REF_DEM',
+            name='DEM_2',
             description='Reference DEM'))
         
         self.addParameter(QgsProcessingParameterRasterLayer(
@@ -28,8 +28,8 @@ class UncertaintyAnalysis(XdemProcessingAlgorithm):
             description='Error map variability'))
 
     def processAlgorithm(self, parameters, context, feedback):
-        aligned_dem_path = (self.parameterAsRasterLayer(parameters, 'ALIGNED_DEM', context)).source()
-        ref_dem_path = (self.parameterAsRasterLayer(parameters, 'REF_DEM', context)).source()
+        aligned_dem_path = (self.parameterAsRasterLayer(parameters, 'DEM_1', context)).source()
+        ref_dem_path = (self.parameterAsRasterLayer(parameters, 'DEM_2', context)).source()
 
         self.output_path = self.parameterAsOutputLayer(parameters, 'OUTPUT', context)
 

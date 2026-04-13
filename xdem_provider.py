@@ -4,6 +4,7 @@ from .algorithms.xdem_biascorr import BiasCorrection
 from .algorithms.xdem_coregistration import Coregistration
 from .algorithms.xdem_terrain_attributes import TerrainAttributes
 from .algorithms.xdem_uncertainty import UncertaintyAnalysis
+from .algorithms.xdem_gap_filling import GapFilling
 
 
 class XDemProvider(QgsProcessingProvider):
@@ -16,6 +17,7 @@ class XDemProvider(QgsProcessingProvider):
 
     def loadAlgorithms(self):
         self.addAlgorithm(BiasCorrection())
+        self.addAlgorithm(GapFilling())
         self.addAlgorithm(Coregistration())
         self.addAlgorithm(TerrainAttributes())
         self.addAlgorithm(UncertaintyAnalysis())

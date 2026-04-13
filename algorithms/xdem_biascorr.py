@@ -18,11 +18,11 @@ class BiasCorrection(XdemProcessingAlgorithm):
 
     def initAlgorithm(self, config = None):
         self.addParameter(QgsProcessingParameterRasterLayer(
-            name='TBA_DEM',
+            name='DEM_1',
             description='DEM to be aligned'))
         
         self.addParameter(QgsProcessingParameterRasterLayer(
-            name='REF_DEM',
+            name='DEM_2',
             description='Reference DEM'))
         
         self.addParameter(QgsProcessingParameterRasterLayer(
@@ -43,8 +43,8 @@ class BiasCorrection(XdemProcessingAlgorithm):
             description='Aligned DEM'))
 
     def processAlgorithm(self, parameters, context, feedback):
-        tba_dem_path = (self.parameterAsRasterLayer(parameters, 'TBA_DEM', context)).source()
-        ref_dem_path = (self.parameterAsRasterLayer(parameters, 'REF_DEM', context)).source()
+        tba_dem_path = (self.parameterAsRasterLayer(parameters, 'DEM_1', context)).source()
+        ref_dem_path = (self.parameterAsRasterLayer(parameters, 'DEM_2', context)).source()
         method = self.parameterAsString(parameters, 'METHOD', context)
 
         self.output_path = self.parameterAsOutputLayer(parameters, 'OUTPUT', context)
