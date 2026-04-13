@@ -1,8 +1,8 @@
 from qgis.core import QgsProcessingProvider
 
-from .algorithms.xdem_coreg import Coregistration, BiasCorrection
+from .algorithms.xdem_biascorr import BiasCorrection
+from .algorithms.xdem_coregistration import Coregistration
 from .algorithms.xdem_terrain_attributes import TerrainAttributes
-from .algorithms.xdem_tools import XdemProcessingAlgorithm
 from .algorithms.xdem_uncertainty import UncertaintyAnalysis
 
 
