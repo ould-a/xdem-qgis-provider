@@ -10,7 +10,7 @@ class GapFilling(XdemProcessingAlgorithm):
 
     def initAlgorithm(self, config = None):
         self.addParameter(QgsProcessingParameterRasterLayer(
-            name='DEM_1',
+            name='TBF_DEM',
             description='DEM to be filled'))
         
         self.addParameter(QgsProcessingParameterRasterDestination(
@@ -18,7 +18,8 @@ class GapFilling(XdemProcessingAlgorithm):
             description='Filled DEM'))
         
     def processAlgorithm(self, parameters, context, feedback):
-        dem_path = (self.parameterAsLayer(parameters, 'DEM_1', context)).source()
+        dem_layer = self.parameterAsRasterLayer(parameters, 'TBF_DEM', context)
+        dem_path = dem_layer.source()
         output_path = self.parameterAsOutputLayer(parameters, 'OUTPUT', context)
 
         dem = xdem.DEM(dem_path)

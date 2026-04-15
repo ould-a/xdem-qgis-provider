@@ -1,9 +1,10 @@
 import xdem
 import geoutils as gu
 
-from .xdem_tools import XdemProcessingAlgorithm, dem_info
+from .xdem_tools import XdemProcessingAlgorithm, dem_info, load_mask
 
 from qgis.core import (QgsProcessingParameterRasterLayer,
+                       QgsProcessingParameterMapLayer,
                        QgsProcessingParameterRasterDestination)
 
 
@@ -11,15 +12,15 @@ class UncertaintyAnalysis(XdemProcessingAlgorithm):
 
     def initAlgorithm(self, config = None):
         self.addParameter(QgsProcessingParameterRasterLayer(
-            name='DEM_1',
+            name='AL_DEM',
             description='Aligned DEM'))
         
         self.addParameter(QgsProcessingParameterRasterLayer(
-            name='DEM_2',
+            name='REF_DEM',
             description='Reference DEM'))
         
-        self.addParameter(QgsProcessingParameterRasterLayer(
-            name='STABLE_TERRAIN',
+        self.addParameter(QgsProcessingParameterMapLayer(
+            name='MASK',
             description='Stable terrain'))
 
         self.addParameter(QgsProcessingParameterRasterDestination(
@@ -27,19 +28,16 @@ class UncertaintyAnalysis(XdemProcessingAlgorithm):
             description='Error map variability'))
 
     def processAlgorithm(self, parameters, context, feedback):
-        aligned_dem_path = (self.parameterAsLayer(parameters, 'DEM_1', context)).source()
-        ref_dem_path = (self.parameterAsLayer(parameters, 'DEM_2', context)).source()
+        aligned_dem_layer = self.parameterAsRasterLayer(parameters, 'AL_DEM', context)
+        aligned_dem_path = aligned_dem_layer.source()
+        ref_dem_path = (self.parameterAsLayer(parameters, 'REF_DEM', context)).source()
         output_path = self.parameterAsOutputLayer(parameters, 'OUTPUT', context)
 
         aligned_dem = xdem.DEM(aligned_dem_path)
         ref_dem = xdem.DEM(ref_dem_path)
         dem_info(aligned_dem, feedback)
 
-        try:
-            stable_terrain_path = (self.parameterAsLayer(parameters, 'STABLE_TERRAIN', context)).source()
-            stable_terrain = gu.Raster(stable_terrain_path, is_mask=True)
-        except:
-            pass
+        stable_terrain = load_mask(self, parameters, context, feedback, ref_dem)
 
         sig_dem, rho_sig = aligned_dem.estimate_uncertainty(ref_dem, stable_terrain=stable_terrain, precision_of_other='same')
 

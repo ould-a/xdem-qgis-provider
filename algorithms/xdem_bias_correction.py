@@ -1,9 +1,10 @@
 import xdem
 import geoutils as gu
 
-from .xdem_tools import XdemProcessingAlgorithm, coreg_info
+from .xdem_tools import XdemProcessingAlgorithm, coreg_info, load_mask
 
 from qgis.core import (QgsProcessingParameterRasterLayer,
+                       QgsProcessingParameterMapLayer,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterRasterDestination)
 
@@ -20,15 +21,15 @@ class BiasCorrection(XdemProcessingAlgorithm):
 
     def initAlgorithm(self, config = None):
         self.addParameter(QgsProcessingParameterRasterLayer(
-            name='DEM_1',
+            name='TBA_DEM',
             description='DEM to be aligned'))
         
         self.addParameter(QgsProcessingParameterRasterLayer(
-            name='DEM_2',
+            name='REF_DEM',
             description='Reference DEM'))
         
-        self.addParameter(QgsProcessingParameterRasterLayer(
-            name='INLIER_MASK',
+        self.addParameter(QgsProcessingParameterMapLayer(
+            name='MASK',
             description='Inlier mask',
             defaultValue=None,
             optional=True))
@@ -45,22 +46,17 @@ class BiasCorrection(XdemProcessingAlgorithm):
             description='Aligned DEM'))
 
     def processAlgorithm(self, parameters, context, feedback):
-        tba_dem_path = (self.parameterAsLayer(parameters, 'DEM_1', context)).source()
-        ref_dem_path = (self.parameterAsLayer(parameters, 'DEM_2', context)).source()
+        tba_dem_layer = self.parameterAsRasterLayer(parameters, 'TBA_DEM', context)
+        ref_dem_layer = self.parameterAsRasterLayer(parameters, 'REF_DEM', context)
+        tba_dem_path = tba_dem_layer.source()
+        ref_dem_path = ref_dem_layer.source()
         method = self.parameterAsString(parameters, 'METHOD', context)
         output_path = self.parameterAsOutputLayer(parameters, 'OUTPUT', context)
 
         tba_dem = xdem.DEM(tba_dem_path)
         ref_dem = xdem.DEM(ref_dem_path)
 
-        inlier_mask = None
-
-        try:
-            inlier_mask_path = (self.parameterAsRasterLayer(parameters, 'INLIER_MASK', context)).source()
-            inlier_mask = gu.Raster(inlier_mask_path, is_mask=True)
-        except:
-            feedback.pushWarning("Inlier Mask not provided")
-            pass
+        inlier_mask = load_mask(self, parameters, context, feedback, ref_dem)
 
         coreg = METHODS[method]
 

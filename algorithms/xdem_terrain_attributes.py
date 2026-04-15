@@ -100,7 +100,8 @@ class TerrainAttributes(XdemProcessingAlgorithm):
             description='Terrain attributes folder'))
     
     def processAlgorithm(self, parameters, context, feedback):
-        dem_path = (self.parameterAsLayer(parameters, 'DEM', context)).source()
+        dem_layer = self.parameterAsRasterLayer(parameters, 'DEM', context)
+        dem_path = dem_layer.source()
         attributes_names= self.parameterAsStrings(parameters, 'ATTRIBUTES', context)
         
         attributes_list=[]
