@@ -13,7 +13,7 @@ PLUGIN_DIR = os.path.dirname(__file__)
 LIBS_FILE_NAME = "xdem_libs"
 LIBS_DIR = os.path.join(PLUGIN_DIR, LIBS_FILE_NAME)
 
-REQUIRED_PACKAGES = ["xdem[opt]"]
+REQUIRED_PACKAGES = ["xdem", "scikit-gstat", "scikit-learn"]
 
 # Packages QGIS provided by default
 SHARED_PACKAGES = ["numpy", "pyproj", "rasterio", "pandas", "geopandas", "shapely"]
