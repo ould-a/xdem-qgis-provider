@@ -5,6 +5,8 @@ from .xdem_tools import XdemProcessingAlgorithm, coreg_info
 
 from qgis.core import (QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterEnum,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterDefinition,
                        QgsProcessingParameterRasterDestination)
 
 
@@ -42,6 +44,13 @@ class Coregistration(XdemProcessingAlgorithm):
             options=METHODS,
             defaultValue='Nuth and Kääb (2011)',
             usesStaticStrings=True))
+        
+        parameter = QgsProcessingParameterNumber(
+            name='BLOCKSIZE',
+            description='Blocksize',
+            defaultValue=0)
+        parameter.setFlags(parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(parameter)
 
         self.addParameter(QgsProcessingParameterRasterDestination(
             name='OUTPUT',
@@ -51,6 +60,7 @@ class Coregistration(XdemProcessingAlgorithm):
         tba_dem_path = (self.parameterAsLayer(parameters, 'DEM_1', context)).source()
         ref_dem_path = (self.parameterAsLayer(parameters, 'DEM_2', context)).source()
         method = self.parameterAsString(parameters, 'METHOD', context)
+        block_size = self.parameterAsDouble(parameters, 'BLOCKSIZE', context)
         output_path = self.parameterAsOutputLayer(parameters, 'OUTPUT', context)
 
         tba_dem = xdem.DEM(tba_dem_path)
@@ -67,9 +77,18 @@ class Coregistration(XdemProcessingAlgorithm):
 
         coreg = METHODS[method]
 
-        coreg.fit(ref_dem, tba_dem, inlier_mask)
-        aligned_dem = coreg.apply(tba_dem)
-        coreg_info(coreg, feedback)
+        if block_size != 0:
+            feedback.pushWarning("Curently, Blockwise work only with Nuth and Kääb (2011)")
+            blockwise = xdem.coreg.BlockwiseCoreg(xdem.coreg.NuthKaab(),
+                                      block_size_fit=block_size,
+                                      block_size_apply=block_size,
+                                      parent_path="")
+            blockwise.fit(ref_dem, tba_dem)
+            aligned_dem = blockwise.apply()
+        else:
+            coreg.fit(ref_dem, tba_dem, inlier_mask)
+            aligned_dem = coreg.apply(tba_dem)
+            coreg_info(coreg, feedback)
 
         aligned_dem.to_file(output_path)
 
