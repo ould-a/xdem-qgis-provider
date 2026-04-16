@@ -29,8 +29,9 @@ class UncertaintyAnalysis(XdemProcessingAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         aligned_dem_layer = self.parameterAsRasterLayer(parameters, 'AL_DEM', context)
-        aligned_dem_path = aligned_dem_layer.source()
-        ref_dem_path = (self.parameterAsLayer(parameters, 'REF_DEM', context)).source()
+        ref_dem_layer = self.parameterAsRasterLayer(parameters, 'REF_DEM', context)
+        aligned_dem_path = aligned_dem_layer.dataProvider().dataSourceUri()
+        ref_dem_path = ref_dem_layer.dataProvider().dataSourceUri()
         output_path = self.parameterAsOutputLayer(parameters, 'OUTPUT', context)
 
         aligned_dem = xdem.DEM(aligned_dem_path)
@@ -45,7 +46,7 @@ class UncertaintyAnalysis(XdemProcessingAlgorithm):
 
         sig_dem.to_file(output_path)
         
-        return {}
+        return {'OUTPUT': output_path}
     
     def name(self):
         return 'Uncertainty analysis'

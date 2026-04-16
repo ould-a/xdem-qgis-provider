@@ -19,7 +19,7 @@ class GapFilling(XdemProcessingAlgorithm):
         
     def processAlgorithm(self, parameters, context, feedback):
         dem_layer = self.parameterAsRasterLayer(parameters, 'TBF_DEM', context)
-        dem_path = dem_layer.source()
+        dem_path = dem_layer.dataProvider().dataSourceUri()
         output_path = self.parameterAsOutputLayer(parameters, 'OUTPUT', context)
 
         dem = xdem.DEM(dem_path)
@@ -33,7 +33,7 @@ class GapFilling(XdemProcessingAlgorithm):
 
         filled_dem.to_file(output_path)
 
-        return {}
+        return {'OUTPUT': output_path}
     
     def name(self):
         return 'Gap filling'

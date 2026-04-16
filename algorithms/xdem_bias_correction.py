@@ -48,8 +48,8 @@ class BiasCorrection(XdemProcessingAlgorithm):
     def processAlgorithm(self, parameters, context, feedback):
         tba_dem_layer = self.parameterAsRasterLayer(parameters, 'TBA_DEM', context)
         ref_dem_layer = self.parameterAsRasterLayer(parameters, 'REF_DEM', context)
-        tba_dem_path = tba_dem_layer.source()
-        ref_dem_path = ref_dem_layer.source()
+        tba_dem_path = tba_dem_layer.dataProvider().dataSourceUri()
+        ref_dem_path = ref_dem_layer.dataProvider().dataSourceUri()
         method = self.parameterAsString(parameters, 'METHOD', context)
         output_path = self.parameterAsOutputLayer(parameters, 'OUTPUT', context)
 
@@ -66,7 +66,7 @@ class BiasCorrection(XdemProcessingAlgorithm):
 
         aligned_dem.to_file(output_path)
 
-        return {}
+        return {'OUTPUT': output_path}
     
     def name(self):
         return 'Bias correction'
