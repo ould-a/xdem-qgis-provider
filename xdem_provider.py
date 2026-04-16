@@ -5,7 +5,7 @@ from .algorithms.xdem_coregistration import Coregistration
 from .algorithms.xdem_terrain_attributes import TerrainAttributes
 from .algorithms.xdem_uncertainty import UncertaintyAnalysis
 from .algorithms.xdem_gap_filling import GapFilling
-
+from .algorithms.xdem_workflows import TopoWorkflow
 
 class XDemProvider(QgsProcessingProvider):
 
@@ -21,6 +21,7 @@ class XDemProvider(QgsProcessingProvider):
         self.addAlgorithm(Coregistration())
         self.addAlgorithm(TerrainAttributes())
         self.addAlgorithm(UncertaintyAnalysis())
+        self.addAlgorithm(TopoWorkflow())
         
     def id(self):
         return 'XDEM'
