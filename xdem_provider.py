@@ -19,7 +19,7 @@ class XDemProvider(QgsProcessingProvider):
         self.addAlgorithm(BiasCorrection())
         self.addAlgorithm(GapFilling())
         self.addAlgorithm(Coregistration())
-        self.addAlgorithm(TerrainAttributes())
+        #self.addAlgorithm(TerrainAttributes())
         self.addAlgorithm(UncertaintyAnalysis())
         self.addAlgorithm(TopoWorkflow())
         
