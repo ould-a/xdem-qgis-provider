@@ -68,8 +68,7 @@ def check_xdem():
         import xdem
         return xdem
     except ImportError:
-        raise
-
+        shutil.rmtree(LIBS_DIR, ignore_errors=True)
 
 # xDEM import variable
 xdem_package = check_xdem()
