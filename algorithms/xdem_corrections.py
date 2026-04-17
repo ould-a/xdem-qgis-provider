@@ -10,17 +10,17 @@ from qgis.core import (QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterRasterDestination)
 
 
-BIAS_METHODS = {'Deramping': xdem.coreg.Deramp(),
-                'Directional biases' : xdem.coreg.DirectionalBias(),
-                'Terrain biases': xdem.coreg.TerrainBias()}
+BIAS_METHODS = {"Deramping": xdem.coreg.Deramp(),
+                "Directional biases" : xdem.coreg.DirectionalBias(),
+                "Terrain biases": xdem.coreg.TerrainBias()}
 
 
-COREG_METHODS = {'Nuth and Kääb (2011)': xdem.coreg.NuthKaab(),
-           'Minimization of dh': xdem.coreg.DhMinimize(),
-           'Least Z-difference': xdem.coreg.LZD(),
-           'Iterative closest point': xdem.coreg.ICP(),
-           'Coherent point drift': xdem.coreg.CPD(),
-           'Vertical shift': xdem.coreg.VerticalShift()}
+COREG_METHODS = {"Nuth and Kääb (2011)": xdem.coreg.NuthKaab(),
+           "Minimization of dh": xdem.coreg.DhMinimize(),
+           "Least Z-difference": xdem.coreg.LZD(),
+           "Iterative closest point": xdem.coreg.ICP(),
+           "Coherent point drift": xdem.coreg.CPD(),
+           "Vertical shift": xdem.coreg.VerticalShift()}
 
 
 class BiasCorrection(XdemProcessingAlgorithm):
@@ -30,37 +30,37 @@ class BiasCorrection(XdemProcessingAlgorithm):
 
     def initAlgorithm(self, config = None):
         self.addParameter(QgsProcessingParameterRasterLayer(
-            name='TBA_DEM',
-            description='DEM to be aligned'))
+            name="TBA_DEM",
+            description="DEM to be aligned"))
         
         self.addParameter(QgsProcessingParameterRasterLayer(
-            name='REF_DEM',
-            description='Reference DEM'))
+            name="REF_DEM",
+            description="Reference DEM"))
         
         self.addParameter(QgsProcessingParameterMapLayer(
-            name='MASK',
-            description='Inlier mask',
+            name="MASK",
+            description="Inlier mask",
             defaultValue=None,
             optional=True))
         
         self.addParameter(QgsProcessingParameterEnum(
-            name='METHOD',
-            description='Method',
+            name="METHOD",
+            description="Method",
             options=BIAS_METHODS,
-            defaultValue='Deramping',
+            defaultValue="Deramping",
             usesStaticStrings=True))
 
         self.addParameter(QgsProcessingParameterRasterDestination(
-            name='OUTPUT',
-            description='Aligned DEM'))
+            name="OUTPUT",
+            description="Aligned DEM"))
 
     def processAlgorithm(self, parameters, context, feedback):
-        tba_dem_layer = self.parameterAsRasterLayer(parameters, 'TBA_DEM', context)
-        ref_dem_layer = self.parameterAsRasterLayer(parameters, 'REF_DEM', context)
+        tba_dem_layer = self.parameterAsRasterLayer(parameters, "TBA_DEM", context)
+        ref_dem_layer = self.parameterAsRasterLayer(parameters, "REF_DEM", context)
         tba_dem_path = tba_dem_layer.dataProvider().dataSourceUri()
         ref_dem_path = ref_dem_layer.dataProvider().dataSourceUri()
-        method = self.parameterAsString(parameters, 'METHOD', context)
-        output_path = self.parameterAsOutputLayer(parameters, 'OUTPUT', context)
+        method = self.parameterAsString(parameters, "METHOD", context)
+        output_path = self.parameterAsOutputLayer(parameters, "OUTPUT", context)
 
         tba_dem = xdem.DEM(tba_dem_path)
         ref_dem = xdem.DEM(ref_dem_path)
@@ -75,13 +75,13 @@ class BiasCorrection(XdemProcessingAlgorithm):
 
         aligned_dem.to_file(output_path)
 
-        return {'OUTPUT': output_path}
+        return {"OUTPUT": output_path}
     
     def name(self):
-        return 'Bias correction'
+        return "Bias Correction"
     
     def groupId(self):
-        return 'DEM corrections'
+        return "DEM Corrections"
     
     def shortHelpString(self):
         return "This algorithm aim at correcting both systematic elevation errors and spatially-structured random errors.\n" \
@@ -98,45 +98,45 @@ class Coregistration(XdemProcessingAlgorithm):
 
     def initAlgorithm(self, config = None):
         self.addParameter(QgsProcessingParameterRasterLayer(
-            name='TBA_DEM',
-            description='DEM to be aligned'))
+            name="TBA_DEM",
+            description="DEM to be aligned"))
         
         self.addParameter(QgsProcessingParameterRasterLayer(
-            name='REF_DEM',
-            description='Reference DEM'))
+            name="REF_DEM",
+            description="Reference DEM"))
         
         self.addParameter(QgsProcessingParameterMapLayer(
-            name='MASK',
-            description='Inlier mask',
+            name="MASK",
+            description="Inlier mask",
             defaultValue=None,
             optional=True))
         
         self.addParameter(QgsProcessingParameterEnum(
-            name='METHOD',
-            description='Method',
+            name="METHOD",
+            description="Method",
             options=COREG_METHODS,
-            defaultValue='Nuth and Kääb (2011)',
+            defaultValue="Nuth and Kääb (2011)",
             usesStaticStrings=True))
         
         parameter = QgsProcessingParameterNumber(
-            name='BLOCKSIZE',
-            description='Blocksize',
+            name="BLOCKSIZE",
+            description="Blocksize",
             defaultValue=0)
         parameter.setFlags(parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(parameter)
 
         self.addParameter(QgsProcessingParameterRasterDestination(
-            name='OUTPUT',
-            description='Aligned DEM'))
+            name="OUTPUT",
+            description="Aligned DEM"))
 
     def processAlgorithm(self, parameters, context, feedback):
-        tba_dem_layer = self.parameterAsRasterLayer(parameters, 'TBA_DEM', context)
-        ref_dem_layer = self.parameterAsRasterLayer(parameters, 'REF_DEM', context)
+        tba_dem_layer = self.parameterAsRasterLayer(parameters, "TBA_DEM", context)
+        ref_dem_layer = self.parameterAsRasterLayer(parameters, "REF_DEM", context)
         tba_dem_path = tba_dem_layer.dataProvider().dataSourceUri()
         ref_dem_path = ref_dem_layer.dataProvider().dataSourceUri()
-        method = self.parameterAsString(parameters, 'METHOD', context)
-        block_size = self.parameterAsDouble(parameters, 'BLOCKSIZE', context)
-        output_path = self.parameterAsOutputLayer(parameters, 'OUTPUT', context)
+        method = self.parameterAsString(parameters, "METHOD", context)
+        block_size = self.parameterAsDouble(parameters, "BLOCKSIZE", context)
+        output_path = self.parameterAsOutputLayer(parameters, "OUTPUT", context)
 
         tba_dem = xdem.DEM(tba_dem_path)
         ref_dem = xdem.DEM(ref_dem_path)
@@ -161,13 +161,13 @@ class Coregistration(XdemProcessingAlgorithm):
 
         aligned_dem.to_file(output_path)
 
-        return {'OUTPUT': output_path}
+        return {"OUTPUT": output_path}
     
     def name(self):
-        return 'Coregistration'
+        return "Coregistration"
     
     def groupId(self):
-        return 'DEM corrections'
+        return "DEM Corrections"
     
     def shortHelpString(self):
         return "This algorithm enables the coregistration of two DEMs by applying 3D affine transformations.\n" \
@@ -181,17 +181,17 @@ class GapFilling(XdemProcessingAlgorithm):
 
     def initAlgorithm(self, config = None):
         self.addParameter(QgsProcessingParameterRasterLayer(
-            name='TBF_DEM',
-            description='DEM to be filled'))
+            name="TBF_DEM",
+            description="DEM to be filled"))
         
         self.addParameter(QgsProcessingParameterRasterDestination(
-            name='OUTPUT',
-            description='Filled DEM'))
+            name="OUTPUT",
+            description="Filled DEM"))
         
     def processAlgorithm(self, parameters, context, feedback):
-        dem_layer = self.parameterAsRasterLayer(parameters, 'TBF_DEM', context)
+        dem_layer = self.parameterAsRasterLayer(parameters, "TBF_DEM", context)
         dem_path = dem_layer.dataProvider().dataSourceUri()
-        output_path = self.parameterAsOutputLayer(parameters, 'OUTPUT', context)
+        output_path = self.parameterAsOutputLayer(parameters, "OUTPUT", context)
 
         dem = xdem.DEM(dem_path)
         dem_info(dem, feedback)
@@ -204,13 +204,13 @@ class GapFilling(XdemProcessingAlgorithm):
 
         filled_dem.to_file(output_path)
 
-        return {'OUTPUT': output_path}
+        return {"OUTPUT": output_path}
     
     def name(self):
-        return 'Gap filling'
+        return "Gap Filling"
     
     def groupId(self):
-        return 'DEM corrections'
+        return "DEM Corrections"
 
     def shortHelpString(self):
         return "This algorithm uses the IDW (Inverse-distance weighting) method.\n" \

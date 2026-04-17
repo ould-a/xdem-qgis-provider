@@ -18,44 +18,44 @@ class TopoWorkflow(XdemProcessingAlgorithm):
 
     def initAlgorithm(self, config = None):
         self.addParameter(QgsProcessingParameterRasterLayer(
-            name='DEM',
-            description='DEM'))
+            name="DEM",
+            description="DEM"))
         
         self.addParameter(QgsProcessingParameterEnum(
-            name='ATTRIBUTES',
-            description='Terrain attributes',
+            name="ATTRIBUTES",
+            description="Terrain attributes",
             options=TERRAIN_ATTRIBUTES,
-            defaultValue=['slope', 'aspect', 'hillshade', "profile_curvature"],
+            defaultValue=["slope", "aspect", "hillshade", "profile_curvature"],
             allowMultiple=True,
             usesStaticStrings=True))
         
         self.addParameter(QgsProcessingParameterEnum(
-            name='STATS',
-            description='Statistics',
+            name="STATS",
+            description="Statistics",
             options=STATS_METHODS,
-            defaultValue=['min', 'max', 'mean', 'median', "nmad"],
+            defaultValue=["min", "max", "mean", "median", "nmad"],
             allowMultiple=True,
             usesStaticStrings=True))
         
         self.addParameter(QgsProcessingParameterFolderDestination(
-            name='OUTPUT',
-            description='Topographical summary folder'))
+            name="OUTPUT",
+            description="Topographical summary folder"))
         
     def processAlgorithm(self, parameters, context, feedback):
-        dem_layer = self.parameterAsRasterLayer(parameters, 'DEM', context)
+        dem_layer = self.parameterAsRasterLayer(parameters, "DEM", context)
         dem_path = dem_layer.dataProvider().dataSourceUri()
 
-        attributes= self.parameterAsEnumStrings(parameters, 'ATTRIBUTES', context)
+        attributes= self.parameterAsEnumStrings(parameters, "ATTRIBUTES", context)
         if len(attributes) == 1:
             feedback.reportError("You must provide at least two attributes")
             return {}
 
-        stats= self.parameterAsEnumStrings(parameters, 'STATS', context)
+        stats= self.parameterAsEnumStrings(parameters, "STATS", context)
         if len(stats) == 1:
             feedback.reportError("You must provide at least two statitics")
             return {}
 
-        self.output_path = self.parameterAsString(parameters, 'OUTPUT', context)
+        self.output_path = self.parameterAsString(parameters, "OUTPUT", context)
         os.makedirs(self.output_path, exist_ok=True)
 
         config = {
@@ -87,10 +87,10 @@ class TopoWorkflow(XdemProcessingAlgorithm):
         return {}
 
     def name(self):
-        return 'Topography'
+        return "Topography"
     
     def groupId(self):
-        return 'Workflows'
+        return "Workflows"
 
     def shortHelpString(self):
         return "The topo workflow of performs a topographical summary of an elevation dataset.\n" \

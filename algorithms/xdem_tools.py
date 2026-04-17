@@ -1,4 +1,3 @@
-import xdem
 import geoutils as gu
 import io
 
@@ -26,7 +25,7 @@ def coreg_info(coreg, feedback) -> None:
 def load_mask(self, parameters, context, feedback, ref_dem):
     inlier_mask = None
     try:
-        inlier_mask_layer = self.parameterAsLayer(parameters, 'MASK', context)
+        inlier_mask_layer = self.parameterAsLayer(parameters, "MASK", context)
         inlier_mask_path = inlier_mask_layer.dataProvider().dataSourceUri()
         try:
             inlier_mask = gu.Raster(inlier_mask_path, is_mask=True)
@@ -57,7 +56,7 @@ class XdemProcessingAlgorithm(QgsProcessingAlgorithm):
         return self.tr(self.groupId())
 
     def groupId(self):
-        return ''
+        return ""
 
     def tr(self, string):
-        return QCoreApplication.translate('Processing', string)
+        return QCoreApplication.translate("Processing", string)
