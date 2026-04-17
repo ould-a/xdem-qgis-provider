@@ -1,13 +1,9 @@
 from qgis.core import QgsProcessingProvider
 
-from .algorithms.xdem_bias_correction import BiasCorrection
-from .algorithms.xdem_coregistration import Coregistration
-from .algorithms.xdem_terrain_attributes import TerrainAttributes
-from .algorithms.xdem_uncertainty import UncertaintyAnalysis
-from .algorithms.xdem_gap_filling import GapFilling
+from .algorithms.xdem_corrections import BiasCorrection, Coregistration, GapFilling
 from .algorithms.xdem_workflows import TopoWorkflow
 
-class XDemProvider(QgsProcessingProvider):
+class XdemProvider(QgsProcessingProvider):
 
     def __init__(self):
         QgsProcessingProvider.__init__(self)
@@ -16,11 +12,12 @@ class XDemProvider(QgsProcessingProvider):
         pass
 
     def loadAlgorithms(self):
+        # DEM conversion
         self.addAlgorithm(BiasCorrection())
-        self.addAlgorithm(GapFilling())
         self.addAlgorithm(Coregistration())
-        #self.addAlgorithm(TerrainAttributes())
-        self.addAlgorithm(UncertaintyAnalysis())
+        self.addAlgorithm(GapFilling())
+        
+        # Workflows
         self.addAlgorithm(TopoWorkflow())
         
     def id(self):

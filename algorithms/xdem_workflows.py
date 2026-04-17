@@ -1,9 +1,10 @@
-import xdem
 import os
 
 from xdem.workflows import Topo
 from xdem.workflows.schemas import STATS_METHODS, TERRAIN_ATTRIBUTES
+
 from .xdem_tools import XdemProcessingAlgorithm
+
 from qgis.utils import iface
 from qgis.core import (QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterEnum,
@@ -46,12 +47,12 @@ class TopoWorkflow(XdemProcessingAlgorithm):
 
         attributes= self.parameterAsEnumStrings(parameters, 'ATTRIBUTES', context)
         if len(attributes) == 1:
-            feedback.pushWarning("You must provide at least two attributes")
+            feedback.reportError("You must provide at least two attributes")
             return {}
 
         stats= self.parameterAsEnumStrings(parameters, 'STATS', context)
         if len(stats) == 1:
-            feedback.pushWarning("You must provide at least two statitics")
+            feedback.reportError("You must provide at least two statitics")
             return {}
 
         self.output_path = self.parameterAsString(parameters, 'OUTPUT', context)
@@ -87,6 +88,9 @@ class TopoWorkflow(XdemProcessingAlgorithm):
 
     def name(self):
         return 'Topography'
+    
+    def groupId(self):
+        return 'Workflows'
 
     def shortHelpString(self):
         return "The topo workflow of performs a topographical summary of an elevation dataset.\n" \

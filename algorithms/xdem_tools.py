@@ -3,6 +3,7 @@ import geoutils as gu
 import io
 
 from contextlib import redirect_stdout
+
 from qgis.core import QgsProcessingAlgorithm
 from qgis.PyQt.QtCore import QCoreApplication
 
@@ -43,7 +44,7 @@ def load_mask(self, parameters, context, feedback, ref_dem):
     return inlier_mask
 
 
-# Generic processing class
+# Main processing class
 class XdemProcessingAlgorithm(QgsProcessingAlgorithm):
 
     def flags(self):
