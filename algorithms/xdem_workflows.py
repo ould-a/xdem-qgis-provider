@@ -44,15 +44,11 @@ class TopoWorkflow(XdemProcessingAlgorithm):
     def processAlgorithm(self, parameters, context, feedback):
         dem_layer = self.parameterAsRasterLayer(parameters, "DEM", context)
         dem_path = dem_layer.dataProvider().dataSourceUri()
+        stats = self.parameterAsEnumStrings(parameters, "STATS", context)
+        attributes = self.parameterAsEnumStrings(parameters, "ATTRIBUTES", context)
 
-        attributes= self.parameterAsEnumStrings(parameters, "ATTRIBUTES", context)
         if len(attributes) == 1:
             feedback.reportError("You must provide at least two attributes")
-            return {}
-
-        stats= self.parameterAsEnumStrings(parameters, "STATS", context)
-        if len(stats) == 1:
-            feedback.reportError("You must provide at least two statitics")
             return {}
 
         self.output_path = self.parameterAsString(parameters, "OUTPUT", context)
