@@ -78,10 +78,10 @@ class BiasCorrection(XdemProcessingAlgorithm):
         return {"OUTPUT": output_path}
     
     def name(self):
-        return "Bias Correction"
+        return "Bias correction"
     
     def groupId(self):
-        return "DEM Corrections"
+        return "Corrections"
     
     def shortHelpString(self):
         return "This algorithm aim at correcting both systematic elevation errors and spatially-structured random errors.\n" \
@@ -167,7 +167,7 @@ class Coregistration(XdemProcessingAlgorithm):
         return "Coregistration"
     
     def groupId(self):
-        return "DEM Corrections"
+        return "Corrections"
     
     def shortHelpString(self):
         return "This algorithm enables the coregistration of two DEMs by applying 3D affine transformations.\n" \
@@ -207,10 +207,10 @@ class GapFilling(XdemProcessingAlgorithm):
         return {"OUTPUT": output_path}
     
     def name(self):
-        return "Gap Filling"
+        return "Gap filling"
     
     def groupId(self):
-        return "DEM Corrections"
+        return "Corrections"
 
     def shortHelpString(self):
         return "This algorithm uses the IDW (Inverse-distance weighting) method.\n" \

@@ -34,7 +34,7 @@ def load_mask(self, parameters, context, feedback, ref_dem):
         except: pass
         try:
             inlier_mask = gu.Vector(inlier_mask_path)
-            inlier_mask = ~inlier_mask.create_mask(ref_dem)
+            inlier_mask = ~ inlier_mask.create_mask(ref_dem)
             feedback.pushInfo("Vector mask loaded")
             return inlier_mask
         except: pass

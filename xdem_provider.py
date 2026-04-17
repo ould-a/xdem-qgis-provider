@@ -2,6 +2,7 @@ from qgis.core import QgsProcessingProvider
 
 from .algorithms.xdem_corrections import BiasCorrection, Coregistration, GapFilling
 from .algorithms.xdem_terrain_attributes import Slope
+from .algorithms.xdem_uncertainty import Heteroscedasticity
 from .algorithms.xdem_workflows import TopoWorkflow
 
 class XdemProvider(QgsProcessingProvider):
@@ -20,6 +21,9 @@ class XdemProvider(QgsProcessingProvider):
         self.addAlgorithm(BiasCorrection())
         self.addAlgorithm(Coregistration())
         self.addAlgorithm(GapFilling())
+
+        # Uncertainty
+        self.addAlgorithm(Heteroscedasticity())
         
         # Workflows
         self.addAlgorithm(TopoWorkflow())

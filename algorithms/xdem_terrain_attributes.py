@@ -5,11 +5,6 @@ from .xdem_tools import XdemProcessingAlgorithm
 from qgis.core import (QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterRasterDestination)
 
-attribute_param = {}
-
-attributes = {
-            "Slope": lambda x: x.dem.slope(**attribute_param),
-            "Aspect": lambda x: x.dem.aspect(**attribute_param)}
 
 class Slope(XdemProcessingAlgorithm):
 
@@ -23,16 +18,22 @@ class Slope(XdemProcessingAlgorithm):
             description="Slope"))
         
     def processAlgorithm(self, parameters, context, feedback):
-        return {}
+        dem_layer = self.parameterAsRasterLayer(parameters, "DEM", context)
+        dem_path = dem_layer.dataProvider().dataSourceUri()
+        output_path = self.parameterAsOutputLayer(parameters, "OUTPUT", context)
+
+        dem = xdem.DEM(dem_path)
+
+        slope = dem.slope()
+        slope.to_file(output_path)
+
+        return {"OUTPUT": output_path}
     
     def name(self):
         return "Slope"
     
     def groupId(self):
-        return "DEM Analysis"
-
-    def shortHelpString(self):
-        return "/"
+        return "Terrain attributes"
 
     def createInstance(self):
         return Slope()
