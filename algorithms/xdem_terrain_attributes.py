@@ -2,7 +2,6 @@ import xdem
 import os
 
 from .xdem_tools import XdemProcessingAlgorithm, dem_info
-
 from qgis.utils import iface
 from qgis.core import (QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterEnum,
