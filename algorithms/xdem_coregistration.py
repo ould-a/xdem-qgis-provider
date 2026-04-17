@@ -1,8 +1,6 @@
 import xdem
-import geoutils as gu
 
 from .xdem_tools import XdemProcessingAlgorithm, coreg_info, load_mask
-
 from qgis.core import (QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterMapLayer,
                        QgsProcessingParameterEnum,
