@@ -13,7 +13,11 @@ PLUGIN_DIR = os.path.dirname(__file__)
 LIBS_FILE_NAME = "xdem_libs"
 LIBS_DIR = os.path.join(PLUGIN_DIR, LIBS_FILE_NAME)
 
-REQUIRED_PACKAGES = ["cerberus", "matplotlib", "scikit-learn", "xdem"]
+REQUIRED_PACKAGES = ["xdem",
+                     "scikit-learn", # for blockwise
+                     "cerberus", # for workflows
+                     "matplotlib", #for workflows
+                     ]
 
 # Packages QGIS provided by default
 SHARED_PACKAGES = ["numpy", "pyproj", "rasterio", "pandas", "geopandas", "shapely"]
@@ -39,7 +43,6 @@ def _clean_conflict_packages():
 def _install_package():
     for package in REQUIRED_PACKAGES:
         pip_main(["install", "--target", LIBS_DIR, package])
-    _clean_conflict_packages()
     iface.messageBar().pushMessage("xDEM dependencies successfully installed", level=Qgis.Info)
 
 
@@ -50,6 +53,7 @@ def check_xdem():
         os.makedirs(LIBS_DIR, exist_ok=True)
         try:
             _install_package()
+            _clean_conflict_packages()
         except:
             shutil.rmtree(LIBS_DIR, ignore_errors=True)
     if LIBS_DIR not in sys.path:
@@ -57,9 +61,10 @@ def check_xdem():
     try:
         import xdem
         return xdem
-    except ImportError:
+    except:
+        iface.messageBar().pushMessage("xDEM dependencies could not be installed ", level=Qgis.Critical)
         shutil.rmtree(LIBS_DIR, ignore_errors=True)
 
 
-# xDEM import variable
+# xDEM install variable
 xdem_package = check_xdem()

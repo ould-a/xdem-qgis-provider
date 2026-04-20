@@ -76,9 +76,9 @@ class TopoWorkflow(XdemProcessingAlgorithm):
         return {}
     
     def postProcessAlgorithm(self, context, feedback):
-        rasters_file = os.path.join(self.output_path, "rasters")
-        for file in os.listdir(rasters_file):
-            file_path = os.path.join(rasters_file, file)
+        rasters_folder = os.path.join(self.output_path, "rasters")
+        for file in os.listdir(rasters_folder):
+            file_path = os.path.join(rasters_folder, file)
             iface.addRasterLayer(file_path)
         return {}
 
