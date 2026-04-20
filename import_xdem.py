@@ -28,47 +28,38 @@ def _exist_in_qgis(package):
 
 
 def _clean_conflict_packages():
-    removed_packages = []
-
     for xdem_package in os.listdir(LIBS_DIR):
-
         for shared_package in SHARED_PACKAGES:
-            
             if _exist_in_qgis(shared_package):
                 if xdem_package == shared_package or xdem_package.startswith(shared_package):
-                    removed_packages.append(shared_package)
                     target_package = os.path.join(LIBS_DIR, xdem_package)
                     shutil.rmtree(target_package)
-
-    return removed_packages
 
 
 def _install_package():
     for package in REQUIRED_PACKAGES:
         pip_main(["install", "--target", LIBS_DIR, package])
-    removed = _clean_conflict_packages()
-    iface.messageBar().pushMessage(f"Conflicting dependencies:{removed}", level=Qgis.Info)
+    _clean_conflict_packages()
+    iface.messageBar().pushMessage("xDEM dependencies successfully installed", level=Qgis.Info)
 
 
 def check_xdem():
     if "xdem" in sys.modules:
         return sys.modules["xdem"]
-
     if not os.path.isdir(LIBS_DIR):
         os.makedirs(LIBS_DIR, exist_ok=True)
         try:
             _install_package()
         except:
             shutil.rmtree(LIBS_DIR, ignore_errors=True)
-
     if LIBS_DIR not in sys.path:
         sys.path.insert(0, LIBS_DIR)
-
     try:
         import xdem
         return xdem
     except ImportError:
         shutil.rmtree(LIBS_DIR, ignore_errors=True)
+
 
 # xDEM import variable
 xdem_package = check_xdem()

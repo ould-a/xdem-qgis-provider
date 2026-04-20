@@ -6,6 +6,7 @@ from qgis.core import (QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterMapLayer,
                        QgsProcessingParameterRasterDestination)
 
+
 class Heteroscedasticity(XdemProcessingAlgorithm):
 
     def initAlgorithm(self, config = None):
@@ -38,12 +39,11 @@ class Heteroscedasticity(XdemProcessingAlgorithm):
         ddem = ref_dem - aligned_dem
 
         stable_mask = load_mask(self, parameters, context, feedback, ref_dem)
-        unstable_mask = ~ stable_mask
 
         slope, max_curvature = xdem.terrain.get_terrain_attribute(ref_dem, attribute=["slope", "max_curvature"])
 
         errors, df_binning, error_function = xdem.spatialstats.infer_heteroscedasticity_from_stable(
-        dvalues=ddem, list_var=[slope, max_curvature], list_var_names=["slope", "maxc"], unstable_mask=unstable_mask)
+        dvalues=ddem, list_var=[slope, max_curvature], list_var_names=["slope", "maxc"], stable_mask=stable_mask)
 
         errors.to_file(output_path)
 
