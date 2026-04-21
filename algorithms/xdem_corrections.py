@@ -1,6 +1,6 @@
 import xdem
 
-from .xdem_tools import XdemProcessingAlgorithm, dem_info, coreg_info, load_mask
+from .xdem_tools import XdemProcessingAlgorithm, load_mask, coreg_info
 
 from qgis.core import (QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterMapLayer,
@@ -194,7 +194,6 @@ class GapFilling(XdemProcessingAlgorithm):
         output_path = self.parameterAsOutputLayer(parameters, "OUTPUT", context)
 
         dem = xdem.DEM(dem_path)
-        dem_info(dem, feedback)
 
         ddem = xdem.dDEM(raster=dem, start_time=None, end_time=None)
 

@@ -13,13 +13,9 @@ PLUGIN_DIR = os.path.dirname(__file__)
 LIBS_FILE_NAME = "xdem_libs"
 LIBS_DIR = os.path.join(PLUGIN_DIR, LIBS_FILE_NAME)
 
-REQUIRED_PACKAGES = ["xdem",
-                     "scikit-learn", # for blockwise
-                     "cerberus", # for workflows
-                     "matplotlib", #for workflows
-                     ]
-
-# Packages QGIS provided by default
+# Packages Configuration
+REQUIRED_PACKAGES = ["xdem[opt]"]
+REMOVABLE_PACKAGES = ["tqdm"]
 SHARED_PACKAGES = ["numpy", "pyproj", "rasterio", "pandas", "geopandas", "shapely"]
 
 
@@ -39,6 +35,12 @@ def _clean_conflict_packages():
                     target_package = os.path.join(LIBS_DIR, xdem_package)
                     shutil.rmtree(target_package)
 
+def _clean_removable_packages():
+    for xdem_package in os.listdir(LIBS_DIR):
+        for removable_package in REMOVABLE_PACKAGES:
+            if xdem_package == removable_package or xdem_package.startswith(removable_package):
+                target_package = os.path.join(LIBS_DIR, xdem_package)
+                shutil.rmtree(target_package)
 
 def _install_package():
     for package in REQUIRED_PACKAGES:
@@ -54,6 +56,7 @@ def check_xdem():
         try:
             _install_package()
             _clean_conflict_packages()
+            _clean_removable_packages()
         except:
             shutil.rmtree(LIBS_DIR, ignore_errors=True)
     if LIBS_DIR not in sys.path:
