@@ -35,12 +35,14 @@ def _clean_conflict_packages():
                     target_package = os.path.join(LIBS_DIR, xdem_package)
                     shutil.rmtree(target_package)
 
+
 def _clean_removable_packages():
     for xdem_package in os.listdir(LIBS_DIR):
         for removable_package in REMOVABLE_PACKAGES:
             if xdem_package == removable_package or xdem_package.startswith(removable_package):
                 target_package = os.path.join(LIBS_DIR, xdem_package)
                 shutil.rmtree(target_package)
+
 
 def _install_package():
     for package in REQUIRED_PACKAGES:
