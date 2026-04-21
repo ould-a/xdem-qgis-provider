@@ -38,7 +38,6 @@ class GetTerrainAttributes(XdemProcessingAlgorithm):
     def processAlgorithm(self, parameters, context, feedback):
         dem_path = (self.parameterAsLayer(parameters, "DEM", context)).source()
         attributes_names= self.parameterAsEnumStrings(parameters, "ATTRIBUTES", context)
-    
 
         self.output_path = self.parameterAsString(parameters, "OUTPUTS", context)
         os.makedirs(self.output_path, exist_ok=True)

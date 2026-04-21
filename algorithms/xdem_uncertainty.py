@@ -36,6 +36,7 @@ class Heteroscedasticity(XdemProcessingAlgorithm):
 
         aligned_dem = xdem.DEM(aligned_dem_path)
         ref_dem = xdem.DEM(ref_dem_path)
+        
         ddem = ref_dem - aligned_dem
 
         stable_terrain = load_mask(self, parameters, context, feedback, ref_dem)

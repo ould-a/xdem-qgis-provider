@@ -135,7 +135,7 @@ class Coregistration(XdemProcessingAlgorithm):
         tba_dem_path = tba_dem_layer.dataProvider().dataSourceUri()
         ref_dem_path = ref_dem_layer.dataProvider().dataSourceUri()
         method = self.parameterAsString(parameters, "METHOD", context)
-        block_size = self.parameterAsDouble(parameters, "BLOCKSIZE", context)
+        block_size = self.parameterAsInt(parameters, "BLOCKSIZE", context)
         output_path = self.parameterAsOutputLayer(parameters, "OUTPUT", context)
 
         tba_dem = xdem.DEM(tba_dem_path)
