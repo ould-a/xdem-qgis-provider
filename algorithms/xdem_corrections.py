@@ -1,9 +1,8 @@
 import xdem
 
-from .xdem_tools import XdemProcessingAlgorithm, load_mask, coreg_info
+from .xdem_tools import XdemProcessingAlgorithm, load_mask
 
 from qgis.core import (QgsProcessingParameterRasterLayer,
-                       QgsProcessingParameterMapLayer,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterDefinition,
@@ -37,7 +36,7 @@ class BiasCorrection(XdemProcessingAlgorithm):
             name="REF_DEM",
             description="Reference DEM"))
         
-        self.addParameter(QgsProcessingParameterMapLayer(
+        self.addParameter(QgsProcessingParameterRasterLayer(
             name="MASK",
             description="Inlier mask",
             defaultValue=None,
@@ -71,7 +70,6 @@ class BiasCorrection(XdemProcessingAlgorithm):
 
         coreg.fit(ref_dem, tba_dem, inlier_mask)
         aligned_dem = coreg.apply(tba_dem)
-        coreg_info(coreg, feedback)
 
         aligned_dem.to_file(output_path)
 
@@ -105,7 +103,7 @@ class Coregistration(XdemProcessingAlgorithm):
             name="REF_DEM",
             description="Reference DEM"))
         
-        self.addParameter(QgsProcessingParameterMapLayer(
+        self.addParameter(QgsProcessingParameterRasterLayer(
             name="MASK",
             description="Inlier mask",
             defaultValue=None,
@@ -157,7 +155,6 @@ class Coregistration(XdemProcessingAlgorithm):
         else:
             coreg.fit(ref_dem, tba_dem, inlier_mask)
             aligned_dem = coreg.apply(tba_dem)
-            coreg_info(coreg, feedback)
 
         aligned_dem.to_file(output_path)
 

@@ -21,23 +21,14 @@ def coreg_info(coreg, feedback) -> None:
         coreg.info()
     feedback.pushInfo(metadata.getvalue())
 
-
 def load_mask(self, parameters, context, feedback, ref_dem):
     inlier_mask = None
     try:
         inlier_mask_layer = self.parameterAsLayer(parameters, "MASK", context)
         inlier_mask_path = inlier_mask_layer.dataProvider().dataSourceUri()
-        try:
-            inlier_mask = gu.Raster(inlier_mask_path, is_mask=True)
-            feedback.pushInfo("Raster mask loaded")
-            return inlier_mask
-        except: pass
-        try:
-            inlier_mask = gu.Vector(inlier_mask_path)
-            inlier_mask = inlier_mask.create_mask(ref_dem)
-            feedback.pushInfo("Vector mask loaded")
-            return inlier_mask
-        except: pass
+        inlier_mask = gu.Raster(inlier_mask_path, is_mask=True)
+        feedback.pushInfo("Mask loaded")
+        return inlier_mask
     except: pass
     feedback.pushWarning("Mask not provided")
     return inlier_mask

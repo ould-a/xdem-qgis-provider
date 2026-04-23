@@ -3,7 +3,6 @@ import xdem
 from .xdem_tools import XdemProcessingAlgorithm, load_mask
 
 from qgis.core import (QgsProcessingParameterRasterLayer,
-                       QgsProcessingParameterMapLayer,
                        QgsProcessingParameterRasterDestination)
 
 
@@ -18,7 +17,7 @@ class Heteroscedasticity(XdemProcessingAlgorithm):
             name="REF_DEM",
             description="Reference DEM"))
         
-        self.addParameter(QgsProcessingParameterMapLayer(
+        self.addParameter(QgsProcessingParameterRasterLayer(
             name="MASK",
             description="Stable terrain mask",
             defaultValue=None))
@@ -76,7 +75,7 @@ class UncertaintyAnalysis(XdemProcessingAlgorithm):
             name="REF_DEM",
             description="Reference DEM"))
         
-        self.addParameter(QgsProcessingParameterMapLayer(
+        self.addParameter(QgsProcessingParameterRasterLayer(
             name="MASK",
             description="Stable terrain mask",
             defaultValue=None))
