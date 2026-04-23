@@ -20,7 +20,7 @@ class XdemProvider(QgsProcessingProvider):
         self.addAlgorithm(GapFilling())
 
         # Terrain attributes
-        self.addAlgorithm(GetTerrainAttributes())
+        #self.addAlgorithm(GetTerrainAttributes())
         self.addAlgorithm(Aspect())
         self.addAlgorithm(Hillshade())
         self.addAlgorithm(Slope())

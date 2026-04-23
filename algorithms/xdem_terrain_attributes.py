@@ -109,17 +109,17 @@ class Slope(TerrainAttributes):
         super().initAlgorithm()
 
         parameter = QgsProcessingParameterEnum(
-            name='SURFACE_FIT',
-            description='Surface fit',
-            options=["Horn", "ZevenbergThorne", "Florinsky"],
+            name="SURFACE_FIT",
+            description="Surface fit",
+            options=["Florinsky", "Horn", "ZevenbergThorne"],
             defaultValue="Florinsky",
             usesStaticStrings=True)
         parameter.setFlags(parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(parameter)
 
         parameter = QgsProcessingParameterEnum(
-            name='UNIT',
-            description='Unit',
+            name="UNIT",
+            description="Unit",
             options=["Degrees", "Radians"],
             defaultValue="Degrees",
             usesStaticStrings=True)
@@ -127,8 +127,8 @@ class Slope(TerrainAttributes):
         self.addParameter(parameter)
 
     def compute_attr(self, dem, parameters, context):
-        surface_fit = self.parameterAsString(parameters, 'SURFACE_FIT', context)
-        degrees = True if self.parameterAsString(parameters, 'UNIT', context) == 'Degrees' else False
+        surface_fit = self.parameterAsString(parameters, "SURFACE_FIT", context)
+        degrees = True if self.parameterAsString(parameters, "UNIT", context) == "Degrees" else False
         slope = dem.slope(surface_fit=surface_fit, degrees=degrees)
         return slope
     
@@ -145,17 +145,17 @@ class Aspect(TerrainAttributes):
         super().initAlgorithm()
 
         parameter = QgsProcessingParameterEnum(
-            name='SURFACE_FIT',
-            description='Surface fit',
-            options=["Horn", "ZevenbergThorne", "Florinsky"],
+            name="SURFACE_FIT",
+            description="Surface fit",
+            options=["Florinsky", "Horn", "ZevenbergThorne"],
             defaultValue="Florinsky",
             usesStaticStrings=True)
         parameter.setFlags(parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(parameter)
 
         parameter = QgsProcessingParameterEnum(
-            name='UNIT',
-            description='Unit',
+            name="UNIT",
+            description="Unit",
             options=["Degrees", "Radians"],
             defaultValue="Degrees",
             usesStaticStrings=True)
@@ -163,8 +163,8 @@ class Aspect(TerrainAttributes):
         self.addParameter(parameter)
 
     def compute_attr(self, dem, parameters, context):
-        surface_fit = self.parameterAsString(parameters, 'SURFACE_FIT', context)
-        degrees = True if self.parameterAsString(parameters, 'UNIT', context) == 'Degrees' else False
+        surface_fit = self.parameterAsString(parameters, "SURFACE_FIT", context)
+        degrees = True if self.parameterAsString(parameters, "UNIT", context) == "Degrees" else False
         aspect = dem.aspect(surface_fit=surface_fit, degrees=degrees)
         return aspect
     
@@ -181,40 +181,40 @@ class Hillshade(TerrainAttributes):
         super().initAlgorithm()
 
         parameter = QgsProcessingParameterEnum(
-            name='SURFACE_FIT',
-            description='Surface fit',
-            options=["Horn", "ZevenbergThorne", "Florinsky"],
+            name="SURFACE_FIT",
+            description="Surface fit",
+            options=["Florinsky", "Horn", "ZevenbergThorne"],
             defaultValue="Florinsky",
             usesStaticStrings=True)
         parameter.setFlags(parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(parameter)
 
         parameter = QgsProcessingParameterNumber(
-            name='ALTITUDE',
-            description='Altitude',
+            name="ALTITUDE",
+            description="Altitude",
             defaultValue=45)
         parameter.setFlags(parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(parameter)
 
         parameter = QgsProcessingParameterNumber(
-            name='AZIMUTH',
-            description='Azimuth',
+            name="AZIMUTH",
+            description="Azimuth",
             defaultValue=315)
         parameter.setFlags(parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(parameter)
 
         parameter = QgsProcessingParameterNumber(
-            name='ZFACTOR',
-            description='Z factor',
+            name="ZFACTOR",
+            description="Z factor",
             defaultValue=1)
         parameter.setFlags(parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(parameter)
 
     def compute_attr(self, dem, parameters, context):
-        surface_fit = self.parameterAsString(parameters, 'SURFACE_FIT', context)
-        altitude = self.parameterAsDouble(parameters, 'ALTITUDE', context)
-        azimuth = self.parameterAsDouble(parameters, 'AZIMUTH', context)
-        z_factor = self.parameterAsDouble(parameters, 'ZFACTOR', context)
+        surface_fit = self.parameterAsString(parameters, "SURFACE_FIT", context)
+        altitude = self.parameterAsDouble(parameters, "ALTITUDE", context)
+        azimuth = self.parameterAsDouble(parameters, "AZIMUTH", context)
+        z_factor = self.parameterAsDouble(parameters, "ZFACTOR", context)
         hillshade = dem.hillshade(surface_fit=surface_fit, azimuth=azimuth, altitude=altitude, z_factor=z_factor)
         return hillshade
     
