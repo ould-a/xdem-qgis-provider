@@ -1,7 +1,7 @@
 from qgis.core import QgsProcessingProvider
 
 from .algorithms.xdem_corrections import BiasCorrection, Coregistration, GapFilling
-from .algorithms.xdem_terrain_attributes import GetTerrainAttributes
+from .algorithms.xdem_terrain_attributes import GetTerrainAttributes, Aspect, Hillshade, Slope
 from .algorithms.xdem_uncertainty import Heteroscedasticity, UncertaintyAnalysis
 from .algorithms.xdem_workflows import TopoWorkflow
 
@@ -21,6 +21,9 @@ class XdemProvider(QgsProcessingProvider):
 
         # Terrain attributes
         self.addAlgorithm(GetTerrainAttributes())
+        self.addAlgorithm(Aspect())
+        self.addAlgorithm(Hillshade())
+        self.addAlgorithm(Slope())
 
         # Uncertainty
         self.addAlgorithm(Heteroscedasticity())

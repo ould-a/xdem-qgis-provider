@@ -55,8 +55,5 @@ class XdemProcessingAlgorithm(QgsProcessingAlgorithm):
     def group(self):
         return self.tr(self.groupId())
 
-    def groupId(self):
-        return ""
-
     def tr(self, string):
         return QCoreApplication.translate("Processing", string)
