@@ -1,7 +1,7 @@
 import os
 
-from xdem.workflows import Topo
-from xdem.workflows.schemas import STATS_METHODS, TERRAIN_ATTRIBUTES
+from xdem.workflows import Accuracy, Topo
+from xdem.workflows.schemas import STATS_METHODS, TERRAIN_ATTRIBUTES, COREG_METHODS
 
 from .xdem_tools import XdemProcessingAlgorithm
 
@@ -12,9 +12,6 @@ from qgis.core import (QgsProcessingParameterRasterLayer,
 
 
 class TopoWorkflow(XdemProcessingAlgorithm):
-
-    def tags(self):
-        return TERRAIN_ATTRIBUTES
 
     def initAlgorithm(self, config = None):
         self.addParameter(QgsProcessingParameterRasterLayer(
@@ -39,7 +36,7 @@ class TopoWorkflow(XdemProcessingAlgorithm):
         
         self.addParameter(QgsProcessingParameterFolderDestination(
             name="OUTPUT",
-            description="Topographical summary folder"))
+            description="Topography folder"))
         
     def processAlgorithm(self, parameters, context, feedback):
         dem_layer = self.parameterAsRasterLayer(parameters, "DEM", context)
@@ -89,8 +86,98 @@ class TopoWorkflow(XdemProcessingAlgorithm):
         return "Workflows"
 
     def shortHelpString(self):
-        return "The topo workflow of performs a topographical summary of an elevation dataset.\n" \
+        return "The topo workflow performs a topographical summary of an elevation dataset.\n" \
         "This summary derives a series of terrain attributes (e.g. slope, hillshade, aspect, etc.) with statistics (e.g. mean, max, min, etc.)."
 
     def createInstance(self):
         return TopoWorkflow()
+
+
+class AccuracyWorkflow(XdemProcessingAlgorithm):
+
+    def initAlgorithm(self, config = None):
+        self.addParameter(QgsProcessingParameterRasterLayer(
+            name="TBA_DEM",
+            description="DEM to be aligned"))
+        
+        self.addParameter(QgsProcessingParameterRasterLayer(
+            name="REF_DEM",
+            description="Reference DEM"))
+        
+        self.addParameter(QgsProcessingParameterEnum(
+            name="METHOD",
+            description="Method",
+            options=COREG_METHODS,
+            defaultValue="NuthKaab",
+            usesStaticStrings=True))
+        
+        self.addParameter(QgsProcessingParameterEnum(
+            name="STATS",
+            description="Statistics",
+            options=STATS_METHODS,
+            defaultValue=["min", "max", "mean", "median", "nmad"],
+            allowMultiple=True,
+            usesStaticStrings=True))
+        
+        self.addParameter(QgsProcessingParameterFolderDestination(
+            name="OUTPUT",
+            description="Accuracy folder"))
+        
+    def processAlgorithm(self, parameters, context, feedback):
+        tba_dem_layer = self.parameterAsRasterLayer(parameters, "TBA_DEM", context)
+        ref_dem_layer = self.parameterAsRasterLayer(parameters, "REF_DEM", context)
+        tba_dem_path = tba_dem_layer.dataProvider().dataSourceUri()
+        ref_dem_path = ref_dem_layer.dataProvider().dataSourceUri()
+        method = self.parameterAsEnumStrings(parameters, "METHOD", context)
+        stats = self.parameterAsEnumStrings(parameters, "STATS", context)
+
+        self.output_path = self.parameterAsString(parameters, "OUTPUT", context)
+        os.makedirs(self.output_path, exist_ok=True)
+
+        config= {
+            "inputs": {
+                "reference_elev": {
+                    "path_to_elev": ref_dem_path,
+                },
+                "to_be_aligned_elev": {
+                    "path_to_elev": tba_dem_path,
+                },
+                "sampling_grid": "reference_elev",
+            },
+            "outputs": {
+                "level": 2,
+                "path": str(self.output_path),
+                "output_grid": "reference_elev",
+            },
+            "coregistration": {
+                "step_one": {
+                    "method": method
+                },
+            },
+            "statistics": stats
+        }
+
+        workflows = Accuracy(config)
+        workflows.run()
+
+        return {}
+    
+    def postProcessAlgorithm(self, context, feedback):
+        rasters_folder = os.path.join(self.output_path, "rasters")
+        for file in os.listdir(rasters_folder):
+            file_path = os.path.join(rasters_folder, file)
+            iface.addRasterLayer(file_path)
+        return {}
+
+    def name(self):
+        return "Accuracy"
+    
+    def groupId(self):
+        return "Workflows"
+
+    def shortHelpString(self):
+        return "The accuracy workflow performs...\n" \
+        "This summary..."
+
+    def createInstance(self):
+        return AccuracyWorkflow()

@@ -3,7 +3,7 @@ from qgis.core import QgsProcessingProvider
 from .algorithms.xdem_corrections import BiasCorrection, Coregistration, GapFilling
 from .algorithms.xdem_terrain_attributes import GetTerrainAttributes, Aspect, Hillshade, Slope
 from .algorithms.xdem_uncertainty import Heteroscedasticity, UncertaintyAnalysis
-from .algorithms.xdem_workflows import TopoWorkflow
+from .algorithms.xdem_workflows import TopoWorkflow, AccuracyWorkflow
 
 class XdemProvider(QgsProcessingProvider):
 
@@ -30,6 +30,7 @@ class XdemProvider(QgsProcessingProvider):
         self.addAlgorithm(UncertaintyAnalysis())
         
         # Workflows
+        self.addAlgorithm(AccuracyWorkflow())
         self.addAlgorithm(TopoWorkflow())
         
     def id(self):

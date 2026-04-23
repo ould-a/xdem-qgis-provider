@@ -212,10 +212,10 @@ class Hillshade(TerrainAttributes):
 
     def compute_attr(self, dem, parameters, context):
         surface_fit = self.parameterAsString(parameters, "SURFACE_FIT", context)
-        altitude = self.parameterAsDouble(parameters, "ALTITUDE", context)
-        azimuth = self.parameterAsDouble(parameters, "AZIMUTH", context)
-        z_factor = self.parameterAsDouble(parameters, "ZFACTOR", context)
-        hillshade = dem.hillshade(surface_fit=surface_fit, azimuth=azimuth, altitude=altitude, z_factor=z_factor)
+        altitude = self.parameterAsInt(parameters, "ALTITUDE", context)
+        azimuth = self.parameterAsInt(parameters, "AZIMUTH", context)
+        z_factor = self.parameterAsInt(parameters, "ZFACTOR", context)
+        hillshade = dem.hillshade(surface_fit=surface_fit, altitude=altitude, azimuth=azimuth, z_factor=z_factor)
         return hillshade
     
     def name(self):
