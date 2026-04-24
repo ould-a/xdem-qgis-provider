@@ -8,6 +8,7 @@ from .xdem_tools import XdemProcessingAlgorithm
 from qgis.utils import iface
 from qgis.core import (QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterEnum,
+                       QgsProcessingParameterDefinition,
                        QgsProcessingParameterFolderDestination)
 
 
@@ -43,10 +44,6 @@ class TopoWorkflow(XdemProcessingAlgorithm):
         dem_path = dem_layer.dataProvider().dataSourceUri()
         stats = self.parameterAsEnumStrings(parameters, "STATS", context)
         attributes = self.parameterAsEnumStrings(parameters, "ATTRIBUTES", context)
-
-        if len(attributes) == 1:
-            feedback.reportError("You must provide at least two attributes")
-            return {}
 
         self.output_path = self.parameterAsString(parameters, "OUTPUT", context)
         os.makedirs(self.output_path, exist_ok=True)
@@ -105,9 +102,9 @@ class AccuracyWorkflow(XdemProcessingAlgorithm):
             description="Reference DEM"))
         
         self.addParameter(QgsProcessingParameterEnum(
-            name="METHOD",
-            description="Method",
-            options=COREG_METHODS,
+            name="METHOD1",
+            description="Method - 1",
+            options=COREG_METHODS[:-1],
             defaultValue="NuthKaab",
             usesStaticStrings=True))
         
@@ -119,6 +116,24 @@ class AccuracyWorkflow(XdemProcessingAlgorithm):
             allowMultiple=True,
             usesStaticStrings=True))
         
+        parameter = (QgsProcessingParameterEnum(
+            name="METHOD2",
+            description="Method - 2",
+            options=COREG_METHODS[:-1],
+            optional=True,
+            usesStaticStrings=True))
+        parameter.setFlags(parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(parameter)
+
+        parameter = (QgsProcessingParameterEnum(
+            name="METHOD3",
+            description="Method - 3",
+            options=COREG_METHODS[:-1],
+            optional=True,
+            usesStaticStrings=True))
+        parameter.setFlags(parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(parameter)
+        
         self.addParameter(QgsProcessingParameterFolderDestination(
             name="OUTPUT",
             description="Accuracy folder"))
@@ -128,7 +143,9 @@ class AccuracyWorkflow(XdemProcessingAlgorithm):
         ref_dem_layer = self.parameterAsRasterLayer(parameters, "REF_DEM", context)
         tba_dem_path = tba_dem_layer.dataProvider().dataSourceUri()
         ref_dem_path = ref_dem_layer.dataProvider().dataSourceUri()
-        method = self.parameterAsEnumStrings(parameters, "METHOD", context)
+        method1 = self.parameterAsEnumStrings(parameters, "METHOD1", context)
+        method2 = self.parameterAsEnumStrings(parameters, "METHOD2", context)
+        method3 = self.parameterAsEnumStrings(parameters, "METHOD3", context)
         stats = self.parameterAsEnumStrings(parameters, "STATS", context)
 
         self.output_path = self.parameterAsString(parameters, "OUTPUT", context)
@@ -142,17 +159,22 @@ class AccuracyWorkflow(XdemProcessingAlgorithm):
                 "to_be_aligned_elev": {
                     "path_to_elev": tba_dem_path,
                 },
-                "sampling_grid": "reference_elev",
             },
             "outputs": {
                 "level": 2,
                 "path": str(self.output_path),
-                "output_grid": "reference_elev",
             },
             "coregistration": {
                 "step_one": {
-                    "method": method
+                    "method": method1
                 },
+                "step_two": {
+                    "method": method2
+                },
+                "step_three": {
+                    "method": method3
+                },
+                
             },
             "statistics": stats
         }
@@ -176,8 +198,9 @@ class AccuracyWorkflow(XdemProcessingAlgorithm):
         return "Workflows"
 
     def shortHelpString(self):
-        return "The accuracy workflow performs...\n" \
-        "This summary..."
+        return "The accuracy workflow performs an accuracy assessment of an elevation dataset.\n" \
+        "This assessment relies on analyzing the elevation differences to a secondary elevation dataset on static surfaces," \
+        " as an error proxy to perform coregistration and bias-correction (systematic errors) and to perform uncertainty quantification (structured random errors)."
 
     def createInstance(self):
         return AccuracyWorkflow()
