@@ -15,11 +15,11 @@ BIAS_METHODS = {"Deramping": xdem.coreg.Deramp(),
 
 
 COREG_METHODS = {"Nuth and Kääb (2011)": xdem.coreg.NuthKaab(),
-           "Minimization of dh": xdem.coreg.DhMinimize(),
-           "Least Z-difference": xdem.coreg.LZD(),
-           "Iterative closest point": xdem.coreg.ICP(),
-           "Coherent point drift": xdem.coreg.CPD(),
-           "Vertical shift": xdem.coreg.VerticalShift()}
+                 "Minimization of dh": xdem.coreg.DhMinimize(),
+                 "Least Z-difference": xdem.coreg.LZD(),
+                 "Iterative closest point": xdem.coreg.ICP(),
+                 "Coherent point drift": xdem.coreg.CPD(),
+                 "Vertical shift": xdem.coreg.VerticalShift()}
 
 
 class BiasCorrection(XdemProcessingAlgorithm):
@@ -119,7 +119,7 @@ class Coregistration(XdemProcessingAlgorithm):
         parameter = QgsProcessingParameterNumber(
             name="BLOCKSIZE",
             description="Blocksize",
-            defaultValue=0)
+            optional=True)
         parameter.setFlags(parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(parameter)
 
