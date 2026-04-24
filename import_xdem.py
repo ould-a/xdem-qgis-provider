@@ -14,7 +14,7 @@ LIBS_FILE_NAME = "xdem_libs"
 LIBS_DIR = os.path.join(PLUGIN_DIR, LIBS_FILE_NAME)
 
 # Packages Configuration
-REQUIRED_PACKAGES = ["xdem[opt]"]
+REQUIRED_PACKAGES = ["cerberus", "matplotlib", "scikit-learn", "xdem"]
 REMOVABLE_PACKAGES = ["tqdm"]
 SHARED_PACKAGES = ["numpy", "pyproj", "rasterio", "pandas", "geopandas", "shapely"]
 
@@ -58,7 +58,7 @@ def check_xdem():
         try:
             _install_package()
             _clean_conflict_packages()
-            _clean_removable_packages()
+            #_clean_removable_packages()
         except:
             shutil.rmtree(LIBS_DIR, ignore_errors=True)
     if LIBS_DIR not in sys.path:
