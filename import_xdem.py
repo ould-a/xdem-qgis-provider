@@ -67,7 +67,7 @@ def check_xdem():
         import xdem
         return xdem
     except:
-        iface.messageBar().pushMessage("xDEM dependencies could not be installed ", level=Qgis.Critical)
+        iface.messageBar().pushMessage("xDEM dependencies could not be installed", level=Qgis.Critical)
         shutil.rmtree(LIBS_DIR, ignore_errors=True)
 
 

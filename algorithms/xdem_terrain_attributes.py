@@ -26,8 +26,8 @@ class TerrainAttributes(XdemProcessingAlgorithm):
         output_path = self.parameterAsOutputLayer(parameters, "OUTPUT", context)
 
         dem = xdem.DEM(dem_path)
-        function_and_parameters = self.get_attribute_and_parameters(parameters, context)
-        attribute = function_and_parameters(dem)
+        function_with_parameters = self.get_attribute_and_parameters(parameters, context)
+        attribute = function_with_parameters(dem)
         attribute.to_file(output_path)
 
         return {"OUTPUT": output_path}
@@ -153,68 +153,3 @@ class Hillshade(TerrainAttributes):
     
     def createInstance(self):
         return Hillshade()
-
-
-class Curvature(TerrainAttributes):
-    def initAlgorithm(self, config=None):
-        super().initAlgorithm()
-
-        parameter = QgsProcessingParameterEnum(
-            name="SURFACE_FIT",
-            description="Surface fit",
-            options=["Florinsky", "ZevenbergThorne"],
-            defaultValue="Florinsky",
-            usesStaticStrings=True)
-        parameter.setFlags(parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
-        self.addParameter(parameter)
-
-        parameter = QgsProcessingParameterEnum(
-            name="CURV_METHOD",
-            description="Curv method",
-            options=["geometric", "directional"],
-            defaultValue="geometric",
-            usesStaticStrings=True)
-        parameter.setFlags(parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
-        self.addParameter(parameter)
-
-
-class ProfileCurvature(Curvature):
-
-    def get_attribute_and_parameters(self, parameters, context):
-        surface_fit = self.parameterAsString(parameters, "SURFACE_FIT", context)
-        curv_method = self.parameterAsString(parameters, "CURV_METHOD", context)
-        return lambda dem: dem.profile_curvature(surface_fit=surface_fit, curv_method=curv_method)
-    
-    def name(self):
-        return "Profile curvature"
-    
-    def createInstance(self):
-        return ProfileCurvature()
-
-
-class TangentialCurvature(Curvature):
-
-    def get_attribute_and_parameters(self, parameters, context):
-        surface_fit = self.parameterAsString(parameters, "SURFACE_FIT", context)
-        curv_method = self.parameterAsString(parameters, "CURV_METHOD", context)
-        return lambda dem: dem.tangential_curvature(surface_fit=surface_fit, curv_method=curv_method)
-    
-    def name(self):
-        return "Tangential curvature"
-    
-    def createInstance(self):
-        return TangentialCurvature()
-
-
-class PlanformCurvature(Curvature):
-
-    def get_attribute_and_parameters(self, parameters, context):
-        surface_fit = self.parameterAsString(parameters, "SURFACE_FIT", context)
-        curv_method = self.parameterAsString(parameters, "CURV_METHOD", context)
-        return lambda dem: dem.planform_curvature(surface_fit=surface_fit, curv_method=curv_method)
-    
-    def name(self):
-        return "Planform curvature"
-    
-    def createInstance(self):
-        return PlanformCurvature()

@@ -57,7 +57,8 @@ class Heteroscedasticity(XdemProcessingAlgorithm):
 
     def shortHelpString(self):
         return "Digital elevation models have a precision that can vary with terrain and instrument-related variables.\n" \
-        "Here, we rely on a non-stationary spatial statistics framework to estimate and model this variability in elevation error, " \
+        "Heteroscedasticity occurs when the variance of the errors is not constant across all values of the explanatory variables.\n" \
+        "This algorithm relies on a framework of non-stationary spatial statistics to estimate and model this variability in elevation error, " \
         "using terrain slope and maximum curvature as explanatory variables, with stable terrain as an error proxy for moving terrain."
 
     def createInstance(self):

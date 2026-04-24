@@ -1,10 +1,10 @@
 [general]
 name=xDEM
 qgisMinimumVersion=3.0
-description=xDEM QGIS Provider
+description=xDEM Provider
 version=0.3
 author=CNES
 about=This plugin is based on the xDEM Python package. A package developed in collaboration between CNES (the French space agency) and Glacio Hack (a group of glaciology researchers). It allows you to perform processing on Digital Elevation Models (DEMs).
 repository=https://github.com/ould-a/xdem-qgis-provider.git
 email=/
-icon=imgs/xdem_logo.svg
+icon=img/xdem_logo.svg
