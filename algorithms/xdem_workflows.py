@@ -65,9 +65,9 @@ class AccuracyWorkflow(XdemProcessingAlgorithm):
         ref_dem_layer = self.parameterAsRasterLayer(parameters, "REF_DEM", context)
         tba_dem_path = tba_dem_layer.dataProvider().dataSourceUri()
         ref_dem_path = ref_dem_layer.dataProvider().dataSourceUri()
-        method1 = self.parameterAsEnumStrings(parameters, "METHOD1", context)
-        method2 = self.parameterAsEnumStrings(parameters, "METHOD2", context)
-        method3 = self.parameterAsEnumStrings(parameters, "METHOD3", context)
+        method1 = self.parameterAsString(parameters, "METHOD1", context)
+        method2 = self.parameterAsString(parameters, "METHOD2", context)
+        method3 = self.parameterAsString(parameters, "METHOD3", context)
         stats = self.parameterAsEnumStrings(parameters, "STATS", context)
 
         self.output_path = self.parameterAsString(parameters, "OUTPUT", context)
@@ -91,10 +91,10 @@ class AccuracyWorkflow(XdemProcessingAlgorithm):
                     "method": method1
                 },
                 "step_two": {
-                    "method": method2
+                    "method": None if method2 == "" else method2
                 },
                 "step_three": {
-                    "method": method3
+                    "method":  None if method3 == "" else method3
                 },
             },
             "statistics": stats
