@@ -13,6 +13,9 @@ from qgis.core import (QgsProcessingParameterRasterLayer,
 
 class AccuracyWorkflow(XdemProcessingAlgorithm):
 
+    def tags(self):
+        return COREG_METHODS
+
     def initAlgorithm(self, config = None):
         self.addParameter(QgsProcessingParameterRasterLayer(
             name="TBA_DEM",
@@ -132,6 +135,9 @@ class AccuracyWorkflow(XdemProcessingAlgorithm):
 
 
 class TopoWorkflow(XdemProcessingAlgorithm):
+
+    def tags(self):
+        return TERRAIN_ATTRIBUTES
 
     def initAlgorithm(self, config = None):
         self.addParameter(QgsProcessingParameterRasterLayer(
