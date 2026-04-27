@@ -104,7 +104,7 @@ class AccuracyWorkflow(XdemProcessingAlgorithm):
         try:
             from weasyprint import HTML
             HTML(workflow.outputs_folder / "report.html").write_pdf(workflow.outputs_folder / "report.pdf")
-        except ImportError:
+        except:
             pass
 
         return {}
@@ -188,7 +188,7 @@ class TopoWorkflow(XdemProcessingAlgorithm):
         try:
             from weasyprint import HTML
             HTML(workflow.outputs_folder / "report.html").write_pdf(workflow.outputs_folder / "report.pdf")
-        except ImportError:
+        except:
             pass
         return {}
     

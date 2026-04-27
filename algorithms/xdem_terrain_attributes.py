@@ -155,6 +155,114 @@ class Hillshade(TerrainAttributes):
         return Hillshade()
 
 
+class Curvature(TerrainAttributes):
+
+    def initAlgorithm(self, config=None):
+        super().initAlgorithm()
+
+        parameter = QgsProcessingParameterEnum(
+            name="SURFACE_FIT",
+            description="Surface fit",
+            options=["Florinsky", "ZevenbergThorne"],
+            defaultValue="Florinsky",
+            usesStaticStrings=True)
+        parameter.setFlags(parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(parameter)
+
+        parameter = QgsProcessingParameterEnum(
+            name="CURV_METHOD",
+            description="Method",
+            options=["geometric", "directional"],
+            defaultValue="geometric",
+            usesStaticStrings=True)
+        parameter.setFlags(parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(parameter)
+
+
+class ProfileCurvature(Curvature):
+
+    def get_attribute_and_parameters(self, parameters, context):
+        surface_fit = self.parameterAsString(parameters, "SURFACE_FIT", context)
+        curv_method = self.parameterAsString(parameters, "CURV_METHOD", context)
+        return lambda dem: dem.profile_curvature(surface_fit=surface_fit, curv_method=curv_method)
+    
+    def name(self):
+        return "Profile curvature"
+    
+    def createInstance(self):
+        return ProfileCurvature()
+
+
+class TangentialCurvature(Curvature):
+
+    def get_attribute_and_parameters(self, parameters, context):
+        surface_fit = self.parameterAsString(parameters, "SURFACE_FIT", context)
+        curv_method = self.parameterAsString(parameters, "CURV_METHOD", context)
+        return lambda dem: dem.tangential_curvature(surface_fit=surface_fit, curv_method=curv_method)
+    
+    def name(self):
+        return "Tangential curvature"
+    
+    def createInstance(self):
+        return TangentialCurvature()
+
+
+class PlanformCurvature(Curvature):
+
+    def get_attribute_and_parameters(self, parameters, context):
+        surface_fit = self.parameterAsString(parameters, "SURFACE_FIT", context)
+        curv_method = self.parameterAsString(parameters, "CURV_METHOD", context)
+        return lambda dem: dem.planform_curvature(surface_fit=surface_fit, curv_method=curv_method)
+    
+    def name(self):
+        return "Planform curvature"
+    
+    def createInstance(self):
+        return PlanformCurvature()
+
+
+class FlowlineCurvature(Curvature):
+
+    def get_attribute_and_parameters(self, parameters, context):
+        surface_fit = self.parameterAsString(parameters, "SURFACE_FIT", context)
+        curv_method = self.parameterAsString(parameters, "CURV_METHOD", context)
+        return lambda dem: dem.flowline_curvature(surface_fit=surface_fit, curv_method=curv_method)
+    
+    def name(self):
+        return "Flowline curvature"
+    
+    def createInstance(self):
+        return FlowlineCurvature()
+
+
+class MaxCurvature(Curvature):
+
+    def get_attribute_and_parameters(self, parameters, context):
+        surface_fit = self.parameterAsString(parameters, "SURFACE_FIT", context)
+        curv_method = self.parameterAsString(parameters, "CURV_METHOD", context)
+        return lambda dem: dem.max_curvature(surface_fit=surface_fit, curv_method=curv_method)
+    
+    def name(self):
+        return "Max curvature"
+    
+    def createInstance(self):
+        return MaxCurvature()
+
+
+class MinCurvature(Curvature):
+
+    def get_attribute_and_parameters(self, parameters, context):
+        surface_fit = self.parameterAsString(parameters, "SURFACE_FIT", context)
+        curv_method = self.parameterAsString(parameters, "CURV_METHOD", context)
+        return lambda dem: dem.min_curvature(surface_fit=surface_fit, curv_method=curv_method)
+    
+    def name(self):
+        return "Min curvature"
+    
+    def createInstance(self):
+        return MinCurvature()
+
+
 class TopographicPositionIndex(TerrainAttributes):
 
     def get_attribute_and_parameters(self, parameters, context):
