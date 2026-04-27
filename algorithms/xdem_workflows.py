@@ -1,5 +1,6 @@
 import os
 
+from weasyprint import HTML
 from xdem.workflows import Accuracy, Topo
 from xdem.workflows.schemas import STATS_METHODS, TERRAIN_ATTRIBUTES, COREG_METHODS
 
@@ -100,8 +101,9 @@ class AccuracyWorkflow(XdemProcessingAlgorithm):
             "statistics": stats
         }
 
-        workflows = Accuracy(config)
-        workflows.run()
+        workflow = Accuracy(config)
+        workflow.run()
+        HTML(workflow.outputs_folder / "report.html").write_pdf(workflow.outputs_folder / "report.pdf")
 
         return {}
     
@@ -179,9 +181,9 @@ class TopoWorkflow(XdemProcessingAlgorithm):
             "terrain_attributes": attributes,
         }
 
-        workflows = Topo(config)
-        workflows.run()
-
+        workflow = Topo(config)
+        workflow.run()
+        HTML(workflow.outputs_folder / "report.html").write_pdf(workflow.outputs_folder / "report.pdf")
         return {}
     
     def postProcessAlgorithm(self, context, feedback):

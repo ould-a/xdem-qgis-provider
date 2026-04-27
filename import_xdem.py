@@ -14,7 +14,7 @@ LIBS_FILE_NAME = "xdem_libs"
 LIBS_DIR = os.path.join(PLUGIN_DIR, LIBS_FILE_NAME)
 
 # Packages Configuration
-REQUIRED_PACKAGES = ["cerberus", "matplotlib", "scikit-learn", "xdem"]
+REQUIRED_PACKAGES = ["cerberus", "matplotlib", "scikit-learn", "weasyprint", "xdem"]
 REMOVABLE_PACKAGES = ["tqdm"]
 SHARED_PACKAGES = ["numpy", "pyproj", "rasterio", "pandas", "geopandas", "shapely"]
 

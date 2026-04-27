@@ -1,5 +1,5 @@
-import geoutils as gu
 import io
+import geoutils as gu
 
 from contextlib import redirect_stdout
 

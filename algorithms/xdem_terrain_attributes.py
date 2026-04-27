@@ -153,3 +153,75 @@ class Hillshade(TerrainAttributes):
     
     def createInstance(self):
         return Hillshade()
+
+
+class TopographicPositionIndex(TerrainAttributes):
+
+    def get_attribute_and_parameters(self, parameters, context):
+        return lambda dem: dem.topographic_position_index()
+    
+    def name(self):
+        return "Topographic position index"
+    
+    def createInstance(self):
+        return TopographicPositionIndex()
+    
+
+class TerrainRuggednessIndex(TerrainAttributes):
+
+    def get_attribute_and_parameters(self, parameters, context):
+        return lambda dem: dem.terrain_ruggedness_index()
+    
+    def name(self):
+        return "Terrain ruggedness index"
+    
+    def createInstance(self):
+        return TerrainRuggednessIndex()
+
+
+class Roughness(TerrainAttributes):
+
+    def get_attribute_and_parameters(self, parameters, context):
+        return lambda dem: dem.roughness()
+    
+    def name(self):
+        return "Roughness"
+    
+    def createInstance(self):
+        return Roughness()
+    
+
+class Rugosity(TerrainAttributes):
+
+    def get_attribute_and_parameters(self, parameters, context):
+        return lambda dem: dem.rugosity()
+    
+    def name(self):
+        return "Rugosity"
+    
+    def createInstance(self):
+        return Rugosity()
+
+
+class FractalRoughness(TerrainAttributes):
+
+    def get_attribute_and_parameters(self, parameters, context):
+        return lambda dem: dem.fractal_roughness()
+    
+    def name(self):
+        return "Fractal roughness"
+    
+    def createInstance(self):
+        return FractalRoughness()
+    
+
+class TextureShading(TerrainAttributes):
+
+    def get_attribute_and_parameters(self, parameters, context):
+        return lambda dem: dem.texture_shading()
+    
+    def name(self):
+        return "Texture shading"
+    
+    def createInstance(self):
+        return TextureShading()
