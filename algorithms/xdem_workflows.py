@@ -1,10 +1,9 @@
 import os
 
+from .xdem_tools import XdemProcessingAlgorithm
 from weasyprint import HTML
 from xdem.workflows import Accuracy, Topo
 from xdem.workflows.schemas import STATS_METHODS, TERRAIN_ATTRIBUTES, COREG_METHODS
-
-from .xdem_tools import XdemProcessingAlgorithm
 
 from qgis.utils import iface
 from qgis.core import (QgsProcessingParameterRasterLayer,
