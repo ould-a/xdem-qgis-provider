@@ -21,6 +21,7 @@ def coreg_info(coreg, feedback) -> None:
         coreg.info()
     feedback.pushInfo(metadata.getvalue())
 
+
 def load_mask(self, parameters, context, feedback, ref_dem):
     inlier_mask = None
     try:
