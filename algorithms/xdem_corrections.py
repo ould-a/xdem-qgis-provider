@@ -30,11 +30,11 @@ class BiasCorrection(XdemProcessingAlgorithm):
     def initAlgorithm(self, config = None):
         """
         Function to get the settings entered by the user.
-        :param TBA_DEM: The DEM requiring correction
-        :param REF_DEM: The reference DEM
+        :param TBA_DEM: The DEM requiring correction.
+        :param REF_DEM: The reference DEM.
         :param MASK: An optional inlier mask used to define reliable data points (0 for outliers, 1 for inliers)
         :param METHOD: Specifies the bias correction method (e.g., "Deramping", "Directional biases").
-        :param OUTPUT: The aligned DEM
+        :param OUTPUT: The aligned DEM.
         """
 
         self.addParameter(QgsProcessingParameterRasterLayer(
@@ -67,7 +67,7 @@ class BiasCorrection(XdemProcessingAlgorithm):
         tba_dem_layer = self.parameterAsRasterLayer(parameters, "TBA_DEM", context)
         ref_dem_layer = self.parameterAsRasterLayer(parameters, "REF_DEM", context)
 
-        # Extraction of file paths 
+        # Extracting paths
         tba_dem_path = tba_dem_layer.dataProvider().dataSourceUri()
         ref_dem_path = ref_dem_layer.dataProvider().dataSourceUri()
 
@@ -79,7 +79,7 @@ class BiasCorrection(XdemProcessingAlgorithm):
 
         inlier_mask = load_mask(self, parameters, context, feedback, ref_dem)
 
-        
+        # Loading the corresponding method and executing it
         coreg = BIAS_METHODS[method]
         coreg.fit(ref_dem, tba_dem, inlier_mask)
         aligned_dem = coreg.apply(tba_dem)
@@ -106,8 +106,21 @@ class BiasCorrection(XdemProcessingAlgorithm):
 
 
 class Coregistration(XdemProcessingAlgorithm):
+    """
+    This class is designed to correct elevation errors using affine coregistration methods.
+    """
 
     def initAlgorithm(self, config = None):
+        """
+        Function to get the settings entered by the user.
+        :param TBA_DEM: The DEM requiring correction.
+        :param REF_DEM: The reference DEM.
+        :param MASK: An optional inlier mask used to define reliable data points (0 for outliers, 1 for inliers)
+        :param METHOD: Specifies the coregistration method (e.g., "Nuth and Kääb (2011)", "Iterative closest point").
+        :param BLOCKSIZE: Block size for blockwise execution.
+        :param OUTPUT: The aligned DEM.
+        """
+
         self.addParameter(QgsProcessingParameterRasterLayer(
             name="TBA_DEM",
             description="DEM to be aligned"))
@@ -141,10 +154,14 @@ class Coregistration(XdemProcessingAlgorithm):
             description="Aligned DEM"))
 
     def processAlgorithm(self, parameters, context, feedback):
+        # Loading layers from QGIS
         tba_dem_layer = self.parameterAsRasterLayer(parameters, "TBA_DEM", context)
         ref_dem_layer = self.parameterAsRasterLayer(parameters, "REF_DEM", context)
+
+        # Extracting paths
         tba_dem_path = tba_dem_layer.dataProvider().dataSourceUri()
         ref_dem_path = ref_dem_layer.dataProvider().dataSourceUri()
+
         method = self.parameterAsString(parameters, "METHOD", context)
         block_size = self.parameterAsInt(parameters, "BLOCKSIZE", context)
         output_path = self.parameterAsOutputLayer(parameters, "OUTPUT", context)
@@ -156,6 +173,7 @@ class Coregistration(XdemProcessingAlgorithm):
 
         coreg = COREG_METHODS[method]
 
+        # Configuring blockwise mode if the user has specified a block size
         if block_size != 0:
             import os
             feedback.pushWarning("Curently, Blockwise work only with Nuth and Kääb (2011)")
@@ -191,8 +209,17 @@ class Coregistration(XdemProcessingAlgorithm):
 
 
 class GapFilling(XdemProcessingAlgorithm):
+    """
+    This class is designed to fill in gaps in the DEM using an IDW method (particularly for stereoscopic sources).
+    """
 
     def initAlgorithm(self, config = None):
+        """
+        Function to get the settings entered by the user.
+        :param TBF_DEM: The DEM to be filled out.
+        :param OUTPUT: The filled DEM.
+        """
+
         self.addParameter(QgsProcessingParameterRasterLayer(
             name="TBF_DEM",
             description="DEM to be filled"))
@@ -202,16 +229,22 @@ class GapFilling(XdemProcessingAlgorithm):
             description="Filled DEM"))
         
     def processAlgorithm(self, parameters, context, feedback):
+        # Loading layer from QGIS
         dem_layer = self.parameterAsRasterLayer(parameters, "TBF_DEM", context)
+
+        # Extracting path
         dem_path = dem_layer.dataProvider().dataSourceUri()
+
         output_path = self.parameterAsOutputLayer(parameters, "OUTPUT", context)
 
         dem = xdem.DEM(dem_path)
 
+        # Conversion to DEM difference object 
         ddem = xdem.dDEM(raster=dem, start_time=None, end_time=None)
 
         filled_array = ddem.interpolate(method="idw")
 
+        # Interpolation returns an array, it must be converted to a DEM
         filled_dem = xdem.DEM.from_array(filled_array, transform=dem.transform, crs=dem.crs)
 
         filled_dem.to_file(output_path)
