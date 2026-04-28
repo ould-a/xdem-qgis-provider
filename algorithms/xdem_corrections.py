@@ -263,7 +263,8 @@ class GapFilling(XdemProcessingAlgorithm):
 
     def shortHelpString(self):
         return "This algorithm uses the IDW (Inverse-distance weighting) method.\n" \
-        "Empty areas are filled with a weighted average of the surrounding pixel values, with the weight being inversely proportional to their distance from the empty pixel."
+        "Empty areas are filled with a weighted average of the surrounding pixel values, " \
+        "with the weight being inversely proportional to their distance from the empty pixel."
 
     def createInstance(self):
         return GapFilling()

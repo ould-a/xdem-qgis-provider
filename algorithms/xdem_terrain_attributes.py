@@ -24,7 +24,7 @@ class TerrainAttributes(XdemProcessingAlgorithm):
         self.addParameter(QgsProcessingParameterRasterLayer(
             name="DEM",
             description="DEM"))
-  
+
         self.addParameter(QgsProcessingParameterRasterDestination(
             name="OUTPUT",
             description=self.name()))
@@ -57,6 +57,11 @@ class Slope(TerrainAttributes):
 
     def initAlgorithm(self, config=None):
         super().initAlgorithm()
+        """
+        Call to the parent class, with the addition of parameters specific to Slope.
+        :param SURFACE_FIT: The surface fit to use.
+        :param UNIT: The unit in degrees or radians.
+        """
 
         parameter = QgsProcessingParameterEnum(
             name="SURFACE_FIT",
@@ -77,6 +82,10 @@ class Slope(TerrainAttributes):
         self.addParameter(parameter)
 
     def get_attribute_and_parameters(self, parameters, context):
+        """
+        This function gets the advanced settings specific to slope and returns it with those specific settings.
+        """
+
         surface_fit = self.parameterAsString(parameters, "SURFACE_FIT", context)
         degrees = True if self.parameterAsString(parameters, "UNIT", context) == "Degrees" else False
         return lambda dem: dem.slope(surface_fit=surface_fit, degrees=degrees)
@@ -163,7 +172,8 @@ class Hillshade(TerrainAttributes):
         altitude = self.parameterAsInt(parameters, "ALTITUDE", context)
         azimuth = self.parameterAsInt(parameters, "AZIMUTH", context)
         z_factor = self.parameterAsInt(parameters, "ZFACTOR", context)
-        return lambda dem: dem.hillshade(surface_fit=surface_fit, azimuth=azimuth, altitude=altitude, z_factor=z_factor)
+        return lambda dem: dem.hillshade(
+            surface_fit=surface_fit, azimuth=azimuth, altitude=altitude, z_factor=z_factor)
 
     def name(self):
         return "Hillshade"
