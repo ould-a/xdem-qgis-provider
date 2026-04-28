@@ -9,9 +9,12 @@ from qgis.core import (
 )
 
 
+# Dictionaries listing bias correction and coregistration methods
+
 BIAS_METHODS = {"Deramping": xdem.coreg.Deramp(),
                 "Directional biases" : xdem.coreg.DirectionalBias(),
-                "Terrain biases": xdem.coreg.TerrainBias()}
+                "Terrain biases": xdem.coreg.TerrainBias()
+}
 
 
 COREG_METHODS = {"Nuth and Kääb (2011)": xdem.coreg.NuthKaab(),
@@ -19,7 +22,8 @@ COREG_METHODS = {"Nuth and Kääb (2011)": xdem.coreg.NuthKaab(),
                  "Least Z-difference": xdem.coreg.LZD(),
                  "Iterative closest point": xdem.coreg.ICP(),
                  "Coherent point drift": xdem.coreg.CPD(),
-                 "Vertical shift": xdem.coreg.VerticalShift()}
+                 "Vertical shift": xdem.coreg.VerticalShift()
+}
 
 
 class BiasCorrection(XdemProcessingAlgorithm):

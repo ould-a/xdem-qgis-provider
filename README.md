@@ -11,8 +11,16 @@ You can install the plugin directly within QGIS:
 Installing the dependencies may take a few minutes, do not force QGIS to close.
 
 ### Available processing
-All the algorithms can be accessed through the QGIS Processing Toolbox under `xDEM`, they are divided into four sections.
+All the algorithms can be accessed through the QGIS Processing Toolbox in `xDEM`, they are organized into four sections.
 - **Corections**
 - **Terrain attributes**
 - **Uncertainty**
 - **Workflows**
+
+### Documentation
+- xDEM package
+- Developper guide
+
+### Licence
+
+### Citation
