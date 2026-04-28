@@ -44,17 +44,17 @@ class BiasCorrection(XdemProcessingAlgorithm):
         self.addParameter(QgsProcessingParameterRasterLayer(
             name="TBA_DEM",
             description="DEM to be aligned"))
-        
+
         self.addParameter(QgsProcessingParameterRasterLayer(
             name="REF_DEM",
             description="Reference DEM"))
-        
+
         self.addParameter(QgsProcessingParameterRasterLayer(
             name="MASK",
             description="Inlier mask",
             defaultValue=None,
             optional=True))
-        
+
         self.addParameter(QgsProcessingParameterEnum(
             name="METHOD",
             description="Method",
@@ -91,16 +91,16 @@ class BiasCorrection(XdemProcessingAlgorithm):
         aligned_dem.to_file(output_path)
 
         return {"OUTPUT": output_path}
-    
+
     def name(self):
         return "Bias correction"
-    
+
     def groupId(self):
         return "Corrections"
-    
+
     def tags(self):
         return BIAS_METHODS
-    
+
     def shortHelpString(self):
         return "This algorithm aim at correcting both systematic elevation errors and spatially-structured random errors.\n" \
         "Bias-correction methods correspond to transformations that cannot be described as a 3D affine transformations."
@@ -128,24 +128,24 @@ class Coregistration(XdemProcessingAlgorithm):
         self.addParameter(QgsProcessingParameterRasterLayer(
             name="TBA_DEM",
             description="DEM to be aligned"))
-        
+
         self.addParameter(QgsProcessingParameterRasterLayer(
             name="REF_DEM",
             description="Reference DEM"))
-        
+
         self.addParameter(QgsProcessingParameterRasterLayer(
             name="MASK",
             description="Inlier mask",
             defaultValue=None,
             optional=True))
-        
+
         self.addParameter(QgsProcessingParameterEnum(
             name="METHOD",
             description="Method",
             options=COREG_METHODS,
             defaultValue="Nuth and Kääb (2011)",
             usesStaticStrings=True))
-        
+
         parameter = QgsProcessingParameterNumber(
             name="BLOCKSIZE",
             description="Blocksize",
@@ -194,16 +194,16 @@ class Coregistration(XdemProcessingAlgorithm):
         aligned_dem.to_file(output_path)
 
         return {"OUTPUT": output_path}
-    
+
     def name(self):
         return "Coregistration"
-    
+
     def groupId(self):
         return "Corrections"
-    
+
     def tags(self):
         return COREG_METHODS
-    
+
     def shortHelpString(self):
         return "This algorithm enables the coregistration of two DEMs by applying 3D affine transformations.\n" \
         "Affine transformations can include vertical and horizontal translations, rotations and reflections, and scalings.\n" \
@@ -227,11 +227,11 @@ class GapFilling(XdemProcessingAlgorithm):
         self.addParameter(QgsProcessingParameterRasterLayer(
             name="TBF_DEM",
             description="DEM to be filled"))
-        
+
         self.addParameter(QgsProcessingParameterRasterDestination(
             name="OUTPUT",
             description="Filled DEM"))
-        
+
     def processAlgorithm(self, parameters, context, feedback):
         # Loading layer from QGIS
         dem_layer = self.parameterAsRasterLayer(parameters, "TBF_DEM", context)
@@ -254,10 +254,10 @@ class GapFilling(XdemProcessingAlgorithm):
         filled_dem.to_file(output_path)
 
         return {"OUTPUT": output_path}
-    
+
     def name(self):
         return "Gap filling"
-    
+
     def groupId(self):
         return "Corrections"
 
@@ -267,4 +267,3 @@ class GapFilling(XdemProcessingAlgorithm):
 
     def createInstance(self):
         return GapFilling()
-    
