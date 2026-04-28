@@ -20,18 +20,11 @@ class AccuracyWorkflow(XdemProcessingAlgorithm):
         self.addParameter(QgsProcessingParameterRasterLayer(
             name="TBA_DEM",
             description="DEM to be aligned"))
-        
+
         self.addParameter(QgsProcessingParameterRasterLayer(
             name="REF_DEM",
             description="Reference DEM"))
-        
-        self.addParameter(QgsProcessingParameterEnum(
-            name="METHOD1",
-            description="Method - 1",
-            options=COREG_METHODS[:-1],
-            defaultValue="NuthKaab",
-            usesStaticStrings=True))
-        
+
         self.addParameter(QgsProcessingParameterEnum(
             name="STATS",
             description="Statistics",
@@ -39,7 +32,21 @@ class AccuracyWorkflow(XdemProcessingAlgorithm):
             defaultValue=["min", "max", "mean", "median", "nmad"],
             allowMultiple=True,
             usesStaticStrings=True))
-        
+
+        self.addParameter(QgsProcessingParameterEnum(
+            name="LEVEL",
+            description="Level for detailed outputs",
+            options=["1", "2"],
+            defaultValue="1",
+            usesStaticStrings=True))
+
+        self.addParameter(QgsProcessingParameterEnum(
+                    name="METHOD1",
+                    description="Method - 1",
+                    options=COREG_METHODS[:-1],
+                    defaultValue="NuthKaab",
+                    usesStaticStrings=True))
+
         parameter = (QgsProcessingParameterEnum(
             name="METHOD2",
             description="Method - 2",
@@ -57,20 +64,21 @@ class AccuracyWorkflow(XdemProcessingAlgorithm):
             usesStaticStrings=True))
         parameter.setFlags(parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(parameter)
-        
+
         self.addParameter(QgsProcessingParameterFolderDestination(
             name="OUTPUT",
             description="Accuracy folder"))
-        
+
     def processAlgorithm(self, parameters, context, feedback):
         tba_dem_layer = self.parameterAsRasterLayer(parameters, "TBA_DEM", context)
         ref_dem_layer = self.parameterAsRasterLayer(parameters, "REF_DEM", context)
         tba_dem_path = tba_dem_layer.dataProvider().dataSourceUri()
         ref_dem_path = ref_dem_layer.dataProvider().dataSourceUri()
+        stats = self.parameterAsEnumStrings(parameters, "STATS", context)
+        level = self.parameterAsInt(parameters, "LEVEL", context)
         method1 = self.parameterAsString(parameters, "METHOD1", context)
         method2 = self.parameterAsString(parameters, "METHOD2", context)
         method3 = self.parameterAsString(parameters, "METHOD3", context)
-        stats = self.parameterAsEnumStrings(parameters, "STATS", context)
 
         self.output_path = self.parameterAsString(parameters, "OUTPUT", context)
         os.makedirs(self.output_path, exist_ok=True)
@@ -85,7 +93,7 @@ class AccuracyWorkflow(XdemProcessingAlgorithm):
                 },
             },
             "outputs": {
-                "level": 2,
+                "level": level,
                 "path": str(self.output_path),
             },
             "coregistration": {
@@ -107,11 +115,9 @@ class AccuracyWorkflow(XdemProcessingAlgorithm):
         try:
             from weasyprint import HTML
             HTML(workflow.outputs_folder / "report.html").write_pdf(workflow.outputs_folder / "report.pdf")
-        except:
-            pass
-
+        except: pass
         return {}
-    
+
     def postProcessAlgorithm(self, context, feedback):
         rasters_folder = os.path.join(self.output_path, "rasters")
         for file in os.listdir(rasters_folder):
@@ -121,7 +127,7 @@ class AccuracyWorkflow(XdemProcessingAlgorithm):
 
     def name(self):
         return "Accuracy"
-    
+
     def groupId(self):
         return "Workflows"
 
@@ -143,7 +149,7 @@ class TopoWorkflow(XdemProcessingAlgorithm):
         self.addParameter(QgsProcessingParameterRasterLayer(
             name="DEM",
             description="DEM"))
-        
+
         self.addParameter(QgsProcessingParameterEnum(
             name="ATTRIBUTES",
             description="Terrain attributes",
@@ -151,7 +157,7 @@ class TopoWorkflow(XdemProcessingAlgorithm):
             defaultValue=["slope", "aspect", "hillshade", "profile_curvature"],
             allowMultiple=True,
             usesStaticStrings=True))
-        
+
         self.addParameter(QgsProcessingParameterEnum(
             name="STATS",
             description="Statistics",
@@ -159,16 +165,24 @@ class TopoWorkflow(XdemProcessingAlgorithm):
             defaultValue=["min", "max", "mean", "median", "nmad"],
             allowMultiple=True,
             usesStaticStrings=True))
-        
+
+        self.addParameter(QgsProcessingParameterEnum(
+            name="LEVEL",
+            description="Level for detailed outputs",
+            options=["1", "2"],
+            defaultValue="1",
+            usesStaticStrings=True))
+
         self.addParameter(QgsProcessingParameterFolderDestination(
             name="OUTPUT",
             description="Topography folder"))
-        
+
     def processAlgorithm(self, parameters, context, feedback):
         dem_layer = self.parameterAsRasterLayer(parameters, "DEM", context)
         dem_path = dem_layer.dataProvider().dataSourceUri()
-        stats = self.parameterAsEnumStrings(parameters, "STATS", context)
         attributes = self.parameterAsEnumStrings(parameters, "ATTRIBUTES", context)
+        stats = self.parameterAsEnumStrings(parameters, "STATS", context)
+        level = self.parameterAsInt(parameters, "LEVEL", context)
 
         self.output_path = self.parameterAsString(parameters, "OUTPUT", context)
         os.makedirs(self.output_path, exist_ok=True)
@@ -184,7 +198,7 @@ class TopoWorkflow(XdemProcessingAlgorithm):
                     "downsample": 1,
                 },
             },
-            "outputs": {"level": 2, "path": str(self.output_path)},
+            "outputs": {"level": level, "path": str(self.output_path)},
             "statistics": stats,
             "terrain_attributes": attributes,
         }
@@ -194,10 +208,9 @@ class TopoWorkflow(XdemProcessingAlgorithm):
         try:
             from weasyprint import HTML
             HTML(workflow.outputs_folder / "report.html").write_pdf(workflow.outputs_folder / "report.pdf")
-        except:
-            pass
+        except: pass
         return {}
-    
+
     def postProcessAlgorithm(self, context, feedback):
         rasters_folder = os.path.join(self.output_path, "rasters")
         for file in os.listdir(rasters_folder):
@@ -207,13 +220,14 @@ class TopoWorkflow(XdemProcessingAlgorithm):
 
     def name(self):
         return "Topography"
-    
+
     def groupId(self):
         return "Workflows"
 
     def shortHelpString(self):
         return "The topo workflow performs a topographical summary of an elevation dataset.\n" \
-        "This summary derives a series of terrain attributes (e.g. slope, hillshade, aspect, etc.) with statistics (e.g. mean, max, min, etc.)."
+        "This summary derives a series of terrain attributes (e.g. slope, hillshade, aspect, etc.) " \
+        "with statistics (e.g. mean, max, min, etc.)."
 
     def createInstance(self):
         return TopoWorkflow()
