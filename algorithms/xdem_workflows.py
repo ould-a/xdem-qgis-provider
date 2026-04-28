@@ -1,14 +1,14 @@
 import os
-
 from .xdem_tools import XdemProcessingAlgorithm
 from xdem.workflows import Accuracy, Topo
 from xdem.workflows.schemas import STATS_METHODS, TERRAIN_ATTRIBUTES, COREG_METHODS
-
 from qgis.utils import iface
-from qgis.core import (QgsProcessingParameterRasterLayer,
-                       QgsProcessingParameterEnum,
-                       QgsProcessingParameterDefinition,
-                       QgsProcessingParameterFolderDestination)
+from qgis.core import (
+    QgsProcessingParameterRasterLayer,
+    QgsProcessingParameterEnum,
+    QgsProcessingParameterDefinition,
+    QgsProcessingParameterFolderDestination
+)
 
 
 class AccuracyWorkflow(XdemProcessingAlgorithm):

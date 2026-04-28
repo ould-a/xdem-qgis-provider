@@ -1,8 +1,6 @@
 import io
 import geoutils as gu
-
 from contextlib import redirect_stdout
-
 from qgis.core import QgsProcessingAlgorithm
 from qgis.PyQt.QtCore import QCoreApplication
 

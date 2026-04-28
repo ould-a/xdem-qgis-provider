@@ -1,12 +1,12 @@
 import xdem
-
 from .xdem_tools import XdemProcessingAlgorithm
-
-from qgis.core import (QgsProcessingParameterRasterLayer,
-                       QgsProcessingParameterEnum,
-                       QgsProcessingParameterDefinition,
-                       QgsProcessingParameterNumber,
-                       QgsProcessingParameterRasterDestination)
+from qgis.core import (
+    QgsProcessingParameterRasterLayer,
+    QgsProcessingParameterEnum,
+    QgsProcessingParameterNumber,
+    QgsProcessingParameterDefinition,
+    QgsProcessingParameterRasterDestination
+)
 
 
 class TerrainAttributes(XdemProcessingAlgorithm):

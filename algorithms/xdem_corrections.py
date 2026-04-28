@@ -1,12 +1,12 @@
 import xdem
-
 from .xdem_tools import XdemProcessingAlgorithm, load_mask
-
-from qgis.core import (QgsProcessingParameterRasterLayer,
-                       QgsProcessingParameterEnum,
-                       QgsProcessingParameterNumber,
-                       QgsProcessingParameterDefinition,
-                       QgsProcessingParameterRasterDestination)
+from qgis.core import (
+    QgsProcessingParameterRasterLayer,
+    QgsProcessingParameterEnum,
+    QgsProcessingParameterNumber,
+    QgsProcessingParameterDefinition,
+    QgsProcessingParameterRasterDestination
+)
 
 
 BIAS_METHODS = {"Deramping": xdem.coreg.Deramp(),
@@ -23,11 +23,20 @@ COREG_METHODS = {"Nuth and Kääb (2011)": xdem.coreg.NuthKaab(),
 
 
 class BiasCorrection(XdemProcessingAlgorithm):
-
-    def tags(self):
-        return BIAS_METHODS
+    """
+    This class is designed to correct elevation errors using various bias correction methods.
+    """
 
     def initAlgorithm(self, config = None):
+        """
+        Function to get the settings entered by the user.
+        :param TBA_DEM: The DEM requiring correction
+        :param REF_DEM: The reference DEM
+        :param MASK: An optional inlier mask used to define reliable data points (0 for outliers, 1 for inliers)
+        :param METHOD: Specifies the bias correction method (e.g., "Deramping", "Directional biases").
+        :param OUTPUT: The aligned DEM
+        """
+
         self.addParameter(QgsProcessingParameterRasterLayer(
             name="TBA_DEM",
             description="DEM to be aligned"))
@@ -54,10 +63,14 @@ class BiasCorrection(XdemProcessingAlgorithm):
             description="Aligned DEM"))
 
     def processAlgorithm(self, parameters, context, feedback):
+        # Loading layers from QGIS
         tba_dem_layer = self.parameterAsRasterLayer(parameters, "TBA_DEM", context)
         ref_dem_layer = self.parameterAsRasterLayer(parameters, "REF_DEM", context)
+
+        # Extraction of file paths 
         tba_dem_path = tba_dem_layer.dataProvider().dataSourceUri()
         ref_dem_path = ref_dem_layer.dataProvider().dataSourceUri()
+
         method = self.parameterAsString(parameters, "METHOD", context)
         output_path = self.parameterAsOutputLayer(parameters, "OUTPUT", context)
 
@@ -66,8 +79,8 @@ class BiasCorrection(XdemProcessingAlgorithm):
 
         inlier_mask = load_mask(self, parameters, context, feedback, ref_dem)
 
+        
         coreg = BIAS_METHODS[method]
-
         coreg.fit(ref_dem, tba_dem, inlier_mask)
         aligned_dem = coreg.apply(tba_dem)
 
@@ -81,6 +94,9 @@ class BiasCorrection(XdemProcessingAlgorithm):
     def groupId(self):
         return "Corrections"
     
+    def tags(self):
+        return BIAS_METHODS
+    
     def shortHelpString(self):
         return "This algorithm aim at correcting both systematic elevation errors and spatially-structured random errors.\n" \
         "Bias-correction methods correspond to transformations that cannot be described as a 3D affine transformations."
@@ -90,9 +106,6 @@ class BiasCorrection(XdemProcessingAlgorithm):
 
 
 class Coregistration(XdemProcessingAlgorithm):
-
-    def tags(self):
-        return COREG_METHODS
 
     def initAlgorithm(self, config = None):
         self.addParameter(QgsProcessingParameterRasterLayer(
@@ -165,6 +178,9 @@ class Coregistration(XdemProcessingAlgorithm):
     
     def groupId(self):
         return "Corrections"
+    
+    def tags(self):
+        return COREG_METHODS
     
     def shortHelpString(self):
         return "This algorithm enables the coregistration of two DEMs by applying 3D affine transformations.\n" \
