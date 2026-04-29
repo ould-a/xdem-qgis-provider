@@ -101,11 +101,6 @@ class Aspect(TerrainAttributes):
 
     def initAlgorithm(self, config=None):
         super().initAlgorithm()
-        """
-        Call to the parent class, with the addition of parameters specific to Aspect.
-        :param SURFACE_FIT: The surface fit to use.
-        :param UNIT: The unit in degrees or radians.
-        """
 
         parameter = QgsProcessingParameterEnum(
             name="SURFACE_FIT",
