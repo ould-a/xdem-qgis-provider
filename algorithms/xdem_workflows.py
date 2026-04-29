@@ -37,7 +37,7 @@ class AccuracyWorkflow(XdemProcessingAlgorithm):
             name="LEVEL",
             description="Level for detailed outputs",
             options=["1", "2"],
-            defaultValue="1",
+            defaultValue="2",
             usesStaticStrings=True))
 
         self.addParameter(QgsProcessingParameterEnum(
@@ -133,8 +133,9 @@ class AccuracyWorkflow(XdemProcessingAlgorithm):
 
     def shortHelpString(self):
         return "The accuracy workflow performs an accuracy assessment of an elevation dataset.\n" \
-        "This assessment relies on analyzing the elevation differences to a secondary elevation dataset on static surfaces," \
-        " as an error proxy to perform coregistration and bias-correction (systematic errors) and to perform uncertainty quantification (structured random errors)."
+        "This assessment relies on analyzing the elevation differences to a secondary elevation dataset on static surfaces, " \
+        "as an error proxy to perform coregistration and bias-correction (systematic errors) and to perform uncertainty quantification (structured random errors).\n" \
+        "Two output levels are available: Level 1 is the basic version, while Level 2 allows you to save more raster and statistical data."
 
     def createInstance(self):
         return AccuracyWorkflow()
@@ -170,7 +171,7 @@ class TopoWorkflow(XdemProcessingAlgorithm):
             name="LEVEL",
             description="Level for detailed outputs",
             options=["1", "2"],
-            defaultValue="1",
+            defaultValue="2",
             usesStaticStrings=True))
 
         self.addParameter(QgsProcessingParameterFolderDestination(
@@ -227,7 +228,8 @@ class TopoWorkflow(XdemProcessingAlgorithm):
     def shortHelpString(self):
         return "The topo workflow performs a topographical summary of an elevation dataset.\n" \
         "This summary derives a series of terrain attributes (e.g. slope, hillshade, aspect, etc.) " \
-        "with statistics (e.g. mean, max, min, etc.)."
+        "with statistics (e.g. mean, max, min, etc.).\n" \
+        "Two output levels are available: Level 1 is the basic version, while Level 2 allows you to save more raster and statistical data."
 
     def createInstance(self):
         return TopoWorkflow()

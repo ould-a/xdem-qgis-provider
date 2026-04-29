@@ -177,10 +177,10 @@ class Coregistration(XdemProcessingAlgorithm):
 
         coreg = COREG_METHODS[method]
 
-        # Configuring blockwise mode if the user has specified a block size
+        # Configuring blockwise mode if a block size is specified
         if block_size != 0:
             import os
-            feedback.pushWarning("Curently, Blockwise work only with Nuth and Kääb (2011)")
+            feedback.pushWarning("Curently, Blockwise work only with Nuth and Kääb (2011).")
             blockwise = xdem.coreg.BlockwiseCoreg(xdem.coreg.NuthKaab(),
                                       block_size_fit=block_size,
                                       block_size_apply=block_size,
