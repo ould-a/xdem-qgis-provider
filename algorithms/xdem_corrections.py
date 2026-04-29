@@ -215,7 +215,7 @@ class Coregistration(XdemProcessingAlgorithm):
 
 class GapFilling(XdemProcessingAlgorithm):
     """
-    This class is designed to fill in gaps in the DEM using an IDW method (particularly for stereoscopic sources).
+    This class is designed to fill in gaps in the DEM using an IDW method.
     """
 
     def initAlgorithm(self, config = None):

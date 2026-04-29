@@ -42,8 +42,7 @@ def load_mask(self, parameters, context, feedback) -> gu.Raster:
         return inlier_mask
     except:
         feedback.pushWarning("Mask not provided")
-        pass
-    return None
+        return None
 
 
 # Main processing class
