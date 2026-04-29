@@ -81,7 +81,7 @@ class BiasCorrection(XdemProcessingAlgorithm):
         tba_dem = xdem.DEM(tba_dem_path)
         ref_dem = xdem.DEM(ref_dem_path)
 
-        inlier_mask = load_mask(self, parameters, context, feedback, ref_dem)
+        inlier_mask = load_mask(self, parameters, context, feedback)
 
         # Loading the corresponding method
         coreg = BIAS_METHODS[method]
@@ -174,7 +174,7 @@ class Coregistration(XdemProcessingAlgorithm):
         tba_dem = xdem.DEM(tba_dem_path)
         ref_dem = xdem.DEM(ref_dem_path)
 
-        inlier_mask = load_mask(self, parameters, context, feedback, ref_dem)
+        inlier_mask = load_mask(self, parameters, context, feedback)
 
         coreg = COREG_METHODS[method]
 

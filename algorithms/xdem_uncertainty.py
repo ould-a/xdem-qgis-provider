@@ -55,7 +55,7 @@ class Heteroscedasticity(XdemProcessingAlgorithm):
         # Creating a DEM difference object
         ddem = ref_dem - aligned_dem
 
-        stable_terrain = load_mask(self, parameters, context, feedback, ref_dem)
+        stable_terrain = load_mask(self, parameters, context, feedback)
 
         # Run the pipeline with slope and max curvature
         slope, max_curvature = xdem.terrain.get_terrain_attribute(ref_dem, attribute=["slope", "max_curvature"])

@@ -12,11 +12,23 @@ from qgis.core import (
 
 
 class AccuracyWorkflow(XdemProcessingAlgorithm):
-
-    def tags(self):
-        return COREG_METHODS
+    """
+    This class is designed to perform an accuracy assessment of an elevation dataset.
+    """
 
     def initAlgorithm(self, config = None):
+        """
+        Function to retrieve parameters entered in QGIS.
+        :param TBA_DEM: The DEM requiring correction.
+        :param REF_DEM: The reference DEM.
+        :param STATS: The requested statistics.
+        :param LEVEL: The level for detailed outputs.
+        :param METHOD1: The (first) coreg method.
+        :param METHOD2: If needed, a second method can be used to operate as a pipeline.
+        :param METHOD3: If needed, a third method can be used to operate as a pipeline.
+        :param OUTPUT: The results folder.
+        """
+
         self.addParameter(QgsProcessingParameterRasterLayer(
             name="TBA_DEM",
             description="DEM to be aligned"))
@@ -70,10 +82,14 @@ class AccuracyWorkflow(XdemProcessingAlgorithm):
             description="Accuracy folder"))
 
     def processAlgorithm(self, parameters, context, feedback):
+        # Loading layers from QGIS
         tba_dem_layer = self.parameterAsRasterLayer(parameters, "TBA_DEM", context)
         ref_dem_layer = self.parameterAsRasterLayer(parameters, "REF_DEM", context)
+
+        # Extracting paths
         tba_dem_path = tba_dem_layer.dataProvider().dataSourceUri()
         ref_dem_path = ref_dem_layer.dataProvider().dataSourceUri()
+
         stats = self.parameterAsEnumStrings(parameters, "STATS", context)
         level = self.parameterAsInt(parameters, "LEVEL", context)
         method1 = self.parameterAsString(parameters, "METHOD1", context)
@@ -83,6 +99,7 @@ class AccuracyWorkflow(XdemProcessingAlgorithm):
         self.output_path = self.parameterAsString(parameters, "OUTPUT", context)
         os.makedirs(self.output_path, exist_ok=True)
 
+        # Configuration setup
         config= {
             "inputs": {
                 "reference_elev": {
@@ -112,10 +129,13 @@ class AccuracyWorkflow(XdemProcessingAlgorithm):
 
         workflow = Accuracy(config)
         workflow.run()
+
+        # Attempt to generate a PDF from HTML
         try:
             from weasyprint import HTML
             HTML(workflow.outputs_folder / "report.html").write_pdf(workflow.outputs_folder / "report.pdf")
         except: pass
+
         return {}
 
     def postProcessAlgorithm(self, context, feedback):
@@ -130,6 +150,9 @@ class AccuracyWorkflow(XdemProcessingAlgorithm):
 
     def groupId(self):
         return "Workflows"
+    
+    def tags(self):
+        return COREG_METHODS
 
     def shortHelpString(self):
         return "The accuracy workflow performs an accuracy assessment of an elevation dataset.\n" \
@@ -142,11 +165,20 @@ class AccuracyWorkflow(XdemProcessingAlgorithm):
 
 
 class TopoWorkflow(XdemProcessingAlgorithm):
-
-    def tags(self):
-        return TERRAIN_ATTRIBUTES
+    """
+    This class is designed to perform a topographical summary of an elevation dataset.
+    """
 
     def initAlgorithm(self, config = None):
+        """
+        Function to retrieve parameters entered in QGIS.
+        :param DEM: The concerned DEM.
+        :param ATTRIBUTES: The requested attributes
+        :param STATS: The requested statistics.
+        :param LEVEL: The level for detailed outputs.
+        :param OUTPUT: The results folder.
+        """
+
         self.addParameter(QgsProcessingParameterRasterLayer(
             name="DEM",
             description="DEM"))
@@ -179,8 +211,12 @@ class TopoWorkflow(XdemProcessingAlgorithm):
             description="Topography folder"))
 
     def processAlgorithm(self, parameters, context, feedback):
+        # Loading layers from QGIS
         dem_layer = self.parameterAsRasterLayer(parameters, "DEM", context)
+
+        # Extracting paths
         dem_path = dem_layer.dataProvider().dataSourceUri()
+
         attributes = self.parameterAsEnumStrings(parameters, "ATTRIBUTES", context)
         stats = self.parameterAsEnumStrings(parameters, "STATS", context)
         level = self.parameterAsInt(parameters, "LEVEL", context)
@@ -188,6 +224,7 @@ class TopoWorkflow(XdemProcessingAlgorithm):
         self.output_path = self.parameterAsString(parameters, "OUTPUT", context)
         os.makedirs(self.output_path, exist_ok=True)
 
+        # Configuration setup
         config = {
             "inputs": {
                 "reference_elev": {
@@ -206,10 +243,13 @@ class TopoWorkflow(XdemProcessingAlgorithm):
 
         workflow = Topo(config)
         workflow.run()
+
+        # Attempt to generate a PDF from HTML
         try:
             from weasyprint import HTML
             HTML(workflow.outputs_folder / "report.html").write_pdf(workflow.outputs_folder / "report.pdf")
         except: pass
+
         return {}
 
     def postProcessAlgorithm(self, context, feedback):
@@ -224,6 +264,9 @@ class TopoWorkflow(XdemProcessingAlgorithm):
 
     def groupId(self):
         return "Workflows"
+    
+    def tags(self):
+        return COREG_METHODS
 
     def shortHelpString(self):
         return "The topo workflow performs a topographical summary of an elevation dataset.\n" \

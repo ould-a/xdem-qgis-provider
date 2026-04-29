@@ -29,12 +29,11 @@ def coreg_info(coreg, feedback) -> None:
     feedback.pushInfo(metadata.getvalue())
 
 
-def load_mask(self, parameters, context, feedback, ref_dem) -> gu.Raster:
+def load_mask(self, parameters, context, feedback) -> gu.Raster:
     """
     This function allows to load a mask (e.g., a TIF file) and return a gu.Raster object.
     """
 
-    inlier_mask = None
     try:
         inlier_mask_layer = self.parameterAsLayer(parameters, "MASK", context)
         inlier_mask_path = inlier_mask_layer.dataProvider().dataSourceUri()
@@ -44,7 +43,7 @@ def load_mask(self, parameters, context, feedback, ref_dem) -> gu.Raster:
     except:
         feedback.pushWarning("Mask not provided")
         pass
-    return inlier_mask
+    return None
 
 
 # Main processing class
