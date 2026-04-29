@@ -1,5 +1,4 @@
 import xdem
-from .xdem_tools import XdemProcessingAlgorithm, load_mask
 from qgis.core import (
     QgsProcessingParameterRasterLayer,
     QgsProcessingParameterEnum,
@@ -7,6 +6,7 @@ from qgis.core import (
     QgsProcessingParameterDefinition,
     QgsProcessingParameterRasterDestination
 )
+from .xdem_tools import XdemProcessingAlgorithm, load_mask
 
 
 # Dictionaries listing bias correction and coregistration methods

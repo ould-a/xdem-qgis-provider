@@ -1,9 +1,9 @@
 import xdem
-from .xdem_tools import XdemProcessingAlgorithm, load_mask
 from qgis.core import (
     QgsProcessingParameterRasterLayer,
     QgsProcessingParameterRasterDestination
 )
+from .xdem_tools import XdemProcessingAlgorithm, load_mask
 
 
 class Heteroscedasticity(XdemProcessingAlgorithm):
