@@ -101,6 +101,11 @@ class Aspect(TerrainAttributes):
 
     def initAlgorithm(self, config=None):
         super().initAlgorithm()
+        """
+        Call to the parent class, with the addition of parameters specific to Aspect.
+        :param SURFACE_FIT: The surface fit to use.
+        :param UNIT: The unit in degrees or radians.
+        """
 
         parameter = QgsProcessingParameterEnum(
             name="SURFACE_FIT",
@@ -136,6 +141,13 @@ class Hillshade(TerrainAttributes):
 
     def initAlgorithm(self, config=None):
         super().initAlgorithm()
+        """
+        Call to the parent class, with the addition of parameters specific to Hillshade.
+        :param SURFACE_FIT: The surface fit to use.
+        :param ALTITUDE: The shading altitude in degrees.
+        :param AZIMUTH: The shading azimuth in degrees.
+        :param ZFACTOR: The vertical exaggeration factor.
+        """
 
         parameter = QgsProcessingParameterEnum(
             name="SURFACE_FIT",
@@ -149,14 +161,18 @@ class Hillshade(TerrainAttributes):
         parameter = QgsProcessingParameterNumber(
             name="ALTITUDE",
             description="Altitude",
-            defaultValue=45)
+            defaultValue=45,
+            minValue=0,
+            maxValue=90)
         parameter.setFlags(parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(parameter)
 
         parameter = QgsProcessingParameterNumber(
             name="AZIMUTH",
             description="Azimuth",
-            defaultValue=315)
+            defaultValue=315,
+            minValue=0,
+            maxValue=360)
         parameter.setFlags(parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(parameter)
 
@@ -183,9 +199,17 @@ class Hillshade(TerrainAttributes):
 
 
 class Curvature(TerrainAttributes):
+    """
+    This class represents the base class from which all curvature inherit.
+    """
 
     def initAlgorithm(self, config=None):
         super().initAlgorithm()
+        """
+        Call to the parent class, with the addition of parameters specific to Curvature, .
+        :param SURFACE_FIT: The surface fit to use.
+        :param CURV_METHOD: The method to use to calculate the curvature.
+        """
 
         parameter = QgsProcessingParameterEnum(
             name="SURFACE_FIT",
