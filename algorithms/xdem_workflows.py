@@ -10,6 +10,7 @@ from qgis.core import (
 )
 from .xdem_tools import XdemProcessingAlgorithm
 
+COREG_METHODS = COREG_METHODS[:-1] # Squeeze the last value (None)
 
 class AccuracyWorkflow(XdemProcessingAlgorithm):
     """
@@ -53,16 +54,16 @@ class AccuracyWorkflow(XdemProcessingAlgorithm):
             usesStaticStrings=True))
 
         self.addParameter(QgsProcessingParameterEnum(
-                    name="METHOD1",
-                    description="Method - 1",
-                    options=COREG_METHODS[:-1],
-                    defaultValue="NuthKaab",
-                    usesStaticStrings=True))
+            name="METHOD1",
+            description="Method - 1",
+            options=COREG_METHODS,
+            defaultValue="NuthKaab",
+            usesStaticStrings=True))
 
         parameter = (QgsProcessingParameterEnum(
             name="METHOD2",
             description="Method - 2",
-            options=COREG_METHODS[:-1],
+            options=COREG_METHODS,
             optional=True,
             usesStaticStrings=True))
         parameter.setFlags(parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
@@ -71,7 +72,7 @@ class AccuracyWorkflow(XdemProcessingAlgorithm):
         parameter = (QgsProcessingParameterEnum(
             name="METHOD3",
             description="Method - 3",
-            options=COREG_METHODS[:-1],
+            options=COREG_METHODS,
             optional=True,
             usesStaticStrings=True))
         parameter.setFlags(parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
