@@ -33,7 +33,7 @@ class BiasCorrection(XdemProcessingAlgorithm):
 
     def initAlgorithm(self, config = None):
         """
-        Function to get the settings entered by the user.
+        Function to retrieve parameters entered in QGIS.
         :param TBA_DEM: The DEM requiring correction.
         :param REF_DEM: The reference DEM.
         :param MASK: An optional inlier mask used to define reliable data points (0 for outliers, 1 for inliers)
@@ -83,8 +83,9 @@ class BiasCorrection(XdemProcessingAlgorithm):
 
         inlier_mask = load_mask(self, parameters, context, feedback, ref_dem)
 
-        # Loading the corresponding method and executing it
+        # Loading the corresponding method
         coreg = BIAS_METHODS[method]
+        
         coreg.fit(ref_dem, tba_dem, inlier_mask)
         aligned_dem = coreg.apply(tba_dem)
 
@@ -116,7 +117,7 @@ class Coregistration(XdemProcessingAlgorithm):
 
     def initAlgorithm(self, config = None):
         """
-        Function to get the settings entered by the user.
+        Function to retrieve parameters entered in QGIS.
         :param TBA_DEM: The DEM requiring correction.
         :param REF_DEM: The reference DEM.
         :param MASK: An optional inlier mask used to define reliable data points (0 for outliers, 1 for inliers)
@@ -219,7 +220,7 @@ class GapFilling(XdemProcessingAlgorithm):
 
     def initAlgorithm(self, config = None):
         """
-        Function to get the settings entered by the user.
+        Function to retrieve parameters entered in QGIS.
         :param TBF_DEM: The DEM to be filled out.
         :param OUTPUT: The filled DEM.
         """
@@ -243,7 +244,7 @@ class GapFilling(XdemProcessingAlgorithm):
 
         dem = xdem.DEM(dem_path)
 
-        # Conversion to DEM difference object 
+        # Conversion to DEM difference object
         ddem = xdem.dDEM(raster=dem, start_time=None, end_time=None)
 
         filled_array = ddem.interpolate(method="idw")

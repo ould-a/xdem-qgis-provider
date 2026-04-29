@@ -6,7 +6,12 @@ from qgis.PyQt.QtCore import QCoreApplication
 
 
 # Generic functions
+
 def dem_info(dem, feedback, stats : bool = False) -> None:
+    """
+    This function displays information and possibly statistics about a DEM in the QGIS console.
+    """
+
     metadata = io.StringIO()
     with redirect_stdout(metadata):
         dem.info(stats=stats)
@@ -14,13 +19,21 @@ def dem_info(dem, feedback, stats : bool = False) -> None:
 
 
 def coreg_info(coreg, feedback) -> None:
+    """
+    This function displays information about a Coreg in the QGIS console.
+    """
+
     metadata = io.StringIO()
     with redirect_stdout(metadata):
         coreg.info()
     feedback.pushInfo(metadata.getvalue())
 
 
-def load_mask(self, parameters, context, feedback, ref_dem):
+def load_mask(self, parameters, context, feedback, ref_dem) -> gu.Raster:
+    """
+    This function allows to load a mask (e.g., a TIF file) and return a gu.Raster object.
+    """
+
     inlier_mask = None
     try:
         inlier_mask_layer = self.parameterAsLayer(parameters, "MASK", context)
@@ -28,17 +41,22 @@ def load_mask(self, parameters, context, feedback, ref_dem):
         inlier_mask = gu.Raster(inlier_mask_path, is_mask=True)
         feedback.pushInfo("Mask loaded")
         return inlier_mask
-    except: pass
-    feedback.pushWarning("Mask not provided")
+    except:
+        feedback.pushWarning("Mask not provided")
+        pass
     return inlier_mask
 
 
 # Main processing class
 class XdemProcessingAlgorithm(QgsProcessingAlgorithm):
+    """
+    This class represents the base class from which all xDEM algorithms inherit.
+    """
 
     def flags(self):
+        # Multithreading is disabled to prevent memory conflicts
         return super().flags() | QgsProcessingAlgorithm.FlagNoThreading
-    
+
     def displayName(self):
         return self.tr(self.name())
 

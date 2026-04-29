@@ -16,7 +16,7 @@ class TerrainAttributes(XdemProcessingAlgorithm):
 
     def initAlgorithm(self, config = None):
         """
-        Function to get the settings entered by the user.
+        Function to retrieve parameters entered in QGIS.
         :param DEM: The DEM on which the calculation will be performed.
         :param OUTPUT: The final results.
         """
