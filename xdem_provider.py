@@ -1,9 +1,8 @@
 from qgis.core import QgsProcessingProvider
-
-from .algorithms.xdem_corrections import BiasCorrection, Coregistration, GapFilling
+from .algorithms.xdem_corrections import *
 from .algorithms.xdem_terrain_attributes import *
-from .algorithms.xdem_uncertainty import Heteroscedasticity
-from .algorithms.xdem_workflows import AccuracyWorkflow, TopoWorkflow
+from .algorithms.xdem_uncertainty import *
+from .algorithms.xdem_workflows import *
 
 class XdemProvider(QgsProcessingProvider):
 
