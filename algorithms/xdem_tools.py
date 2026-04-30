@@ -9,7 +9,7 @@ from qgis.PyQt.QtCore import QCoreApplication
 
 def dem_info(dem, feedback, stats : bool = False) -> None:
     """
-    This function displays information and possibly statistics about a DEM in the QGIS console.
+    This function displays information and statistics about a DEM in the QGIS console.
     """
 
     metadata = io.StringIO()
