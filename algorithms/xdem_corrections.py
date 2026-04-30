@@ -89,6 +89,8 @@ class BiasCorrection(XdemProcessingAlgorithm):
 
         coreg.fit(ref_dem, tba_dem, inlier_mask)
         aligned_dem = coreg.apply(tba_dem)
+
+        # Display the coregistration informations in the QGIS console
         feedback.pushInfo("Coregistration informations:")
         coreg_info(coreg, feedback)
 
@@ -193,6 +195,8 @@ class Coregistration(XdemProcessingAlgorithm):
         else:
             coreg.fit(ref_dem, tba_dem, inlier_mask)
             aligned_dem = coreg.apply(tba_dem)
+
+            # Display the coregistration informations in the QGIS console
             feedback.pushInfo("Coregistration informations:")
             coreg_info(coreg, feedback)
 

@@ -39,6 +39,8 @@ class TerrainAttributes(XdemProcessingAlgorithm):
         output_path = self.parameterAsOutputLayer(parameters, "OUTPUT", context)
 
         dem = xdem.DEM(dem_path)
+
+        # Display DEM informations in the QGIS console
         feedback.pushInfo("DEM informations:")
         dem_info(dem, feedback)
 
