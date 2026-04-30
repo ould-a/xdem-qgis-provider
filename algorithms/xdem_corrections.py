@@ -1,3 +1,4 @@
+import os
 import xdem
 from qgis.core import (
     QgsProcessingParameterRasterLayer,
@@ -180,7 +181,6 @@ class Coregistration(XdemProcessingAlgorithm):
 
         # Configuring blockwise mode if a block size is specified
         if block_size != 0:
-            import os
             feedback.pushWarning("Curently, Blockwise work only with Nuth and Kääb (2011).")
             blockwise = xdem.coreg.BlockwiseCoreg(xdem.coreg.NuthKaab(),
                                       block_size_fit=block_size,
