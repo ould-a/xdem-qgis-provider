@@ -20,7 +20,3 @@ All the algorithms can be accessed through the QGIS Processing Toolbox in `xDEM`
 ### Additional documentation
 - [xDEM package](https://xdem.readthedocs.io/en/stable/index.html)
 - [Developper guide](dev/README.md)
-
-### Licence
-
-### Citation
