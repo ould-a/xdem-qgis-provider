@@ -85,7 +85,7 @@ class BiasCorrection(XdemProcessingAlgorithm):
 
         # Loading the corresponding method
         coreg = BIAS_METHODS[method]
-        
+
         coreg.fit(ref_dem, tba_dem, inlier_mask)
         aligned_dem = coreg.apply(tba_dem)
 
