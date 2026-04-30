@@ -6,7 +6,7 @@ from qgis.core import (
     QgsProcessingParameterDefinition,
     QgsProcessingParameterRasterDestination
 )
-from .xdem_tools import XdemProcessingAlgorithm
+from .xdem_tools import XdemProcessingAlgorithm, dem_info
 
 
 class TerrainAttributes(XdemProcessingAlgorithm):
@@ -39,6 +39,8 @@ class TerrainAttributes(XdemProcessingAlgorithm):
         output_path = self.parameterAsOutputLayer(parameters, "OUTPUT", context)
 
         dem = xdem.DEM(dem_path)
+        feedback.pushInfo("DEM informations:")
+        dem_info(dem, feedback)
 
         # Calling the attribute get function with its parameters
         function_with_parameters = self.get_attribute_and_parameters(parameters, context)

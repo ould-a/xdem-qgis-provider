@@ -7,7 +7,7 @@ from qgis.core import (
     QgsProcessingParameterDefinition,
     QgsProcessingParameterRasterDestination
 )
-from .xdem_tools import XdemProcessingAlgorithm, load_mask
+from .xdem_tools import XdemProcessingAlgorithm, coreg_info, load_mask
 
 
 # Dictionaries listing bias correction and coregistration methods
@@ -89,6 +89,8 @@ class BiasCorrection(XdemProcessingAlgorithm):
 
         coreg.fit(ref_dem, tba_dem, inlier_mask)
         aligned_dem = coreg.apply(tba_dem)
+        feedback.pushInfo("Coregistration informations:")
+        coreg_info(coreg, feedback)
 
         aligned_dem.to_file(output_path)
 
@@ -191,6 +193,8 @@ class Coregistration(XdemProcessingAlgorithm):
         else:
             coreg.fit(ref_dem, tba_dem, inlier_mask)
             aligned_dem = coreg.apply(tba_dem)
+            feedback.pushInfo("Coregistration informations:")
+            coreg_info(coreg, feedback)
 
         aligned_dem.to_file(output_path)
 
