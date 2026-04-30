@@ -159,7 +159,7 @@ class AccuracyWorkflow(XdemProcessingAlgorithm):
         return "The accuracy workflow performs an accuracy assessment of an elevation dataset.\n" \
         "This assessment relies on analyzing the elevation differences to a secondary elevation dataset on static surfaces, " \
         "as an error proxy to perform coregistration and bias-correction (systematic errors) and to perform uncertainty quantification (structured random errors).\n" \
-        "Two output levels are available: Level 1 is the basic version, while Level 2 allows you to save more raster and statistical data."
+        "Two output levels are available, Level 1 corresponds to the basic version, while Level 2 allows you to save rasters and statistics."
 
     def createInstance(self):
         return AccuracyWorkflow()
@@ -267,13 +267,13 @@ class TopoWorkflow(XdemProcessingAlgorithm):
         return "Workflows"
     
     def tags(self):
-        return COREG_METHODS
+        return TERRAIN_ATTRIBUTES
 
     def shortHelpString(self):
         return "The topo workflow performs a topographical summary of an elevation dataset.\n" \
         "This summary derives a series of terrain attributes (e.g. slope, hillshade, aspect, etc.) " \
         "with statistics (e.g. mean, max, min, etc.).\n" \
-        "Two output levels are available: Level 1 is the basic version, while Level 2 allows you to save more raster and statistical data."
+        "Two output levels are available, Level 1 corresponds to the basic version, while Level 2 allows you to save rasters and statistics."
 
     def createInstance(self):
         return TopoWorkflow()
