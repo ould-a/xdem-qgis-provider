@@ -395,6 +395,10 @@ class TextureShading(TerrainAttributes):
 
 
 class GetTerrainAttributes(XdemProcessingAlgorithm):
+    """
+    This class enables the simultaneous calculation of a wide range of terrain attributes.
+    """
+
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterRasterLayer(
             name="DEM",
