@@ -20,28 +20,29 @@ class XdemProvider(QgsProcessingProvider):
 
         # Terrain attributes
         self.addAlgorithm(Aspect())
-        self.addAlgorithm(Hillshade())
-        self.addAlgorithm(Slope())
-        self.addAlgorithm(ProfileCurvature())
-        self.addAlgorithm(TangentialCurvature())
-        self.addAlgorithm(PlanformCurvature())
         self.addAlgorithm(FlowlineCurvature())
+        self.addAlgorithm(FractalRoughness())
+        self.addAlgorithm(GetTerrainAttributes())
+        self.addAlgorithm(Hillshade())
         self.addAlgorithm(MaxCurvature())
         self.addAlgorithm(MinCurvature())
-        self.addAlgorithm(TopographicPositionIndex())
-        self.addAlgorithm(TerrainRuggednessIndex())
+        self.addAlgorithm(PlanformCurvature())
+        self.addAlgorithm(ProfileCurvature())
         self.addAlgorithm(Roughness())
         self.addAlgorithm(Rugosity())
-        self.addAlgorithm(FractalRoughness())
+        self.addAlgorithm(Slope())
+        self.addAlgorithm(TangentialCurvature())
+        self.addAlgorithm(TerrainRuggednessIndex())
         self.addAlgorithm(TextureShading())
+        self.addAlgorithm(TopographicPositionIndex())
 
         # Uncertainty
         self.addAlgorithm(Heteroscedasticity())
-        
+
         # Workflows
         self.addAlgorithm(AccuracyWorkflow())
         self.addAlgorithm(TopoWorkflow())
-        
+
     def id(self):
         return "XDEM"
 

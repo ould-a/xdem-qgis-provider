@@ -97,8 +97,8 @@ class AccuracyWorkflow(XdemProcessingAlgorithm):
         method2 = self.parameterAsString(parameters, "METHOD2", context)
         method3 = self.parameterAsString(parameters, "METHOD3", context)
 
-        self.output_path = self.parameterAsString(parameters, "OUTPUT", context)
-        os.makedirs(self.output_path, exist_ok=True)
+        self.output_folder = self.parameterAsString(parameters, "OUTPUT", context)
+        os.makedirs(self.output_folder, exist_ok=True)
 
         # Configuration setup
         config= {
@@ -112,7 +112,7 @@ class AccuracyWorkflow(XdemProcessingAlgorithm):
             },
             "outputs": {
                 "level": level,
-                "path": str(self.output_path),
+                "path": str(self.output_folder),
             },
             "coregistration": {
                 "step_one": {
@@ -140,7 +140,7 @@ class AccuracyWorkflow(XdemProcessingAlgorithm):
         return {}
 
     def postProcessAlgorithm(self, context, feedback):
-        rasters_folder = os.path.join(self.output_path, "rasters")
+        rasters_folder = os.path.join(self.output_folder, "rasters")
         for file in os.listdir(rasters_folder):
             file_path = os.path.join(rasters_folder, file)
             iface.addRasterLayer(file_path)
@@ -222,8 +222,8 @@ class TopoWorkflow(XdemProcessingAlgorithm):
         stats = self.parameterAsEnumStrings(parameters, "STATS", context)
         level = self.parameterAsInt(parameters, "LEVEL", context)
 
-        self.output_path = self.parameterAsString(parameters, "OUTPUT", context)
-        os.makedirs(self.output_path, exist_ok=True)
+        self.output_folder = self.parameterAsString(parameters, "OUTPUT", context)
+        os.makedirs(self.output_folder, exist_ok=True)
 
         # Configuration setup
         config = {
@@ -237,7 +237,7 @@ class TopoWorkflow(XdemProcessingAlgorithm):
                     "downsample": 1,
                 },
             },
-            "outputs": {"level": level, "path": str(self.output_path)},
+            "outputs": {"level": level, "path": str(self.output_folder)},
             "statistics": stats,
             "terrain_attributes": attributes,
         }
@@ -254,7 +254,7 @@ class TopoWorkflow(XdemProcessingAlgorithm):
         return {}
 
     def postProcessAlgorithm(self, context, feedback):
-        rasters_folder = os.path.join(self.output_path, "rasters")
+        rasters_folder = os.path.join(self.output_folder, "rasters")
         for file in os.listdir(rasters_folder):
             file_path = os.path.join(rasters_folder, file)
             iface.addRasterLayer(file_path)
