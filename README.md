@@ -17,6 +17,7 @@ All the algorithms can be accessed through the QGIS Processing Toolbox in `xDEM`
 - **Uncertainty**: To visualise potential errors resulting from corections.
 - **Workflows**: To run full pipelines and generate detailed reports.
 
-### Additional documentation
+### Documentation
+- [Plugin documentation](/)
 - [xDEM package](https://xdem.readthedocs.io/en/stable/index.html)
 - [Developper guide](dev/README.md)
