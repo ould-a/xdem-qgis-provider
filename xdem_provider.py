@@ -4,6 +4,7 @@ from .algorithms.xdem_terrain_attributes import *
 from .algorithms.xdem_uncertainty import *
 from .algorithms.xdem_workflows import *
 
+
 class XdemProvider(QgsProcessingProvider):
 
     def __init__(self):
