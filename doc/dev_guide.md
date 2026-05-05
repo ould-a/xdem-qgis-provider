@@ -64,14 +64,14 @@ The xdem algorithms follow this logic. Here is a simplified version of a slope p
 class Slope(QgsProcessingAlgorithm):
     def initAlgorithm()
         # Input DEM
-        self.addParameter(QgsProcessingParameterRasterLayer(name="DEM", description="DEM"))
+        self.addParameter(QgsProcessingParameterRasterLayer(name="INPUT", description="Dem"))
 
         # Output Slope
         self.addParameter(QgsProcessingParameterRasterDestination(name="OUTPUT", description="Slope"))
 
     def processAlgorithm(parameters)
         # Loading the layer from QGIS
-        dem_layer = self.parameterAsRasterLayer(parameters, "DEM")
+        dem_layer = self.parameterAsRasterLayer(parameters, "INPUT")
 
         # Getting the slope output directory
         output_path = self.parameterAsOutputLayer(parameters, "OUTPUT")
