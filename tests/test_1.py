@@ -24,10 +24,7 @@ def tba_dem_layer():
 
 def test_terrain_attribute(ref_dem_layer, tmp_path):
     output_path = str(tmp_path / "test_slope.tif")
-    result = processing.run("XDEM:Slope", {
-        "DEM": ref_dem_layer,
-        "OUTPUT": output_path
-    })
+    result = processing.run("XDEM:Slope", {"DEM": ref_dem_layer, "OUTPUT": output_path})
     assert "OUTPUT" in result
     output = QgsRasterLayer(result["OUTPUT"])
     assert output.isValid()
@@ -35,14 +32,17 @@ def test_terrain_attribute(ref_dem_layer, tmp_path):
 
 def test_coregistration(ref_dem_layer, tba_dem_layer, tmp_path):
     output_path = str(tmp_path / "test_aligned_dem.tif")
-    result = processing.run("XDEM:Coregistration", {
-        "TBA_DEM": tba_dem_layer,
-        "REF_DEM": ref_dem_layer,
-        "MASK": None,
-        "METHOD": "Nuth and Kääb (2011)",
-        "BLOCKWISE": None,
-        "OUTPUT": output_path
-    })
+    result = processing.run(
+        "XDEM:Coregistration",
+        {
+            "TBA_DEM": tba_dem_layer,
+            "REF_DEM": ref_dem_layer,
+            "MASK": None,
+            "METHOD": "Nuth and Kääb (2011)",
+            "BLOCKWISE": None,
+            "OUTPUT": output_path,
+        },
+    )
     assert "OUTPUT" in result
     output = QgsRasterLayer(result["OUTPUT"])
     assert output.isValid()

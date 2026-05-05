@@ -7,7 +7,7 @@ from qgis.core import (
     QgsProcessingParameterNumber,
     QgsProcessingParameterDefinition,
     QgsProcessingParameterRasterDestination,
-    QgsProcessingParameterFolderDestination
+    QgsProcessingParameterFolderDestination,
 )
 from xdem.terrain import available_attributes
 from .xdem_tools import XdemProcessingAlgorithm, dem_info
@@ -18,20 +18,22 @@ class TerrainAttributes(XdemProcessingAlgorithm):
     This class represents the base class from which all terrain attributes inherit.
     """
 
-    def initAlgorithm(self, config = None):
+    def initAlgorithm(self, config=None):
         """
         Function to retrieve parameters entered in QGIS.
         :param DEM: The DEM on which the calculation will be performed.
         :param OUTPUT: The final results.
         """
 
-        self.addParameter(QgsProcessingParameterRasterLayer(
-            name="DEM",
-            description="DEM"))
+        self.addParameter(
+            QgsProcessingParameterRasterLayer(name="DEM", description="DEM")
+        )
 
-        self.addParameter(QgsProcessingParameterRasterDestination(
-            name="OUTPUT",
-            description=self.name()))
+        self.addParameter(
+            QgsProcessingParameterRasterDestination(
+                name="OUTPUT", description=self.name()
+            )
+        )
 
     def processAlgorithm(self, parameters, context, feedback):
         # Loading the layer from QGIS
@@ -49,7 +51,9 @@ class TerrainAttributes(XdemProcessingAlgorithm):
         dem_info(dem, feedback)
 
         # Calling the attribute get function with its parameters
-        function_with_parameters = self.get_attribute_and_parameters(parameters, context)
+        function_with_parameters = self.get_attribute_and_parameters(
+            parameters, context
+        )
 
         # Calculation and saving
         attribute = function_with_parameters(dem)
@@ -76,8 +80,11 @@ class Slope(TerrainAttributes):
             description="Surface fit",
             options=["Florinsky", "Horn", "ZevenbergThorne"],
             defaultValue="Florinsky",
-            usesStaticStrings=True)
-        parameter.setFlags(parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+            usesStaticStrings=True,
+        )
+        parameter.setFlags(
+            parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced
+        )
         self.addParameter(parameter)
 
         parameter = QgsProcessingParameterEnum(
@@ -85,8 +92,11 @@ class Slope(TerrainAttributes):
             description="Unit",
             options=["Degrees", "Radians"],
             defaultValue="Degrees",
-            usesStaticStrings=True)
-        parameter.setFlags(parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+            usesStaticStrings=True,
+        )
+        parameter.setFlags(
+            parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced
+        )
         self.addParameter(parameter)
 
     def get_attribute_and_parameters(self, parameters, context):
@@ -95,7 +105,11 @@ class Slope(TerrainAttributes):
         """
 
         surface_fit = self.parameterAsString(parameters, "SURFACE_FIT", context)
-        degrees = True if self.parameterAsString(parameters, "UNIT", context) == "Degrees" else False
+        degrees = (
+            True
+            if self.parameterAsString(parameters, "UNIT", context) == "Degrees"
+            else False
+        )
         return lambda dem: dem.slope(surface_fit=surface_fit, degrees=degrees)
 
     def name(self):
@@ -120,8 +134,11 @@ class Aspect(TerrainAttributes):
             description="Surface fit",
             options=["Florinsky", "Horn", "ZevenbergThorne"],
             defaultValue="Florinsky",
-            usesStaticStrings=True)
-        parameter.setFlags(parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+            usesStaticStrings=True,
+        )
+        parameter.setFlags(
+            parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced
+        )
         self.addParameter(parameter)
 
         parameter = QgsProcessingParameterEnum(
@@ -129,13 +146,20 @@ class Aspect(TerrainAttributes):
             description="Unit",
             options=["Degrees", "Radians"],
             defaultValue="Degrees",
-            usesStaticStrings=True)
-        parameter.setFlags(parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+            usesStaticStrings=True,
+        )
+        parameter.setFlags(
+            parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced
+        )
         self.addParameter(parameter)
 
     def get_attribute_and_parameters(self, parameters, context):
         surface_fit = self.parameterAsString(parameters, "SURFACE_FIT", context)
-        degrees = True if self.parameterAsString(parameters, "UNIT", context) == "Degrees" else False
+        degrees = (
+            True
+            if self.parameterAsString(parameters, "UNIT", context) == "Degrees"
+            else False
+        )
         return lambda dem: dem.aspect(surface_fit=surface_fit, degrees=degrees)
 
     def name(self):
@@ -162,8 +186,11 @@ class Hillshade(TerrainAttributes):
             description="Surface fit",
             options=["Florinsky", "Horn", "ZevenbergThorne"],
             defaultValue="Florinsky",
-            usesStaticStrings=True)
-        parameter.setFlags(parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+            usesStaticStrings=True,
+        )
+        parameter.setFlags(
+            parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced
+        )
         self.addParameter(parameter)
 
         parameter = QgsProcessingParameterNumber(
@@ -171,8 +198,11 @@ class Hillshade(TerrainAttributes):
             description="Altitude",
             defaultValue=45,
             minValue=0,
-            maxValue=90)
-        parameter.setFlags(parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+            maxValue=90,
+        )
+        parameter.setFlags(
+            parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced
+        )
         self.addParameter(parameter)
 
         parameter = QgsProcessingParameterNumber(
@@ -180,15 +210,19 @@ class Hillshade(TerrainAttributes):
             description="Azimuth",
             defaultValue=315,
             minValue=0,
-            maxValue=360)
-        parameter.setFlags(parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+            maxValue=360,
+        )
+        parameter.setFlags(
+            parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced
+        )
         self.addParameter(parameter)
 
         parameter = QgsProcessingParameterNumber(
-            name="ZFACTOR",
-            description="Z factor",
-            defaultValue=1)
-        parameter.setFlags(parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+            name="ZFACTOR", description="Z factor", defaultValue=1
+        )
+        parameter.setFlags(
+            parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced
+        )
         self.addParameter(parameter)
 
     def get_attribute_and_parameters(self, parameters, context):
@@ -197,7 +231,11 @@ class Hillshade(TerrainAttributes):
         azimuth = self.parameterAsInt(parameters, "AZIMUTH", context)
         z_factor = self.parameterAsInt(parameters, "ZFACTOR", context)
         return lambda dem: dem.hillshade(
-            surface_fit=surface_fit, azimuth=azimuth, altitude=altitude, z_factor=z_factor)
+            surface_fit=surface_fit,
+            azimuth=azimuth,
+            altitude=altitude,
+            z_factor=z_factor,
+        )
 
     def name(self):
         return "Hillshade"
@@ -224,8 +262,11 @@ class Curvature(TerrainAttributes):
             description="Surface fit",
             options=["Florinsky", "ZevenbergThorne"],
             defaultValue="Florinsky",
-            usesStaticStrings=True)
-        parameter.setFlags(parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+            usesStaticStrings=True,
+        )
+        parameter.setFlags(
+            parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced
+        )
         self.addParameter(parameter)
 
         parameter = QgsProcessingParameterEnum(
@@ -233,8 +274,11 @@ class Curvature(TerrainAttributes):
             description="Method",
             options=["geometric", "directional"],
             defaultValue="geometric",
-            usesStaticStrings=True)
-        parameter.setFlags(parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+            usesStaticStrings=True,
+        )
+        parameter.setFlags(
+            parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced
+        )
         self.addParameter(parameter)
 
 
@@ -243,7 +287,9 @@ class ProfileCurvature(Curvature):
     def get_attribute_and_parameters(self, parameters, context):
         surface_fit = self.parameterAsString(parameters, "SURFACE_FIT", context)
         curv_method = self.parameterAsString(parameters, "CURV_METHOD", context)
-        return lambda dem: dem.profile_curvature(surface_fit=surface_fit, curv_method=curv_method)
+        return lambda dem: dem.profile_curvature(
+            surface_fit=surface_fit, curv_method=curv_method
+        )
 
     def name(self):
         return "Profile curvature"
@@ -257,7 +303,9 @@ class TangentialCurvature(Curvature):
     def get_attribute_and_parameters(self, parameters, context):
         surface_fit = self.parameterAsString(parameters, "SURFACE_FIT", context)
         curv_method = self.parameterAsString(parameters, "CURV_METHOD", context)
-        return lambda dem: dem.tangential_curvature(surface_fit=surface_fit, curv_method=curv_method)
+        return lambda dem: dem.tangential_curvature(
+            surface_fit=surface_fit, curv_method=curv_method
+        )
 
     def name(self):
         return "Tangential curvature"
@@ -271,7 +319,9 @@ class PlanformCurvature(Curvature):
     def get_attribute_and_parameters(self, parameters, context):
         surface_fit = self.parameterAsString(parameters, "SURFACE_FIT", context)
         curv_method = self.parameterAsString(parameters, "CURV_METHOD", context)
-        return lambda dem: dem.planform_curvature(surface_fit=surface_fit, curv_method=curv_method)
+        return lambda dem: dem.planform_curvature(
+            surface_fit=surface_fit, curv_method=curv_method
+        )
 
     def name(self):
         return "Planform curvature"
@@ -285,7 +335,9 @@ class FlowlineCurvature(Curvature):
     def get_attribute_and_parameters(self, parameters, context):
         surface_fit = self.parameterAsString(parameters, "SURFACE_FIT", context)
         curv_method = self.parameterAsString(parameters, "CURV_METHOD", context)
-        return lambda dem: dem.flowline_curvature(surface_fit=surface_fit, curv_method=curv_method)
+        return lambda dem: dem.flowline_curvature(
+            surface_fit=surface_fit, curv_method=curv_method
+        )
 
     def name(self):
         return "Flowline curvature"
@@ -299,7 +351,9 @@ class MaxCurvature(Curvature):
     def get_attribute_and_parameters(self, parameters, context):
         surface_fit = self.parameterAsString(parameters, "SURFACE_FIT", context)
         curv_method = self.parameterAsString(parameters, "CURV_METHOD", context)
-        return lambda dem: dem.max_curvature(surface_fit=surface_fit, curv_method=curv_method)
+        return lambda dem: dem.max_curvature(
+            surface_fit=surface_fit, curv_method=curv_method
+        )
 
     def name(self):
         return "Max curvature"
@@ -313,7 +367,9 @@ class MinCurvature(Curvature):
     def get_attribute_and_parameters(self, parameters, context):
         surface_fit = self.parameterAsString(parameters, "SURFACE_FIT", context)
         curv_method = self.parameterAsString(parameters, "CURV_METHOD", context)
-        return lambda dem: dem.min_curvature(surface_fit=surface_fit, curv_method=curv_method)
+        return lambda dem: dem.min_curvature(
+            surface_fit=surface_fit, curv_method=curv_method
+        )
 
     def name(self):
         return "Min curvature"
@@ -400,24 +456,29 @@ class GetTerrainAttributes(XdemProcessingAlgorithm):
     """
 
     def initAlgorithm(self, config=None):
-        self.addParameter(QgsProcessingParameterRasterLayer(
-            name="DEM",
-            description="DEM"))
+        self.addParameter(
+            QgsProcessingParameterRasterLayer(name="DEM", description="DEM")
+        )
 
-        self.addParameter(QgsProcessingParameterEnum(
-            name="ATTRIBUTES",
-            description="Attributes",
-            options=available_attributes,
-            defaultValue=["slope", "aspect", "hillshade", "profile_curvature"],
-            allowMultiple=True,
-            usesStaticStrings=True))
+        self.addParameter(
+            QgsProcessingParameterEnum(
+                name="ATTRIBUTES",
+                description="Attributes",
+                options=available_attributes,
+                defaultValue=["slope", "aspect", "hillshade", "profile_curvature"],
+                allowMultiple=True,
+                usesStaticStrings=True,
+            )
+        )
 
-        self.addParameter(QgsProcessingParameterFolderDestination(
-            name="OUTPUT",
-            description="Attributes folder"))
+        self.addParameter(
+            QgsProcessingParameterFolderDestination(
+                name="OUTPUT", description="Attributes folder"
+            )
+        )
 
     def processAlgorithm(self, parameters, context, feedback):
-         # Loading the layer from QGIS
+        # Loading the layer from QGIS
         dem_layer = self.parameterAsRasterLayer(parameters, "DEM", context)
 
         # Loading attributes list
@@ -438,7 +499,7 @@ class GetTerrainAttributes(XdemProcessingAlgorithm):
         attributes = dem.get_terrain_attribute(attribute=attributes_list)
 
         if len(attributes_list) == 1:
-            attributes=[attributes]
+            attributes = [attributes]
 
         for name, res in zip(attributes_list, attributes):
             output = os.path.join(self.output_folder, f"{name}.tif")

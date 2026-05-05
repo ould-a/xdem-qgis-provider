@@ -4,10 +4,10 @@ from contextlib import redirect_stdout
 from qgis.core import QgsProcessingAlgorithm
 from qgis.PyQt.QtCore import QCoreApplication
 
-
 # Generic functions
 
-def dem_info(dem, feedback, stats : bool = False) -> None:
+
+def dem_info(dem, feedback, stats: bool = False) -> None:
     """
     This function displays information and statistics about a DEM in the QGIS console.
     """

@@ -5,25 +5,26 @@ from qgis.core import (
     QgsProcessingParameterEnum,
     QgsProcessingParameterNumber,
     QgsProcessingParameterDefinition,
-    QgsProcessingParameterRasterDestination
+    QgsProcessingParameterRasterDestination,
 )
 from .xdem_tools import XdemProcessingAlgorithm, coreg_info, load_mask
 
-
 # Dictionaries listing bias correction and coregistration methods
 
-BIAS_METHODS = {"Deramping": xdem.coreg.Deramp(),
-                "Directional biases" : xdem.coreg.DirectionalBias(),
-                "Terrain biases": xdem.coreg.TerrainBias()
+BIAS_METHODS = {
+    "Deramping": xdem.coreg.Deramp(),
+    "Directional biases": xdem.coreg.DirectionalBias(),
+    "Terrain biases": xdem.coreg.TerrainBias(),
 }
 
 
-COREG_METHODS = {"Nuth and Kääb (2011)": xdem.coreg.NuthKaab(),
-                 "Minimization of dh": xdem.coreg.DhMinimize(),
-                 "Least Z-difference": xdem.coreg.LZD(),
-                 "Iterative closest point": xdem.coreg.ICP(),
-                 "Coherent point drift": xdem.coreg.CPD(),
-                 "Vertical shift": xdem.coreg.VerticalShift()
+COREG_METHODS = {
+    "Nuth and Kääb (2011)": xdem.coreg.NuthKaab(),
+    "Minimization of dh": xdem.coreg.DhMinimize(),
+    "Least Z-difference": xdem.coreg.LZD(),
+    "Iterative closest point": xdem.coreg.ICP(),
+    "Coherent point drift": xdem.coreg.CPD(),
+    "Vertical shift": xdem.coreg.VerticalShift(),
 }
 
 
@@ -32,7 +33,7 @@ class BiasCorrection(XdemProcessingAlgorithm):
     This class is designed to correct elevation errors using various bias correction methods.
     """
 
-    def initAlgorithm(self, config = None):
+    def initAlgorithm(self, config=None):
         """
         Function to retrieve parameters entered in QGIS.
         :param TBA_DEM: The DEM requiring correction.
@@ -42,30 +43,39 @@ class BiasCorrection(XdemProcessingAlgorithm):
         :param OUTPUT: The aligned DEM.
         """
 
-        self.addParameter(QgsProcessingParameterRasterLayer(
-            name="TBA_DEM",
-            description="DEM to be aligned"))
+        self.addParameter(
+            QgsProcessingParameterRasterLayer(
+                name="TBA_DEM", description="DEM to be aligned"
+            )
+        )
 
-        self.addParameter(QgsProcessingParameterRasterLayer(
-            name="REF_DEM",
-            description="Reference DEM"))
+        self.addParameter(
+            QgsProcessingParameterRasterLayer(
+                name="REF_DEM", description="Reference DEM"
+            )
+        )
 
-        self.addParameter(QgsProcessingParameterRasterLayer(
-            name="MASK",
-            description="Inlier mask",
-            defaultValue=None,
-            optional=True))
+        self.addParameter(
+            QgsProcessingParameterRasterLayer(
+                name="MASK", description="Inlier mask", defaultValue=None, optional=True
+            )
+        )
 
-        self.addParameter(QgsProcessingParameterEnum(
-            name="METHOD",
-            description="Method",
-            options=BIAS_METHODS,
-            defaultValue="Deramping",
-            usesStaticStrings=True))
+        self.addParameter(
+            QgsProcessingParameterEnum(
+                name="METHOD",
+                description="Method",
+                options=BIAS_METHODS,
+                defaultValue="Deramping",
+                usesStaticStrings=True,
+            )
+        )
 
-        self.addParameter(QgsProcessingParameterRasterDestination(
-            name="OUTPUT",
-            description="Aligned DEM"))
+        self.addParameter(
+            QgsProcessingParameterRasterDestination(
+                name="OUTPUT", description="Aligned DEM"
+            )
+        )
 
     def processAlgorithm(self, parameters, context, feedback):
         # Loading layers from QGIS
@@ -108,8 +118,10 @@ class BiasCorrection(XdemProcessingAlgorithm):
         return BIAS_METHODS
 
     def shortHelpString(self):
-        return "This algorithm aim at correcting both systematic elevation errors and spatially-structured random errors.\n" \
-        "Bias-correction methods correspond to transformations that cannot be described as a 3D affine transformations."
+        return (
+            "This algorithm aim at correcting both systematic elevation errors and spatially-structured random errors.\n"
+            "Bias-correction methods correspond to transformations that cannot be described as a 3D affine transformations."
+        )
 
     def createInstance(self):
         return BiasCorrection()
@@ -120,7 +132,7 @@ class Coregistration(XdemProcessingAlgorithm):
     This class is designed to correct elevation errors using affine coregistration methods.
     """
 
-    def initAlgorithm(self, config = None):
+    def initAlgorithm(self, config=None):
         """
         Function to retrieve parameters entered in QGIS.
         :param TBA_DEM: The DEM requiring correction.
@@ -131,37 +143,47 @@ class Coregistration(XdemProcessingAlgorithm):
         :param OUTPUT: The aligned DEM.
         """
 
-        self.addParameter(QgsProcessingParameterRasterLayer(
-            name="TBA_DEM",
-            description="DEM to be aligned"))
+        self.addParameter(
+            QgsProcessingParameterRasterLayer(
+                name="TBA_DEM", description="DEM to be aligned"
+            )
+        )
 
-        self.addParameter(QgsProcessingParameterRasterLayer(
-            name="REF_DEM",
-            description="Reference DEM"))
+        self.addParameter(
+            QgsProcessingParameterRasterLayer(
+                name="REF_DEM", description="Reference DEM"
+            )
+        )
 
-        self.addParameter(QgsProcessingParameterRasterLayer(
-            name="MASK",
-            description="Inlier mask",
-            defaultValue=None,
-            optional=True))
+        self.addParameter(
+            QgsProcessingParameterRasterLayer(
+                name="MASK", description="Inlier mask", defaultValue=None, optional=True
+            )
+        )
 
-        self.addParameter(QgsProcessingParameterEnum(
-            name="METHOD",
-            description="Method",
-            options=COREG_METHODS,
-            defaultValue="Nuth and Kääb (2011)",
-            usesStaticStrings=True))
+        self.addParameter(
+            QgsProcessingParameterEnum(
+                name="METHOD",
+                description="Method",
+                options=COREG_METHODS,
+                defaultValue="Nuth and Kääb (2011)",
+                usesStaticStrings=True,
+            )
+        )
 
         parameter = QgsProcessingParameterNumber(
-            name="BLOCKSIZE",
-            description="Blocksize",
-            optional=True)
-        parameter.setFlags(parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+            name="BLOCKSIZE", description="Blocksize", optional=True
+        )
+        parameter.setFlags(
+            parameter.flags() | QgsProcessingParameterDefinition.FlagAdvanced
+        )
         self.addParameter(parameter)
 
-        self.addParameter(QgsProcessingParameterRasterDestination(
-            name="OUTPUT",
-            description="Aligned DEM"))
+        self.addParameter(
+            QgsProcessingParameterRasterDestination(
+                name="OUTPUT", description="Aligned DEM"
+            )
+        )
 
     def processAlgorithm(self, parameters, context, feedback):
         # Loading layers from QGIS
@@ -185,11 +207,15 @@ class Coregistration(XdemProcessingAlgorithm):
 
         # Configuring blockwise mode if a block size is specified
         if block_size != 0:
-            feedback.pushWarning("Curently, Blockwise work only with Nuth and Kääb (2011).")
-            blockwise = xdem.coreg.BlockwiseCoreg(xdem.coreg.NuthKaab(),
-                                      block_size_fit=block_size,
-                                      block_size_apply=block_size,
-                                      parent_path=os.path.dirname(__file__))
+            feedback.pushWarning(
+                "Curently, Blockwise work only with Nuth and Kääb (2011)."
+            )
+            blockwise = xdem.coreg.BlockwiseCoreg(
+                xdem.coreg.NuthKaab(),
+                block_size_fit=block_size,
+                block_size_apply=block_size,
+                parent_path=os.path.dirname(__file__),
+            )
             blockwise.fit(ref_dem, tba_dem, inlier_mask)
             aligned_dem = blockwise.apply()
         else:
@@ -214,8 +240,10 @@ class Coregistration(XdemProcessingAlgorithm):
         return COREG_METHODS
 
     def shortHelpString(self):
-        return "This algorithm enables the coregistration of two DEMs by applying 3D affine transformations.\n" \
-        "Affine transformations can include vertical and horizontal translations, rotations and reflections, and scalings.\n" \
+        return (
+            "This algorithm enables the coregistration of two DEMs by applying 3D affine transformations.\n"
+            "Affine transformations can include vertical and horizontal translations, rotations and reflections, and scalings.\n"
+        )
 
     def createInstance(self):
         return Coregistration()
@@ -226,20 +254,24 @@ class GapFilling(XdemProcessingAlgorithm):
     This class is designed to fill in gaps in the DEM using an IDW method.
     """
 
-    def initAlgorithm(self, config = None):
+    def initAlgorithm(self, config=None):
         """
         Function to retrieve parameters entered in QGIS.
         :param TBF_DEM: The DEM to be filled out.
         :param OUTPUT: The filled DEM.
         """
 
-        self.addParameter(QgsProcessingParameterRasterLayer(
-            name="TBF_DEM",
-            description="DEM to be filled"))
+        self.addParameter(
+            QgsProcessingParameterRasterLayer(
+                name="TBF_DEM", description="DEM to be filled"
+            )
+        )
 
-        self.addParameter(QgsProcessingParameterRasterDestination(
-            name="OUTPUT",
-            description="Filled DEM"))
+        self.addParameter(
+            QgsProcessingParameterRasterDestination(
+                name="OUTPUT", description="Filled DEM"
+            )
+        )
 
     def processAlgorithm(self, parameters, context, feedback):
         # Loading layer from QGIS
@@ -258,7 +290,9 @@ class GapFilling(XdemProcessingAlgorithm):
         filled_array = ddem.interpolate(method="idw")
 
         # Interpolation returns an array, it must be converted to a DEM
-        filled_dem = xdem.DEM.from_array(filled_array, transform=dem.transform, crs=dem.crs)
+        filled_dem = xdem.DEM.from_array(
+            filled_array, transform=dem.transform, crs=dem.crs
+        )
 
         filled_dem.to_file(output_path)
 
@@ -271,9 +305,11 @@ class GapFilling(XdemProcessingAlgorithm):
         return "Corrections"
 
     def shortHelpString(self):
-        return "This algorithm uses the IDW (Inverse-distance weighting) method.\n" \
-        "Empty areas are filled with a weighted average of the surrounding pixel values, " \
-        "with the weight being inversely proportional to their distance from the empty pixel."
+        return (
+            "This algorithm uses the IDW (Inverse-distance weighting) method.\n"
+            "Empty areas are filled with a weighted average of the surrounding pixel values, "
+            "with the weight being inversely proportional to their distance from the empty pixel."
+        )
 
     def createInstance(self):
         return GapFilling()
