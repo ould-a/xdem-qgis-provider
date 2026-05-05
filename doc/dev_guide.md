@@ -48,6 +48,47 @@ Processing methods are divided into four categories, it's all in the `algorithms
 - `xdem_workflows`- It includes accuracy and topo workflows.
 
 #### QGIS Processing logic
-Before getting into the logic behind xDEM processing, it is important to understand how QGIS works.
+Before getting into the logic behind xDEM processing, it is important to understand how QGIS process algorithms works.
+
+Every processing must inherit from the class `QgsProcessingAlgorithm`, it is the main processing class.
+
+The two most important methods are:
+
+1. `initAlgorithm()` this method initialize the GUI, it explicitly specifies which parameters need to be entered for the algorithm to work.
+
+2. `processAlgorithm()` this method retrieves the parameters provided by the user and runs the process.
 
 #### xDEM Processing logic
+The xdem algorithms follow this logic. Here is a simplified version of a slope processing:
+```python
+class Slope(QgsProcessingAlgorithm):
+    def initAlgorithm()
+        # Input DEM
+        self.addParameter(QgsProcessingParameterRasterLayer(name="DEM", description="DEM"))
+
+        # Output Slope
+        self.addParameter(QgsProcessingParameterRasterDestination(name="OUTPUT", description="Slope"))
+
+    def processAlgorithm(parameters)
+        # Loading the layer from QGIS
+        dem_layer = self.parameterAsRasterLayer(parameters, "DEM")
+
+        # Getting the slope output directory
+        output_path = self.parameterAsOutputLayer(parameters, "OUTPUT")
+
+        # Extracting the layer path
+        dem_path = dem_layer.dataProvider().dataSourceUri()
+
+        # Convert to a DEM object
+        dem = xdem.DEM(dem_path)
+
+        # Compute the slope
+        slope = dem.slope()
+
+        # Saving it
+        slope.to_file(output_path)
+
+        # Return the result in QGIS
+        return {"OUTPUT": output_path}
+```
+It should be noted that in the plugin's code, the implementation isn't quite that simple, there are inheritance mechanisms in place to prevent code duplication. But in terms of pure logic, that's how it works.
