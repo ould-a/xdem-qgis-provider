@@ -4,7 +4,7 @@ This plugin allows you to perform processing on Digital Elevation Models (DEMs),
 
 ### Installation
 You can install the plugin directly within QGIS:
-1. Go to `Plugins > Manage and Install Plugins`.
+1. Go to `Plugins` > `Manage and Install Plugins`.
 2. Search for "xDEM Provider".
 3. Click `Install Plugin`,
 
@@ -18,6 +18,6 @@ All the algorithms can be accessed through the QGIS Processing Toolbox in `xDEM`
 - **Workflows**: To run full pipelines and generate detailed reports.
 
 ### Documentation
-- [Plugin documentation](/)
+- [User guide](doc/user_guide.md)
+- [Developer guide](doc/dev_guide.md)
 - [xDEM package](https://xdem.readthedocs.io/en/stable/index.html)
-- [Developper guide](doc/dev_guide.md)
