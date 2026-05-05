@@ -25,7 +25,7 @@ SHARED_PACKAGES = ["numpy", "pyproj", "rasterio", "pandas", "geopandas", "shapel
 
 def _exist_in_qgis(package):
     """
-    Fnction that checks whether a package is present in QGIS by attempting to import it.
+    Function that checks if a package is present in QGIS by attempting to import it.
     """
 
     try:
