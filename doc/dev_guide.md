@@ -3,7 +3,7 @@ This guide provide the detailed documentaton for developers.
 
 ## Project structure
 - `__init__.py` - Entry point that QGIS uses for the plugin.
-- `xdem_installer.py` - First file called after initialization, it installs and manages dependency conflicts.
+- `xdem_installer.py` - First file called in initialization, it installs and manages dependency conflicts.
 - `xdem_plugin.py` - Plugin's main file, which calls the xDEM provider.
 - `xdem_provider.py` - Provider file that lists and calls all available algorithms.
 - `algorithms` - Contains the processing algorithms.
@@ -11,7 +11,7 @@ This guide provide the detailed documentaton for developers.
 - `examples` - Contains the example files, which are also used for testing
 - `img` - Contains the xdem logo.
 - `tests` - Contains the tests, written using the pytest framework.
-- `metadata.txt` - File that allows QGIS to access the plugin's metadata and display it directly on the home page.
+- `metadata.txt` - File containing metadata, displayed directly on the home page.
 - `README.md` -  General project informations.
 
 ## Developement environment
