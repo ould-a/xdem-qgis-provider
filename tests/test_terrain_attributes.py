@@ -13,13 +13,3 @@ def test_terrain_attribute(ref_dem_layer, tmp_path):
 def test_get_terrain_attributes(ref_dem_layer, tmp_path):
 
     assert True
-
-
-def test_get_terrain_attributes_single(ref_dem_layer, tmp_path):
-
-    assert True
-
-
-def test_get_terrain_attributes_full(ref_dem_layer, tmp_path):
-
-    assert True
