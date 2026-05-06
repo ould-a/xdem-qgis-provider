@@ -20,7 +20,7 @@ For developers, it is recommended to use `git clone` to install the plugin.
 Here are the steps:
 1. Locate the `plugins` directory where QGIS stores its installed plugins, corresponding to your current profile.
     - Go to `Settings` > `User profiles` > `Open active profile folder`, from there, go to `python` > `plugins`.
-2. Use `git clone` to install the xDEM plugin here.
+2. Use `git clone https://github.com/ould-a/xdem-qgis-provider.git` to install the xDEM plugin.
 3. Restart QGIS.
 4. Open the plugins menu and check the box to enable xDEM.
 
@@ -41,9 +41,9 @@ The tests will run just like a standard pytest execution, with progress updates 
 
 ## Process algorithms
 Processing methods are divided into four categories, it's all in the `algorithms` folder. Each of these categories is represented by a file.
+- `xdem_tools`- It includes the main class of algorithms as well as generic functions.
 - `xdem_corrections`- It includes coregistration, bias correction, and gap filling.
 - `xdem_terrain_attributes`- It includes all the terrain attributes.
-- `xdem_tools`- It includes the main class of algorithms as well as generic functions.
 - `xdem_uncertainty`- It includes heteroscedasticity.
 - `xdem_workflows`- It includes accuracy and topo workflows.
 
@@ -53,14 +53,12 @@ Before getting into the logic behind xDEM processing, it is important to underst
 Every processing must inherit from the class `QgsProcessingAlgorithm`, it is the main processing class.
 
 The two most important methods are:
-
 1. `initAlgorithm()` this method initialize the GUI, it explicitly specifies which parameters need to be entered for the algorithm to work.
-
 2. `processAlgorithm()` this method retrieves the parameters provided by the user and runs the process.
 
 #### xDEM Processing logic
 The xdem algorithms follow this logic. Here is a simplified version of a slope processing:
-```python
+```
 class Slope(QgsProcessingAlgorithm):
     def initAlgorithm()
         # Input DEM
@@ -91,4 +89,3 @@ class Slope(QgsProcessingAlgorithm):
         # Return the result in QGIS
         return {"OUTPUT": output_path}
 ```
-It should be noted that in the plugin's code, the implementation isn't quite that simple, there are inheritance mechanisms in place to prevent code duplication. But in terms of pure logic, that's how it works.
