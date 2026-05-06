@@ -1,6 +1,7 @@
 import os
 import sys
 import shutil
+import subprocess
 import importlib
 from pip._internal.cli.main import main as pip_main
 from qgis.core import Qgis
@@ -54,10 +55,12 @@ def _install_package():
     """
     Function that installs a package in the plugin directory.
     """
-    import subprocess
+
     for package in REQUIRED_PACKAGES:
-        #pip_main(["install", "--target", LIBS_DIR, package])
-        subprocess.run([sys.executable, "-m", "pip", "install", "--target", LIBS_DIR, package])
+        # pip_main(["install", "--target", LIBS_DIR, package])
+        subprocess.run(
+            [sys.executable, "-m", "pip", "install", "--target", LIBS_DIR, package]
+        )
     iface.messageBar().pushMessage(
         "xDEM dependencies successfully installed", level=Qgis.Info
     )
