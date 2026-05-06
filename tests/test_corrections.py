@@ -92,3 +92,17 @@ def test_bias_correction_with_mask(
     assert "OUTPUT" in result
     output = QgsRasterLayer(result["OUTPUT"])
     assert output.isValid()
+
+
+def test_gap_filling(tba_dem_layer, tmp_path):
+    output_path = str(tmp_path / "filled_dem.tif")
+    result = processing.run(
+        "XDEM:Gap filling",
+        {
+            "TBF_DEM": tba_dem_layer,
+            "OUTPUT": output_path,
+        },
+    )
+    assert "OUTPUT" in result
+    output = QgsRasterLayer(result["OUTPUT"])
+    assert output.isValid()

@@ -2,14 +2,115 @@ import processing
 from qgis.core import QgsRasterLayer
 
 
-def test_terrain_attribute(ref_dem_layer, tmp_path):
+def test_slope(ref_dem_layer, tmp_path):
     output_path = str(tmp_path / "slope.tif")
-    result = processing.run("XDEM:Slope", {"DEM": ref_dem_layer, "OUTPUT": output_path})
+    result = processing.run(
+        "XDEM:Slope",
+        {
+            "DEM": ref_dem_layer,
+            "SURFACE_FIT": "Florinsky",
+            "UNIT": "Degrees",
+            "OUTPUT": output_path,
+        },
+    )
     assert "OUTPUT" in result
     output = QgsRasterLayer(result["OUTPUT"])
     assert output.isValid()
 
 
-def test_get_terrain_attributes(ref_dem_layer, tmp_path):
+def test_aspect(ref_dem_layer, tmp_path):
+    output_path = str(tmp_path / "aspect.tif")
+    result = processing.run(
+        "XDEM:Aspect",
+        {
+            "DEM": ref_dem_layer,
+            "SURFACE_FIT": "Florinsky",
+            "UNIT": "Degrees",
+            "OUTPUT": output_path,
+        },
+    )
+    assert "OUTPUT" in result
+    output = QgsRasterLayer(result["OUTPUT"])
+    assert output.isValid()
 
-    assert True
+
+def test_hillshade(ref_dem_layer, tmp_path):
+    output_path = str(tmp_path / "hillshade.tif")
+    result = processing.run(
+        "XDEM:Hillshade",
+        {
+            "DEM": ref_dem_layer,
+            "SURFACE_FIT": "Florinsky",
+            "ALTITUDE": 45,
+            "AZIMUTH": 315,
+            "ZFACTOR": 1,
+            "OUTPUT": output_path,
+        },
+    )
+    assert "OUTPUT" in result
+    output = QgsRasterLayer(result["OUTPUT"])
+    assert output.isValid()
+
+
+def test_profile_curvature(ref_dem_layer, tmp_path):
+    output_path = str(tmp_path / "profile_curvature.tif")
+    result = processing.run(
+        "XDEM:Profile curvature",
+        {
+            "DEM": ref_dem_layer,
+            "SURFACE_FIT": "Florinsky",
+            "CURV_METHOD": "geometric",
+            "OUTPUT": output_path,
+        },
+    )
+    assert "OUTPUT" in result
+    output = QgsRasterLayer(result["OUTPUT"])
+    assert output.isValid()
+
+
+def test_tangential_curvature(ref_dem_layer, tmp_path):
+    output_path = str(tmp_path / "tangential_curvature.tif")
+    result = processing.run(
+        "XDEM:Tangential curvature",
+        {
+            "DEM": ref_dem_layer,
+            "SURFACE_FIT": "Florinsky",
+            "CURV_METHOD": "geometric",
+            "OUTPUT": output_path,
+        },
+    )
+    assert "OUTPUT" in result
+    output = QgsRasterLayer(result["OUTPUT"])
+    assert output.isValid()
+
+
+def test_planform_curvature(ref_dem_layer, tmp_path):
+    output_path = str(tmp_path / "planform_curvature.tif")
+    result = processing.run(
+        "XDEM:Planform curvature",
+        {
+            "DEM": ref_dem_layer,
+            "SURFACE_FIT": "Florinsky",
+            "CURV_METHOD": "geometric",
+            "OUTPUT": output_path,
+        },
+    )
+    assert "OUTPUT" in result
+    output = QgsRasterLayer(result["OUTPUT"])
+    assert output.isValid()
+
+
+def test_flowline_curvature(ref_dem_layer, tmp_path):
+    output_path = str(tmp_path / "flowline_curvature.tif")
+    result = processing.run(
+        "XDEM:Flowline curvature",
+        {
+            "DEM": ref_dem_layer,
+            "SURFACE_FIT": "Florinsky",
+            "CURV_METHOD": "geometric",
+            "OUTPUT": output_path,
+        },
+    )
+    assert "OUTPUT" in result
+    output = QgsRasterLayer(result["OUTPUT"])
+    assert output.isValid()
