@@ -1,5 +1,5 @@
 # xDEM QGIS Provider, Developer Guide
-This guide provide the detailed documentaton for developers.
+This guide provide the detailed documentation for developers.
 
 ## Project structure
 - `__init__.py` - Entry point that QGIS uses for the plugin.

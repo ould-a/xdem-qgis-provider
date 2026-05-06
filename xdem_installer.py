@@ -85,7 +85,7 @@ def check_xdem():
         import xdem
 
         return xdem
-    except ImportWarning:
+    except ImportError:
         iface.messageBar().pushMessage(
             "xDEM dependencies could not be imported", level=Qgis.Critical
         )
