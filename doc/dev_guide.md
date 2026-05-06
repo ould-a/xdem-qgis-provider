@@ -15,16 +15,14 @@ This guide provide the detailed documentation for developers.
 - `README.md` -  General project informations.
 
 ## Developement environment
-For developers, it is recommended to use `git clone` to install the plugin. 
-
-Here are the steps:
+For developers, use `git clone` for installation, here are the steps: 
 1. Locate the `plugins` directory where QGIS stores its installed plugins, corresponding to your current profile.
     - Go to `Settings` > `User profiles` > `Open active profile folder`, from there, go to `python` > `plugins`.
 2. Use `git clone https://github.com/ould-a/xdem-qgis-provider.git` to install the xDEM plugin.
 3. Restart QGIS.
 4. Open the plugins menu and check the box to enable xDEM.
 
-It will take a few minutes for the dependencies to install properly. A message confirming successful installation should appear.
+It will take a few minutes for the dependencies to install properly, do not force QGIS to close. A message confirming successful installation should appear.
 
 A plugin that will be very helpful during development is [Plugin Reloader](https://plugins.qgis.org/plugins/plugin_reloader/). By default, when changes are made to the plugin code, QGIS must be restarted. This extension allows plugins to be refreshed without closing the software.
 
