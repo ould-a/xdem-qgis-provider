@@ -12,12 +12,11 @@ Installing the dependencies may take a few minutes, do not force QGIS to close.
 
 ### Available processing
 All the algorithms can be accessed through the QGIS Processing Toolbox in `xDEM`, they are organized into four sections.
-- **Corections**: For coregistration, bias corrections and gap filling.
+- **Corrections**: For coregistration, bias corrections and gap filling.
 - **Terrain attributes**: To calculate derivatives of DEMs, such as curvature.
-- **Uncertainty**: To visualise potential errors resulting from corections.
+- **Uncertainty**: To visualise potential errors resulting from corrections.
 - **Workflows**: To run full pipelines and generate detailed reports.
 
 ### Documentation
-- [User guide](doc/user_guide.md)
-- [Developer guide](doc/dev_guide.md)
 - [xDEM package](https://xdem.readthedocs.io/en/stable/index.html)
+- [Developer guide](doc/dev_guide.md)

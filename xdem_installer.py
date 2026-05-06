@@ -67,18 +67,24 @@ def check_xdem():
     Function that checks if xdem is present, if not, it proceeds with the installation.
     """
 
-    if "xdem" in sys.modules:
-        return sys.modules["xdem"]
+    try:
+        import xdem
+
+        return xdem
+    except ImportError:
+        pass
+
     if not os.path.isdir(LIBS_DIR):
         os.makedirs(LIBS_DIR, exist_ok=True)
         try:
             _install_package()
             _clean_conflict_packages()
-        except:
+        except Exception as e:
             shutil.rmtree(LIBS_DIR, ignore_errors=True)
             iface.messageBar().pushMessage(
-                "xDEM dependencies could not be installed", level=Qgis.Critical
+                f"Installation failled: {e}", level=Qgis.Critical
             )
+            return None
     if LIBS_DIR not in sys.path:
         sys.path.insert(0, LIBS_DIR)
     try:
