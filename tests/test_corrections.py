@@ -20,7 +20,9 @@ def test_coregistration(tba_dem_layer, ref_dem_layer, tmp_path):
     assert output.isValid()
 
 
-def test_coregistration_with_mask(tba_dem_layer, ref_dem_layer, stable_mask_layer, tmp_path):
+def test_coregistration_with_mask(
+    tba_dem_layer, ref_dem_layer, stable_mask_layer, tmp_path
+):
     output_path = str(tmp_path / "aligned_dem.tif")
     result = processing.run(
         "XDEM:Coregistration",
@@ -73,7 +75,9 @@ def test_bias_correction(tba_dem_layer, ref_dem_layer, tmp_path):
     assert output.isValid()
 
 
-def test_bias_correction_with_mask(tba_dem_layer, ref_dem_layer, stable_mask_layer, tmp_path):
+def test_bias_correction_with_mask(
+    tba_dem_layer, ref_dem_layer, stable_mask_layer, tmp_path
+):
     output_path = str(tmp_path / "aligned_dem.tif")
     result = processing.run(
         "XDEM:Bias correction",
