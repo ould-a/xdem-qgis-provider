@@ -32,7 +32,7 @@ A plugin that will be very helpful during development is [Plugin Reloader](https
 The tests need to be run directly from QGIS, pytest is included in the libraries installed with the plugin.
 
 To run the tests, go to the console, import pytest and run the following command by specifying the plugin directory.
-```python
+```
 import pytest
 
 pytest.main(["plugin_directory/tests", "-v"])
