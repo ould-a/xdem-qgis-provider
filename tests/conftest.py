@@ -1,5 +1,4 @@
 import os
-import xdem
 import pytest
 from qgis.core import QgsRasterLayer
 
