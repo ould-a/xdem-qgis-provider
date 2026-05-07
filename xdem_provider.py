@@ -6,7 +6,6 @@ from .algorithms.xdem_workflows import *
 
 
 class XdemProvider(QgsProcessingProvider):
-
     def __init__(self):
         QgsProcessingProvider.__init__(self)
 

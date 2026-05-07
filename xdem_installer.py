@@ -20,8 +20,7 @@ REQUIRED_PACKAGES = [
     "weasyprint",
     "xdem",
 ]
-SHARED_PACKAGES = ["geopandas", "numpy",
-                   "pandas", "pyproj", "rasterio", "shapely"]
+SHARED_PACKAGES = ["geopandas", "numpy", "pandas", "pyproj", "rasterio", "shapely"]
 
 
 def exist_in_qgis(package):
@@ -67,6 +66,7 @@ def check_xdem():
 
     try:
         import xdem
+
         return xdem
     except ImportError:
         pass
@@ -82,6 +82,7 @@ def check_xdem():
 
     try:
         import xdem
+
         iface.messageBar().pushMessage(
             "xDEM dependencies successfully installed", level=Qgis.Info
         )

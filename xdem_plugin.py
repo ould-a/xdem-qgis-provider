@@ -12,7 +12,6 @@ if cmd_folder not in sys.path:
 
 
 class XdemPlugin(object):
-
     def __init__(self):
         self.provider = None
 
