@@ -42,8 +42,7 @@ class TerrainAttributes(XdemProcessingAlgorithm):
         # Extracting the path
         dem_path = dem_layer.dataProvider().dataSourceUri()
 
-        output_path = self.parameterAsOutputLayer(
-            parameters, "OUTPUT", context)
+        output_path = self.parameterAsOutputLayer(parameters, "OUTPUT", context)
 
         dem = xdem.DEM(dem_path)
 
@@ -67,7 +66,6 @@ class TerrainAttributes(XdemProcessingAlgorithm):
 
 
 class Slope(TerrainAttributes):
-
     def initAlgorithm(self, config=None):
         super().initAlgorithm()
         """
@@ -105,8 +103,7 @@ class Slope(TerrainAttributes):
         This function gets the advanced settings specific to slope and returns it with those specific settings.
         """
 
-        surface_fit = self.parameterAsString(
-            parameters, "SURFACE_FIT", context)
+        surface_fit = self.parameterAsString(parameters, "SURFACE_FIT", context)
         degrees = (
             True
             if self.parameterAsString(parameters, "UNIT", context) == "Degrees"
@@ -122,7 +119,6 @@ class Slope(TerrainAttributes):
 
 
 class Aspect(TerrainAttributes):
-
     def initAlgorithm(self, config=None):
         super().initAlgorithm()
         """
@@ -156,8 +152,7 @@ class Aspect(TerrainAttributes):
         self.addParameter(parameter)
 
     def get_attribute_and_parameters(self, parameters, context):
-        surface_fit = self.parameterAsString(
-            parameters, "SURFACE_FIT", context)
+        surface_fit = self.parameterAsString(parameters, "SURFACE_FIT", context)
         degrees = (
             True
             if self.parameterAsString(parameters, "UNIT", context) == "Degrees"
@@ -173,7 +168,6 @@ class Aspect(TerrainAttributes):
 
 
 class Hillshade(TerrainAttributes):
-
     def initAlgorithm(self, config=None):
         super().initAlgorithm()
         """
@@ -229,8 +223,7 @@ class Hillshade(TerrainAttributes):
         self.addParameter(parameter)
 
     def get_attribute_and_parameters(self, parameters, context):
-        surface_fit = self.parameterAsString(
-            parameters, "SURFACE_FIT", context)
+        surface_fit = self.parameterAsString(parameters, "SURFACE_FIT", context)
         altitude = self.parameterAsInt(parameters, "ALTITUDE", context)
         azimuth = self.parameterAsInt(parameters, "AZIMUTH", context)
         z_factor = self.parameterAsInt(parameters, "ZFACTOR", context)
@@ -287,12 +280,9 @@ class Curvature(TerrainAttributes):
 
 
 class ProfileCurvature(Curvature):
-
     def get_attribute_and_parameters(self, parameters, context):
-        surface_fit = self.parameterAsString(
-            parameters, "SURFACE_FIT", context)
-        curv_method = self.parameterAsString(
-            parameters, "CURV_METHOD", context)
+        surface_fit = self.parameterAsString(parameters, "SURFACE_FIT", context)
+        curv_method = self.parameterAsString(parameters, "CURV_METHOD", context)
         return lambda dem: dem.profile_curvature(
             surface_fit=surface_fit, curv_method=curv_method
         )
@@ -305,12 +295,9 @@ class ProfileCurvature(Curvature):
 
 
 class TangentialCurvature(Curvature):
-
     def get_attribute_and_parameters(self, parameters, context):
-        surface_fit = self.parameterAsString(
-            parameters, "SURFACE_FIT", context)
-        curv_method = self.parameterAsString(
-            parameters, "CURV_METHOD", context)
+        surface_fit = self.parameterAsString(parameters, "SURFACE_FIT", context)
+        curv_method = self.parameterAsString(parameters, "CURV_METHOD", context)
         return lambda dem: dem.tangential_curvature(
             surface_fit=surface_fit, curv_method=curv_method
         )
@@ -323,12 +310,9 @@ class TangentialCurvature(Curvature):
 
 
 class PlanformCurvature(Curvature):
-
     def get_attribute_and_parameters(self, parameters, context):
-        surface_fit = self.parameterAsString(
-            parameters, "SURFACE_FIT", context)
-        curv_method = self.parameterAsString(
-            parameters, "CURV_METHOD", context)
+        surface_fit = self.parameterAsString(parameters, "SURFACE_FIT", context)
+        curv_method = self.parameterAsString(parameters, "CURV_METHOD", context)
         return lambda dem: dem.planform_curvature(
             surface_fit=surface_fit, curv_method=curv_method
         )
@@ -341,12 +325,9 @@ class PlanformCurvature(Curvature):
 
 
 class FlowlineCurvature(Curvature):
-
     def get_attribute_and_parameters(self, parameters, context):
-        surface_fit = self.parameterAsString(
-            parameters, "SURFACE_FIT", context)
-        curv_method = self.parameterAsString(
-            parameters, "CURV_METHOD", context)
+        surface_fit = self.parameterAsString(parameters, "SURFACE_FIT", context)
+        curv_method = self.parameterAsString(parameters, "CURV_METHOD", context)
         return lambda dem: dem.flowline_curvature(
             surface_fit=surface_fit, curv_method=curv_method
         )
@@ -359,12 +340,9 @@ class FlowlineCurvature(Curvature):
 
 
 class MaxCurvature(Curvature):
-
     def get_attribute_and_parameters(self, parameters, context):
-        surface_fit = self.parameterAsString(
-            parameters, "SURFACE_FIT", context)
-        curv_method = self.parameterAsString(
-            parameters, "CURV_METHOD", context)
+        surface_fit = self.parameterAsString(parameters, "SURFACE_FIT", context)
+        curv_method = self.parameterAsString(parameters, "CURV_METHOD", context)
         return lambda dem: dem.max_curvature(
             surface_fit=surface_fit, curv_method=curv_method
         )
@@ -377,12 +355,9 @@ class MaxCurvature(Curvature):
 
 
 class MinCurvature(Curvature):
-
     def get_attribute_and_parameters(self, parameters, context):
-        surface_fit = self.parameterAsString(
-            parameters, "SURFACE_FIT", context)
-        curv_method = self.parameterAsString(
-            parameters, "CURV_METHOD", context)
+        surface_fit = self.parameterAsString(parameters, "SURFACE_FIT", context)
+        curv_method = self.parameterAsString(parameters, "CURV_METHOD", context)
         return lambda dem: dem.min_curvature(
             surface_fit=surface_fit, curv_method=curv_method
         )
@@ -395,7 +370,6 @@ class MinCurvature(Curvature):
 
 
 class TopographicPositionIndex(TerrainAttributes):
-
     def get_attribute_and_parameters(self, parameters, context):
         return lambda dem: dem.topographic_position_index()
 
@@ -407,7 +381,6 @@ class TopographicPositionIndex(TerrainAttributes):
 
 
 class TerrainRuggednessIndex(TerrainAttributes):
-
     def get_attribute_and_parameters(self, parameters, context):
         return lambda dem: dem.terrain_ruggedness_index()
 
@@ -419,7 +392,6 @@ class TerrainRuggednessIndex(TerrainAttributes):
 
 
 class Roughness(TerrainAttributes):
-
     def get_attribute_and_parameters(self, parameters, context):
         return lambda dem: dem.roughness()
 
@@ -431,7 +403,6 @@ class Roughness(TerrainAttributes):
 
 
 class Rugosity(TerrainAttributes):
-
     def get_attribute_and_parameters(self, parameters, context):
         return lambda dem: dem.rugosity()
 
@@ -443,7 +414,6 @@ class Rugosity(TerrainAttributes):
 
 
 class FractalRoughness(TerrainAttributes):
-
     def get_attribute_and_parameters(self, parameters, context):
         return lambda dem: dem.fractal_roughness()
 
@@ -455,7 +425,6 @@ class FractalRoughness(TerrainAttributes):
 
 
 class TextureShading(TerrainAttributes):
-
     def get_attribute_and_parameters(self, parameters, context):
         return lambda dem: dem.texture_shading()
 
@@ -481,8 +450,7 @@ class GetTerrainAttributes(XdemProcessingAlgorithm):
                 name="ATTRIBUTES",
                 description="Attributes",
                 options=available_attributes,
-                defaultValue=["slope", "aspect",
-                              "hillshade", "profile_curvature"],
+                defaultValue=["slope", "aspect", "hillshade", "profile_curvature"],
                 allowMultiple=True,
                 usesStaticStrings=True,
             )
@@ -499,8 +467,7 @@ class GetTerrainAttributes(XdemProcessingAlgorithm):
         dem_layer = self.parameterAsRasterLayer(parameters, "DEM", context)
 
         # Loading attributes list
-        attributes_list = self.parameterAsEnumStrings(
-            parameters, "ATTRIBUTES", context)
+        attributes_list = self.parameterAsEnumStrings(parameters, "ATTRIBUTES", context)
 
         # Extracting the path
         dem_path = dem_layer.dataProvider().dataSourceUri()
@@ -511,8 +478,7 @@ class GetTerrainAttributes(XdemProcessingAlgorithm):
         feedback.pushInfo("DEM informations:")
         dem_info(dem, feedback)
 
-        self.output_folder = self.parameterAsString(
-            parameters, "OUTPUT", context)
+        self.output_folder = self.parameterAsString(parameters, "OUTPUT", context)
         os.makedirs(self.output_folder, exist_ok=True)
 
         attributes = dem.get_terrain_attribute(attribute=attributes_list)

@@ -79,18 +79,15 @@ class BiasCorrection(XdemProcessingAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         # Loading layers from QGIS
-        tba_dem_layer = self.parameterAsRasterLayer(
-            parameters, "TBA_DEM", context)
-        ref_dem_layer = self.parameterAsRasterLayer(
-            parameters, "REF_DEM", context)
+        tba_dem_layer = self.parameterAsRasterLayer(parameters, "TBA_DEM", context)
+        ref_dem_layer = self.parameterAsRasterLayer(parameters, "REF_DEM", context)
 
         # Extracting paths
         tba_dem_path = tba_dem_layer.dataProvider().dataSourceUri()
         ref_dem_path = ref_dem_layer.dataProvider().dataSourceUri()
 
         method = self.parameterAsString(parameters, "METHOD", context)
-        output_path = self.parameterAsOutputLayer(
-            parameters, "OUTPUT", context)
+        output_path = self.parameterAsOutputLayer(parameters, "OUTPUT", context)
 
         tba_dem = xdem.DEM(tba_dem_path)
         ref_dem = xdem.DEM(ref_dem_path)
@@ -190,10 +187,8 @@ class Coregistration(XdemProcessingAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         # Loading layers from QGIS
-        tba_dem_layer = self.parameterAsRasterLayer(
-            parameters, "TBA_DEM", context)
-        ref_dem_layer = self.parameterAsRasterLayer(
-            parameters, "REF_DEM", context)
+        tba_dem_layer = self.parameterAsRasterLayer(parameters, "TBA_DEM", context)
+        ref_dem_layer = self.parameterAsRasterLayer(parameters, "REF_DEM", context)
 
         # Extracting paths
         tba_dem_path = tba_dem_layer.dataProvider().dataSourceUri()
@@ -201,8 +196,7 @@ class Coregistration(XdemProcessingAlgorithm):
 
         method = self.parameterAsString(parameters, "METHOD", context)
         block_size = self.parameterAsInt(parameters, "BLOCKSIZE", context)
-        output_path = self.parameterAsOutputLayer(
-            parameters, "OUTPUT", context)
+        output_path = self.parameterAsOutputLayer(parameters, "OUTPUT", context)
 
         tba_dem = xdem.DEM(tba_dem_path)
         ref_dem = xdem.DEM(ref_dem_path)
@@ -211,8 +205,7 @@ class Coregistration(XdemProcessingAlgorithm):
 
         coreg = COREG_METHODS[method]
 
-        feedback.pushInfo(
-            "Curently, Blockwise work only with Nuth and Kääb (2011).")
+        feedback.pushInfo("Curently, Blockwise work only with Nuth and Kääb (2011).")
 
         # Configuring blockwise if a block size is specified and if Nuth and Kääb is config
         if block_size != 0 and method == "Nuth and Kääb (2011)":
@@ -286,8 +279,7 @@ class GapFilling(XdemProcessingAlgorithm):
         # Extracting path
         dem_path = dem_layer.dataProvider().dataSourceUri()
 
-        output_path = self.parameterAsOutputLayer(
-            parameters, "OUTPUT", context)
+        output_path = self.parameterAsOutputLayer(parameters, "OUTPUT", context)
 
         dem = xdem.DEM(dem_path)
 

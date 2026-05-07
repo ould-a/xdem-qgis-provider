@@ -22,8 +22,7 @@ class Heteroscedasticity(XdemProcessingAlgorithm):
         """
 
         self.addParameter(
-            QgsProcessingParameterRasterLayer(
-                name="AL_DEM", description="Aligned DEM")
+            QgsProcessingParameterRasterLayer(name="AL_DEM", description="Aligned DEM")
         )
 
         self.addParameter(
@@ -46,17 +45,14 @@ class Heteroscedasticity(XdemProcessingAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         # Loading layers from QGIS
-        aligned_dem_layer = self.parameterAsRasterLayer(
-            parameters, "AL_DEM", context)
-        ref_dem_layer = self.parameterAsRasterLayer(
-            parameters, "REF_DEM", context)
+        aligned_dem_layer = self.parameterAsRasterLayer(parameters, "AL_DEM", context)
+        ref_dem_layer = self.parameterAsRasterLayer(parameters, "REF_DEM", context)
 
         # Extracting path
         aligned_dem_path = aligned_dem_layer.dataProvider().dataSourceUri()
         ref_dem_path = ref_dem_layer.dataProvider().dataSourceUri()
 
-        output_path = self.parameterAsOutputLayer(
-            parameters, "OUTPUT", context)
+        output_path = self.parameterAsOutputLayer(parameters, "OUTPUT", context)
 
         aligned_dem = xdem.DEM(aligned_dem_path)
         ref_dem = xdem.DEM(ref_dem_path)
