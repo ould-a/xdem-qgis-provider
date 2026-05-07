@@ -3,3 +3,4 @@ __pycache__/
 xdem_libs/
 .vscode/
 *.xml
+algorithms/aligned_dem.tif
