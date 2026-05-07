@@ -35,7 +35,7 @@ def exist_in_qgis(package):
         return False
 
 
-def clean_conflict_packages():
+def clean_shared_packages():
     """
     Function that removes shared packages if they exist in QGIS.
     """
@@ -78,7 +78,7 @@ def check_xdem():
         os.makedirs(LIBS_DIR, exist_ok=True)
         install_package()
 
-    clean_conflict_packages()
+    clean_shared_packages()
 
     if LIBS_DIR not in sys.path:
         sys.path.insert(0, LIBS_DIR)
