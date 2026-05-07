@@ -106,8 +106,10 @@ class AccuracyWorkflow(XdemProcessingAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         # Loading layers from QGIS
-        tba_dem_layer = self.parameterAsRasterLayer(parameters, "TBA_DEM", context)
-        ref_dem_layer = self.parameterAsRasterLayer(parameters, "REF_DEM", context)
+        tba_dem_layer = self.parameterAsRasterLayer(
+            parameters, "TBA_DEM", context)
+        ref_dem_layer = self.parameterAsRasterLayer(
+            parameters, "REF_DEM", context)
 
         # Extracting paths
         tba_dem_path = tba_dem_layer.dataProvider().dataSourceUri()
@@ -119,7 +121,8 @@ class AccuracyWorkflow(XdemProcessingAlgorithm):
         method2 = self.parameterAsString(parameters, "METHOD2", context)
         method3 = self.parameterAsString(parameters, "METHOD3", context)
 
-        self.output_folder = self.parameterAsString(parameters, "OUTPUT", context)
+        self.output_folder = self.parameterAsString(
+            parameters, "OUTPUT", context)
         os.makedirs(self.output_folder, exist_ok=True)
 
         # Configuration setup
@@ -211,7 +214,8 @@ class TopoWorkflow(XdemProcessingAlgorithm):
                 name="ATTRIBUTES",
                 description="Terrain attributes",
                 options=TERRAIN_ATTRIBUTES,
-                defaultValue=["slope", "aspect", "hillshade", "profile_curvature"],
+                defaultValue=["slope", "aspect",
+                              "hillshade", "profile_curvature"],
                 allowMultiple=True,
                 usesStaticStrings=True,
             )
@@ -251,11 +255,13 @@ class TopoWorkflow(XdemProcessingAlgorithm):
         # Extracting paths
         dem_path = dem_layer.dataProvider().dataSourceUri()
 
-        attributes = self.parameterAsEnumStrings(parameters, "ATTRIBUTES", context)
+        attributes = self.parameterAsEnumStrings(
+            parameters, "ATTRIBUTES", context)
         stats = self.parameterAsEnumStrings(parameters, "STATS", context)
         level = self.parameterAsInt(parameters, "LEVEL", context)
 
-        self.output_folder = self.parameterAsString(parameters, "OUTPUT", context)
+        self.output_folder = self.parameterAsString(
+            parameters, "OUTPUT", context)
         os.makedirs(self.output_folder, exist_ok=True)
 
         # Configuration setup

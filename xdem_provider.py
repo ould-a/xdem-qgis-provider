@@ -13,7 +13,7 @@ class XdemProvider(QgsProcessingProvider):
     def unload(self):
         pass
 
-    def loadAlgorithms(self): # Displayed in QGIS in alphabetical order
+    def loadAlgorithms(self):  # Displayed in QGIS in alphabetical order
         # Corrections
         self.addAlgorithm(BiasCorrection())
         self.addAlgorithm(Coregistration())

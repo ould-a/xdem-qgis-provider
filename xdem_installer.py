@@ -20,7 +20,8 @@ REQUIRED_PACKAGES = [
     "weasyprint",
     "xdem",
 ]
-SHARED_PACKAGES = ["geopandas", "numpy", "pandas", "pyproj", "rasterio", "shapely"]
+SHARED_PACKAGES = ["geopandas", "numpy",
+                   "pandas", "pyproj", "rasterio", "shapely"]
 
 
 def _exist_in_qgis(package):
@@ -57,9 +58,6 @@ def _install_package():
 
     for package in REQUIRED_PACKAGES:
         pip_main(["install", "--target", LIBS_DIR, package])
-    iface.messageBar().pushMessage(
-        "xDEM dependencies successfully installed", level=Qgis.Info
-    )
 
 
 def check_xdem():
@@ -80,22 +78,28 @@ def check_xdem():
             _install_package()
             _clean_conflict_packages()
         except Exception as e:
-            shutil.rmtree(LIBS_DIR, ignore_errors=True)
+            shutil.rmtree(LIBS_DIR)
             iface.messageBar().pushMessage(
                 f"Installation failled: {e}", level=Qgis.Critical
             )
             return None
+
     if LIBS_DIR not in sys.path:
         sys.path.insert(0, LIBS_DIR)
+
     try:
         import xdem
+
+        iface.messageBar().pushMessage(
+            "xDEM dependencies successfully installed", level=Qgis.Info
+        )
 
         return xdem
     except ImportError:
         iface.messageBar().pushMessage(
-            "xDEM dependencies could not be imported", level=Qgis.Critical
+            "xDEM dependencies could not be installed", level=Qgis.Critical
         )
-        shutil.rmtree(LIBS_DIR, ignore_errors=True)
+        shutil.rmtree(LIBS_DIR)
         return None
 
 
