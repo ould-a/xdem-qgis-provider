@@ -1,4 +1,5 @@
 import os
+import platform
 from xdem.workflows import Accuracy, Topo
 from xdem.workflows.schemas import STATS_METHODS, TERRAIN_ATTRIBUTES, COREG_METHODS
 from qgis.utils import iface
@@ -11,6 +12,14 @@ from qgis.core import (
 from .xdem_tools import XdemProcessingAlgorithm
 
 COREG_METHODS = COREG_METHODS[:-1]  # Squeeze the last value (None)
+
+
+def generate_pdf(workflow):
+    if platform.system == "Linux":
+        from weasyprint import HTML
+        HTML(workflow.outputs_folder / "report.html").write_pdf(
+            workflow.outputs_folder / "report.pdf"
+        )
 
 
 class AccuracyWorkflow(XdemProcessingAlgorithm):
@@ -149,16 +158,7 @@ class AccuracyWorkflow(XdemProcessingAlgorithm):
 
         workflow = Accuracy(config)
         workflow.run()
-
-        # Attempt to generate a PDF from HTML
-        try:
-            from weasyprint import HTML
-
-            HTML(workflow.outputs_folder / "report.html").write_pdf(
-                workflow.outputs_folder / "report.pdf"
-            )
-        except:
-            pass
+        generate_pdf(workflow)
 
         return {}
 
@@ -283,16 +283,7 @@ class TopoWorkflow(XdemProcessingAlgorithm):
 
         workflow = Topo(config)
         workflow.run()
-
-        # Attempt to generate a PDF from HTML
-        try:
-            from weasyprint import HTML
-
-            HTML(workflow.outputs_folder / "report.html").write_pdf(
-                workflow.outputs_folder / "report.pdf"
-            )
-        except:
-            pass
+        generate_pdf(workflow)
 
         return {}
 

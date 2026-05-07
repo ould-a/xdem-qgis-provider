@@ -24,7 +24,7 @@ SHARED_PACKAGES = ["geopandas", "numpy",
                    "pandas", "pyproj", "rasterio", "shapely"]
 
 
-def _exist_in_qgis(package):
+def exist_in_qgis(package):
     """
     Function that checks if a package is present in QGIS by attempting to import it.
     """
@@ -36,14 +36,14 @@ def _exist_in_qgis(package):
         return False
 
 
-def _clean_conflict_packages():
+def clean_conflict_packages():
     """
     Function that removes shared packages if they exist in QGIS.
     """
 
     for xdem_package in os.listdir(LIBS_DIR):
         for shared_package in SHARED_PACKAGES:
-            if _exist_in_qgis(shared_package):
+            if exist_in_qgis(shared_package):
                 if xdem_package == shared_package or xdem_package.startswith(
                     shared_package
                 ):
@@ -51,9 +51,9 @@ def _clean_conflict_packages():
                     shutil.rmtree(target_package)
 
 
-def _install_package():
+def install_package():
     """
-    Function that installs a package in the plugin directory.
+    Function that installs packages in the plugin directory.
     """
 
     for package in REQUIRED_PACKAGES:
@@ -67,33 +67,24 @@ def check_xdem():
 
     try:
         import xdem
-
         return xdem
     except ImportError:
         pass
 
     if not os.path.isdir(LIBS_DIR):
         os.makedirs(LIBS_DIR, exist_ok=True)
-        try:
-            _install_package()
-            _clean_conflict_packages()
-        except Exception as e:
-            shutil.rmtree(LIBS_DIR)
-            iface.messageBar().pushMessage(
-                f"Installation failled: {e}", level=Qgis.Critical
-            )
-            return None
+        install_package()
+
+    clean_conflict_packages()
 
     if LIBS_DIR not in sys.path:
         sys.path.insert(0, LIBS_DIR)
 
     try:
         import xdem
-
         iface.messageBar().pushMessage(
             "xDEM dependencies successfully installed", level=Qgis.Info
         )
-
         return xdem
     except ImportError:
         iface.messageBar().pushMessage(
