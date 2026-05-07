@@ -57,6 +57,9 @@ def install_package():
 
     for package in REQUIRED_PACKAGES:
         pip_main(["install", "--target", LIBS_DIR, package])
+    iface.messageBar().pushMessage(
+        "xDEM dependencies successfully installed", level=Qgis.Info
+    )
 
 
 def check_xdem():
@@ -83,9 +86,6 @@ def check_xdem():
     try:
         import xdem
 
-        iface.messageBar().pushMessage(
-            "xDEM dependencies successfully installed", level=Qgis.Info
-        )
         return xdem
     except ImportError:
         iface.messageBar().pushMessage(

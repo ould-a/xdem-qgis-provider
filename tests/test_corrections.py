@@ -49,7 +49,7 @@ def test_blockwise_coregistration(tba_dem_layer, ref_dem_layer, tmp_path):
             "REF_DEM": ref_dem_layer,
             "MASK": None,
             "METHOD": "Nuth and Kääb (2011)",
-            "BLOCKSIZE": 1000,
+            "BLOCKSIZE": 500,
             "OUTPUT": output_path,
         },
     )
