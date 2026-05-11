@@ -1,6 +1,5 @@
 import os
 import xdem
-import rasterio
 from qgis.core import (
     QgsProcessingParameterRasterLayer,
     QgsProcessingParameterEnum,
