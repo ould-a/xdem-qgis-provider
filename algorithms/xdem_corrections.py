@@ -101,8 +101,8 @@ class BiasCorrection(XdemProcessingAlgorithm):
         coreg.fit(ref_dem, tba_dem, inlier_mask)
         aligned_dem = coreg.apply(tba_dem)
 
-        # Display the coregistration informations in the QGIS console
-        feedback.pushInfo("Coregistration informations:")
+        # Display the bias corrections informations in the QGIS console
+        feedback.pushInfo("Bias corrections informations:")
         coreg_info(coreg, feedback)
 
         aligned_dem.to_file(output_path)
@@ -313,53 +313,3 @@ class GapFilling(XdemProcessingAlgorithm):
 
     def createInstance(self):
         return GapFilling()
-
-
-class AssignVcrs(XdemProcessingAlgorithm):
-    def initAlgorithm(self, config=None):
-        self.addParameter(
-            QgsProcessingParameterRasterLayer(
-                name="TBP_DEM", description="DEM to be projected"
-            )
-        )
-
-        self.addParameter(
-            QgsProcessingParameterRasterLayer(name="DEM_SRC", description="DEM source")
-        )
-
-        self.addParameter(
-            QgsProcessingParameterRasterDestination(
-                name="OUTPUT", description="DEM reprojected"
-            )
-        )
-
-    def processAlgorithm(self, parameters, context, feedback):
-        tbp_dem_layer = self.parameterAsRasterLayer(parameters, "TBP_DEM", context)
-        src_dem_layer = self.parameterAsRasterLayer(parameters, "DEM_SRC", context)
-
-        tbp_dem_path = tbp_dem_layer.dataProvider().dataSourceUri()
-        src_dem_path = src_dem_layer.dataProvider().dataSourceUri()
-
-        output_path = self.parameterAsOutputLayer(parameters, "OUTPUT", context)
-
-        tbp_dem = xdem.DEM(tbp_dem_path)
-        src_dem = xdem.DEM(src_dem_path)
-        src_vcrs = src_dem.vcrs
-
-        tbp_dem.set_vcrs(src_vcrs)
-
-        profile = {**tbp_dem.profile, "crs": tbp_dem.ccrs}
-
-        with rasterio.open(output_path, "w", **profile) as file:
-            file.write(tbp_dem.data.filled(tbp_dem.nodata).squeeze(), 1)
-
-        return {"OUTPUT": output_path}
-
-    def name(self):
-        return "[WIP] Assign a vertical reference"
-
-    def groupId(self):
-        return "Corrections"
-
-    def createInstance(self):
-        return AssignVcrs()
