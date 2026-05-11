@@ -1,4 +1,4 @@
-# xDEM QGIS Provider, Developer Guide
+# xDEM QGIS Plugin, Developer Guide
 This guide provide the detailed documentation for developers.
 
 ## Project structure
