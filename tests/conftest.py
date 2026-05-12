@@ -1,7 +1,5 @@
-import os
 import xdem
 import pytest
-import geoutils as gu
 from qgis.core import QgsRasterLayer
 
 
