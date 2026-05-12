@@ -14,7 +14,7 @@ author=CNES
 email=/
 license=/
 tracker=/
-repository=/
+repository=https://github.com/GlacioHack/xdem-plugin-qgis.git
 homepage=/
 
 icon=img/xdem_logo.svg
