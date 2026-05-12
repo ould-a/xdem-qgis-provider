@@ -14,13 +14,15 @@ from .processing_tools import XdemProcessingAlgorithm
 COREG_METHODS = COREG_METHODS[:-1]  # Squeeze the last value (None)
 
 
-def generate_pdf(workflow):
-    if platform.system == "Linux":
+def generate_pdf(workflow, feedback):
+    if platform.system() == "Linux":
         from weasyprint import HTML
 
         HTML(workflow.outputs_folder / "report.html").write_pdf(
             workflow.outputs_folder / "report.pdf"
         )
+    else:
+        feedback.pushWarning("PDF generation is only available on Linux")
 
 
 class AccuracyWorkflow(XdemProcessingAlgorithm):
@@ -156,15 +158,13 @@ class AccuracyWorkflow(XdemProcessingAlgorithm):
 
         workflow = Accuracy(config)
         workflow.run()
-        generate_pdf(workflow)
+        generate_pdf(workflow, feedback)
 
-        return {}
-
-    def postProcessAlgorithm(self, context, feedback):
         rasters_folder = os.path.join(self.output_folder, "rasters")
         for file in os.listdir(rasters_folder):
             file_path = os.path.join(rasters_folder, file)
             iface.addRasterLayer(file_path)
+
         return {}
 
     def name(self):
@@ -278,15 +278,13 @@ class TopoWorkflow(XdemProcessingAlgorithm):
 
         workflow = Topo(config)
         workflow.run()
-        generate_pdf(workflow)
+        generate_pdf(workflow, feedback)
 
-        return {}
-
-    def postProcessAlgorithm(self, context, feedback):
         rasters_folder = os.path.join(self.output_folder, "rasters")
         for file in os.listdir(rasters_folder):
             file_path = os.path.join(rasters_folder, file)
             iface.addRasterLayer(file_path)
+
         return {}
 
     def name(self):

@@ -490,13 +490,11 @@ class GetTerrainAttributes(XdemProcessingAlgorithm):
             output = os.path.join(self.output_folder, f"{name}.tif")
             res.to_file(output)
 
-        return {}
-
-    def postProcessAlgorithm(self, context, feedback):
         for file in os.listdir(self.output_folder):
             file_path = os.path.join(self.output_folder, file)
             if file_path.endswith(".tif"):
                 iface.addRasterLayer(file_path)
+
         return {}
 
     def name(self):
