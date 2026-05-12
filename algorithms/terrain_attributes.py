@@ -478,8 +478,8 @@ class GetTerrainAttributes(XdemProcessingAlgorithm):
         feedback.pushInfo("DEM informations:")
         dem_info(dem, feedback)
 
-        self.output_folder = self.parameterAsString(parameters, "OUTPUT", context)
-        os.makedirs(self.output_folder, exist_ok=True)
+        output_folder = self.parameterAsString(parameters, "OUTPUT", context)
+        os.makedirs(output_folder, exist_ok=True)
 
         attributes = dem.get_terrain_attribute(attribute=attributes_list)
 
@@ -487,11 +487,11 @@ class GetTerrainAttributes(XdemProcessingAlgorithm):
             attributes = [attributes]
 
         for name, res in zip(attributes_list, attributes):
-            output = os.path.join(self.output_folder, f"{name}.tif")
+            output = os.path.join(output_folder, f"{name}.tif")
             res.to_file(output)
 
-        for file in os.listdir(self.output_folder):
-            file_path = os.path.join(self.output_folder, file)
+        for file in os.listdir(output_folder):
+            file_path = os.path.join(output_folder, file)
             if file_path.endswith(".tif"):
                 iface.addRasterLayer(file_path)
 
