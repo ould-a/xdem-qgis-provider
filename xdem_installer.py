@@ -8,8 +8,8 @@ from qgis.utils import iface
 
 # Path Configuration
 PLUGIN_DIR = os.path.dirname(__file__)
-LIBS_FILE_NAME = "xdem_libs"
-LIBS_DIR = os.path.join(PLUGIN_DIR, LIBS_FILE_NAME)
+LIBS_FOLDER_NAME = "xdem_libs"
+LIBS_DIR = os.path.join(PLUGIN_DIR, LIBS_FOLDER_NAME)
 
 # Packages Configuration
 REQUIRED_PACKAGES = [
