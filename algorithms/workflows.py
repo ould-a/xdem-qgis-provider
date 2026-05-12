@@ -9,7 +9,7 @@ from qgis.core import (
     QgsProcessingParameterDefinition,
     QgsProcessingParameterFolderDestination,
 )
-from .xdem_tools import XdemProcessingAlgorithm
+from .processing_tools import XdemProcessingAlgorithm
 
 COREG_METHODS = COREG_METHODS[:-1]  # Squeeze the last value (None)
 

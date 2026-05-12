@@ -10,7 +10,7 @@ from qgis.core import (
     QgsProcessingParameterFolderDestination,
 )
 from xdem.terrain import available_attributes
-from .xdem_tools import XdemProcessingAlgorithm, dem_info
+from .processing_tools import XdemProcessingAlgorithm, dem_info
 
 
 class TerrainAttributes(XdemProcessingAlgorithm):

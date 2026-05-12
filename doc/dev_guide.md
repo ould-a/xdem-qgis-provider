@@ -2,17 +2,29 @@
 This guide provide the detailed documentation for developers.
 
 ## Project structure
-- `__init__.py` - Entry point that QGIS uses for the plugin.
-- `xdem_installer.py` - First file called in initialization, it installs and manages dependency conflicts.
-- `xdem_plugin.py` - Plugin's main file, which calls the xDEM provider.
-- `xdem_provider.py` - Provider file that lists and calls all available algorithms.
-- `algorithms` - Contains the processing algorithms.
-- `doc` - Contains the documentation.
-- `examples` - Contains the example files, which are also used for testing
-- `img` - Contains the xdem logo.
-- `tests` - Contains the tests, written using the pytest framework.
-- `metadata.txt` - File containing metadata, displayed directly on the home page.
-- `README.md` -  General project informations.
+```
+├── algorithms
+│   ├── corrections.py
+│   ├── processing_tools.py
+│   ├── terrain_attributes.py
+│   ├── uncertainty.py
+│   ├── workflows.py
+├── doc
+│   ├──dev_guide.md
+├── img
+│   ├──xdem_logo.svg
+├── tests
+│   ├── conftest.py
+│   ├── test_env.py
+│   ├── test_processing.py
+├── __init__.py
+├── .gitignore
+├── metadata.txt
+├── README.md
+├── xdem_installer.py
+├── xdem_plugin.py
+└── xdem_provider.py
+```
 
 ## Developement environment
 For developers, use `git clone` for installation, here are the steps: 
@@ -30,7 +42,7 @@ A plugin that will be very helpful during development is [Plugin Reloader](https
 The tests need to be run directly from QGIS, pytest is included in the libraries installed with the plugin.
 
 To run the tests, go to the console, import pytest and run the following command by specifying the plugin directory.
-```
+```python
 import pytest
 
 pytest.main(["plugin_directory/tests", "-v"])
@@ -38,12 +50,7 @@ pytest.main(["plugin_directory/tests", "-v"])
 The tests will run just like a standard pytest execution, with progress updates and a final summary.
 
 ## Process algorithms
-Processing methods are divided into four categories, it's all in the `algorithms` folder. Each of these categories is represented by a file.
-- `xdem_tools`- It includes the main class of algorithms as well as generic functions.
-- `xdem_corrections`- It includes coregistration, bias correction, and gap filling.
-- `xdem_terrain_attributes`- It includes all the terrain attributes.
-- `xdem_uncertainty`- It includes heteroscedasticity.
-- `xdem_workflows`- It includes accuracy and topo workflows.
+Processing methods are divided into four categories, it's all in the `algorithms` folder.
 
 #### QGIS Processing logic
 Before getting into the logic behind xDEM processing, it is important to understand how QGIS process algorithms works.
@@ -56,7 +63,7 @@ The two most important methods are:
 
 #### xDEM Processing logic
 The xdem algorithms follow this logic. Here is a simplified version of a slope processing:
-```
+```python
 class Slope(QgsProcessingAlgorithm):
     def initAlgorithm()
         # Input DEM

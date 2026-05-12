@@ -3,7 +3,7 @@ from qgis.core import (
     QgsProcessingParameterRasterLayer,
     QgsProcessingParameterRasterDestination,
 )
-from .xdem_tools import XdemProcessingAlgorithm, load_mask
+from .processing_tools import XdemProcessingAlgorithm, load_mask
 
 
 class Heteroscedasticity(XdemProcessingAlgorithm):

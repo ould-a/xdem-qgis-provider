@@ -1,8 +1,8 @@
 from qgis.core import QgsProcessingProvider
-from .algorithms.xdem_corrections import *
-from .algorithms.xdem_terrain_attributes import *
-from .algorithms.xdem_uncertainty import *
-from .algorithms.xdem_workflows import *
+from .algorithms.corrections import *
+from .algorithms.terrain_attributes import *
+from .algorithms.uncertainty import *
+from .algorithms.workflows import *
 
 
 class XdemProvider(QgsProcessingProvider):
