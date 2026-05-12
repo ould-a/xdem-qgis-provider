@@ -6,15 +6,19 @@ from qgis.core import QgsRasterLayer
 
 
 @pytest.fixture
-def ref_dem_layer():
-    ref_dem_path = xdem.examples.get_path("longyearbyen_ref_dem")
+def ref_dem_layer(tmp_path):
+    ref_dem = xdem.DEM(xdem.examples.get_path("longyearbyen_ref_dem"))
+    ref_dem_path = os.path.join(tmp_path, "ref_dem.tif")
+    ref_dem.to_file(ref_dem_path)
     layer = QgsRasterLayer(ref_dem_path)
     return layer
 
 
 @pytest.fixture
-def tba_dem_layer():
-    tba_dem_path = xdem.examples.get_path("longyearbyen_tba_dem")
+def tba_dem_layer(tmp_path):
+    tba_dem = xdem.DEM(xdem.examples.get_path("longyearbyen_tba_dem"))
+    tba_dem_path = os.path.join(tmp_path, "tba_dem.tif")
+    tba_dem.to_file(tba_dem_path)
     layer = QgsRasterLayer(tba_dem_path)
     return layer
 
