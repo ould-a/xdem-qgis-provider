@@ -1,27 +1,36 @@
 import os
+import xdem
 import pytest
+import geoutils as gu
 from qgis.core import QgsRasterLayer
 
 
 @pytest.fixture
-def ref_dem_layer():
-    test_dir = os.path.dirname(os.path.abspath(__file__))
-    dem_path = os.path.join(test_dir, "../examples/longyearbyen_ref_dem.tif")
-    layer = QgsRasterLayer(dem_path)
+def ref_dem_layer(tmp_path):
+    ref_dem = xdem.DEM(xdem.examples.get_path("longyearbyen_ref_dem"))
+    ref_dem_path = os.path.join(tmp_path, "ref_dem.tif")
+    ref_dem.to_file(ref_dem_path)
+    layer = QgsRasterLayer(ref_dem_path)
     return layer
 
 
 @pytest.fixture
-def tba_dem_layer():
-    test_dir = os.path.dirname(os.path.abspath(__file__))
-    dem_path = os.path.join(test_dir, "../examples/longyearbyen_tba_dem.tif")
-    layer = QgsRasterLayer(dem_path)
+def tba_dem_layer(tmp_path):
+    tba_dem = xdem.DEM(xdem.examples.get_path("longyearbyen_tba_dem"))
+    tba_dem_path = os.path.join(tmp_path, "tba_dem.tif")
+    tba_dem.to_file(tba_dem_path)
+    layer = QgsRasterLayer(tba_dem_path)
     return layer
 
 
 @pytest.fixture
-def stable_mask_layer():
-    test_dir = os.path.dirname(os.path.abspath(__file__))
-    mask_path = os.path.join(test_dir, "../examples/inlier_mask.tif")
-    layer = QgsRasterLayer(mask_path)
+def stable_mask_layer(tmp_path):
+    ref_dem = xdem.DEM(xdem.examples.get_path("longyearbyen_ref_dem"))
+    glacier_outlines = gu.Vector(
+        xdem.examples.get_path("longyearbyen_glacier_outlines")
+    )
+    stable_mask = ~glacier_outlines.create_mask(ref_dem)
+    stable_mask_path = os.path.join(tmp_path, "stable_mask.tif")
+    stable_mask.to_file(stable_mask_path)
+    layer = QgsRasterLayer(stable_mask_path)
     return layer
