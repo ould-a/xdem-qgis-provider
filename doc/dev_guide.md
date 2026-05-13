@@ -52,7 +52,6 @@ The tests will run just like a standard pytest execution, with progress updates 
 ## Process algorithms
 Processing methods are divided into four categories, it's all in the `algorithms` folder.
 
-#### QGIS Processing logic
 Before getting into the logic behind xDEM processing, it is important to understand how QGIS process algorithms works.
 
 Every processing must inherit from the class `QgsProcessingAlgorithm`, it is the main processing class.
@@ -61,7 +60,6 @@ The two most important methods are:
 1. `initAlgorithm()` this method initialize the GUI, it explicitly specifies which parameters need to be entered for the algorithm to work.
 2. `processAlgorithm()` this method retrieves the parameters provided by the user and runs the process.
 
-#### xDEM Processing logic
 The xdem algorithms follow this logic. Here is a simplified version of a slope processing:
 ```python
 class Slope(QgsProcessingAlgorithm):

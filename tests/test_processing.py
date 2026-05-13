@@ -4,7 +4,7 @@ from qgis.core import QgsRasterLayer
 
 
 def test_slope(ref_dem_layer, tmp_path):
-    output_path = os.path.join(tmp_path, "slope.tif")
+    output_path = os.path.join(tmp_path, "test_slope.tif")
     result = processing.run(
         "XDEM:Slope",
         {
@@ -14,13 +14,12 @@ def test_slope(ref_dem_layer, tmp_path):
             "OUTPUT": output_path,
         },
     )
-    assert "OUTPUT" in result
     output = QgsRasterLayer(result["OUTPUT"])
     assert output.isValid()
 
 
 def test_coregistration(tba_dem_layer, ref_dem_layer, tmp_path):
-    output_path = os.path.join(tmp_path, "aligned_dem.tif")
+    output_path = os.path.join(tmp_path, "test_coreg.tif")
     result = processing.run(
         "XDEM:Coregistration",
         {
@@ -32,6 +31,5 @@ def test_coregistration(tba_dem_layer, ref_dem_layer, tmp_path):
             "OUTPUT": output_path,
         },
     )
-    assert "OUTPUT" in result
     output = QgsRasterLayer(result["OUTPUT"])
     assert output.isValid()
